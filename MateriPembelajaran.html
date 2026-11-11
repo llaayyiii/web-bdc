@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="web_dashboard" name="shell-type"/>
+  <title>Pusat Belajar & Arsip Sharing Komunitas - Academic College Community</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      "darkMode": "class",
+      "theme": {
+        "extend": {
+          "colors": {
+            "navy-admin-bg": "#0F172A",
+            "navy-admin-card": "#1E293B",
+            "primary": "#2a14b4",
+            "primary-container": "#4338ca",
+            "on-primary": "#ffffff",
+            "secondary": "#4648d4",
+            "secondary-container": "#6063ee",
+            "surface": "#faf8ff",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f2f3ff",
+            "surface-container": "#eaedff",
+            "surface-container-high": "#e2e7ff",
+            "surface-container-highest": "#dae2fd",
+            "on-surface": "#131b2e",
+            "on-surface-variant": "#464554",
+            "slate-muted": "#64748B",
+            "accent-emerald-success": "#10B981",
+            "accent-cyan-vibrant": "#06B6D4",
+            "accent-amber-warning": "#F59E0B",
+            "accent-rose-danger": "#EF4444",
+            "accent-electric-purple": "#A855F7"
+          },
+          "fontFamily": {
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "title-card": ["Plus Jakarta Sans"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-badge": ["Plus Jakarta Sans"],
+            "label-caps": ["Plus Jakarta Sans"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-[#faf8ff] font-['Inter'] text-on-surface">
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-navy-admin-bg/50 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300" onclick="toggleMobileSidebar(false)"></div>
+
+  <!-- Sidebar Navigation -->
+  <aside id="appSidebar" class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-6 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+    <div class="flex flex-col">
+      <div class="px-6 mb-8 flex items-center justify-between">
+        <a href="DasborSiswadanPembelajaran.html" class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary via-primary-container to-accent-electric-purple flex items-center justify-center shadow-md relative overflow-hidden shrink-0">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 3L2 8.5L12 14L22 8.5L12 3Z" fill="currentColor" fill-opacity="0.3"></path>
+              <path d="M2 8.5L12 14L22 8.5L12 3L2 8.5Z" stroke="currentColor"></path>
+              <path d="M6 10.7V16.5C6 16.5 8.5 19 12 19C15.5 19 18 16.5 18 16.5V10.7" stroke="currentColor"></path>
+              <path d="M22 8.5V15.5" stroke="currentColor"></path>
+            </svg>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">Business Dev Club</span>
+            <span class="font-label-caps text-label-caps uppercase text-slate-muted">Academic College Community</span>
+          </div>
+        </a>
+        <button onclick="toggleMobileSidebar(false)" class="lg:hidden p-1.5 rounded-lg text-slate-muted hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button" aria-label="Tutup Menu">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <div class="px-6 mb-2">
+        <span class="font-label-caps text-label-caps uppercase text-slate-muted tracking-wider text-xs font-bold">Curriculum &amp; Management</span>
+      </div>
+
+      <nav class="flex flex-col gap-1 px-4">
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="DasborSiswadanPembelajaran.html">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a aria-current="page" class="flex items-center gap-3 px-4 py-3 transition-all bg-primary-container text-on-primary font-title-card shadow-sm rounded-xl" data-path="courses" href="MateriPembelajaran.html">
+          <span class="material-symbols-outlined">school</span>
+          <span>Courses / Materi Komunitas</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="assessments-&-quizzes" href="AntarMukaUjiandanPembuatanUjian.html">
+          <span class="material-symbols-outlined">checklist</span>
+          <span>Tugas &amp; Kuis Modul</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="certifications" href="SertifikatKelulusan.html">
+          <span class="material-symbols-outlined">verified</span>
+          <span>Certifications</span>
+        </a>
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="system-settings" href="PengaturanSistem.html">
+          <span class="material-symbols-outlined">settings</span>
+          <span>System Settings</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="px-4 flex flex-col gap-3">
+      <div class="bg-surface-container-high rounded-xl p-4 flex flex-col gap-2 shadow-sm">
+        <div class="flex items-center justify-between">
+          <span class="font-label-badge text-label-badge text-slate-muted uppercase">System Status</span>
+          <span class="h-2 w-2 rounded-full bg-accent-emerald-success"></span>
+        </div>
+        <span class="font-title-card text-title-card text-on-surface">Community Learning Tier</span>
+        <span class="font-body-sm text-body-sm text-on-surface-variant">Academic Hub Online</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="pl-0 lg:pl-72 transition-all duration-300">
+    
+    <!-- Top Header -->
+    <header class="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-30 flex items-center justify-between px-4 sm:px-8">
+      <div class="flex items-center gap-3 flex-1 max-w-md">
+        <button id="sidebarToggleBtn" onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl text-on-surface hover:bg-surface-container transition-colors flex items-center justify-center" type="button" aria-label="Buka Menu">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+        <div class="relative w-full hidden sm:block">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-muted">search</span>
+          <input id="searchInput" oninput="filterCourses()" class="w-full pl-10 pr-4 py-2 bg-surface-container rounded-full font-body-sm text-body-sm text-on-surface placeholder:text-slate-muted outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary transition-all" placeholder="Cari materi komunitas, instruktur, topik..." type="text">
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-3 sm:gap-5">
+        <div class="flex items-center bg-surface-container p-1 rounded-full gap-1">
+          <button id="headerRoleAdminBtn" class="px-3 py-1 text-on-surface-variant hover:text-on-surface font-label-badge text-label-badge rounded-full transition-all cursor-pointer" onclick="switchUserRole('admin')" type="button">Admin</button>
+          <button id="headerRoleStudentBtn" class="px-3 py-1 text-on-primary bg-primary font-label-badge text-label-badge rounded-full transition-all shadow-sm cursor-default" type="button">Student</button>
+        </div>
+        
+        <button class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" type="button">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent-rose-danger"></span>
+        </button>
+        
+        <div class="h-6 w-px bg-surface-variant hidden sm:block"></div>
+        
+        <div class="flex items-center gap-3">
+          <div class="flex flex-col text-right hidden sm:flex">
+            <span id="headerUserName" class="font-title-card text-title-card text-on-surface leading-tight">Siti Rahmawati</span>
+            <span id="headerUserRole" class="font-label-badge text-label-badge text-slate-muted">Corporate Learner</span>
+          </div>
+          <div class="w-9 h-9 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center text-sm ring-2 ring-primary/30" id="headerAvatarFallback">
+            SR
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <main class="w-full pt-20 px-4 sm:px-8 pb-16 min-h-screen">
+      <div class="max-w-7xl mx-auto flex flex-col gap-6">
+
+        <!-- Top Hero Title -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+                Academic College Community
+              </span>
+              <span class="text-xs text-slate-400 font-medium">• Dynamic Knowledge Hub</span>
+            </div>
+            <h1 class="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Pusat Belajar &amp; Arsip Sharing Komunitas
+            </h1>
+            <p class="text-slate-500 text-sm mt-1 max-w-2xl">
+              Eksplorasi topik belajar mingguan, rekaman workshop, dan repositori materi hasil kolaborasi anggota.
+            </p>
+          </div>
+
+          <!-- Top Action Buttons -->
+          <div class="flex items-center gap-2 self-start md:self-auto flex-wrap">
+            <button onclick="openRequestTopicModal()" class="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold shadow-md shadow-violet-600/20 transition-all flex items-center gap-1.5 cursor-pointer" title="Usulkan topik baru untuk dibahas atau dipelajari bersama">
+              <span class="material-symbols-outlined text-base">lightbulb</span>
+              <span>+ Usulkan Topik Belajar</span>
+            </button>
+            <div id="adminActionButtons" class="hidden flex items-center gap-2">
+              <button onclick="resetCoursesToDefault()" class="px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer" title="Kembalikan materi ke data default bawaan">
+                <span class="material-symbols-outlined text-base">restart_alt</span>
+                <span>Reset Default</span>
+              </button>
+              <button onclick="openAddCourseModal()" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold shadow-md shadow-primary/20 transition-all flex items-center gap-1.5 cursor-pointer">
+                <span class="material-symbols-outlined text-base">add_circle</span>
+                <span>+ Tambah Materi Baru</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Role Banner Indicator -->
+        <div id="adminStatusBanner" class="hidden p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/60 to-indigo-50/90 border border-primary/20 text-on-surface flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-primary text-white flex items-center justify-center shrink-0 shadow-sm shadow-primary/20">
+              <span class="material-symbols-outlined text-2xl">admin_panel_settings</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-slate-900">Kurator Komunitas &amp; Pengelola Sesi (Admin)</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-primary text-white text-[10px] font-extrabold uppercase tracking-wide">Akses Kurator</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-0.5">
+                Kelola jadwal sesi minggu ini, unggah rekaman workshop baru, tinjau usulan topik dari anggota, atau tambahkan proyek kolaborasi.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 self-start md:self-auto shrink-0">
+            <button onclick="openTopicRequestsListModal()" class="px-3.5 py-2.5 rounded-xl bg-white hover:bg-indigo-50 border border-primary/30 text-primary text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-base">inbox</span>
+              <span>Usulan Masuk (<span id="requestsCountBadge">2</span>)</span>
+            </button>
+            <button onclick="openAddCourseModal()" class="px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-base">add</span>
+              <span>Tambah Sesi / Materi</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="studentStatusBanner" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50/90 via-teal-50/50 to-emerald-50/90 border border-emerald-200/80 text-on-surface flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm shadow-emerald-600/20">
+              <span class="material-symbols-outlined text-2xl">forum</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-slate-900">Komunitas Belajar Dinamis &amp; Kolaboratif</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-extrabold uppercase tracking-wide">Live &amp; Terbuka</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-0.5">
+                Topik dan jadwal diperbarui setiap minggu berdasarkan kebutuhan anggota. Punya ide sesi atau materi yang ingin dipelajari bersama?
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 self-start md:self-auto shrink-0">
+            <button onclick="openRequestTopicModal()" class="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-base">add_comment</span>
+              <span>+ Usulkan Topik Belajar</span>
+            </button>
+            <a href="DasborSiswadanPembelajaran.html" class="px-4 py-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 whitespace-nowrap">
+              <span class="material-symbols-outlined text-base">play_circle</span>
+              <span>Ruang Belajar</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Filter Category Tabs: Jenis Aktivitas -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1" id="categoryFilterBar">
+          <button onclick="setCategoryFilter('all')" class="cat-pill active px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white shadow-sm transition-all whitespace-nowrap cursor-pointer" data-cat="all">
+            Semua Aktivitas
+          </button>
+          <button onclick="setCategoryFilter('Sesi Minggu Ini')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all whitespace-nowrap cursor-pointer" data-cat="Sesi Minggu Ini">
+            🔴 Sesi Minggu Ini
+          </button>
+          <button onclick="setCategoryFilter('Workshop & Hands-On')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all whitespace-nowrap cursor-pointer" data-cat="Workshop & Hands-On">
+            🛠️ Workshop &amp; Hands-On
+          </button>
+          <button onclick="setCategoryFilter('Arsip Recording')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all whitespace-nowrap cursor-pointer" data-cat="Arsip Recording">
+            📹 Arsip Recording
+          </button>
+          <button onclick="setCategoryFilter('Proyek Bersama')" class="cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all whitespace-nowrap cursor-pointer" data-cat="Proyek Bersama">
+            🤝 Proyek Bersama
+          </button>
+        </div>
+
+        <!-- Courses Dynamic Grid -->
+        <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Cards injected via JavaScript -->
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div id="emptyCoursesState" class="hidden flex-col items-center justify-center p-12 bg-white rounded-2xl border border-slate-200 text-center">
+          <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">search_off</span>
+          <h3 class="font-bold text-slate-800 text-base">Tidak ada materi yang cocok</h3>
+          <p class="text-xs text-slate-500 mt-1 max-w-sm">Coba ubah kata kunci pencarian atau pilih kategori materi lainnya.</p>
+          <button onclick="setCategoryFilter('all')" class="mt-4 px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl">Lihat Semua Materi</button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: View Course Syllabus (Available to both Student & Admin) -->
+  <div id="viewCourseModal" class="fixed inset-0 bg-navy-admin-bg/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 flex flex-col max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-4 pb-4 border-b border-slate-100 mb-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span id="viewModalCategory" class="px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-700 text-xs font-bold">Kategori</span>
+            <span id="viewModalId" class="text-xs font-mono text-slate-400 font-bold">ID</span>
+          </div>
+          <h2 id="viewModalTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-slate-900 leading-snug">Judul Materi</h2>
+        </div>
+        <button onclick="closeViewCourseModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-4 mb-6">
+        <div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Deskripsi Aktivitas &amp; Pembahasan</span>
+          <p id="viewModalDescription" class="text-sm text-slate-700 leading-relaxed"></p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-3.5 bg-slate-50 rounded-xl text-xs">
+          <div>
+            <span class="text-slate-400 block text-[11px]">Inisiator / Pemateri Komunitas:</span>
+            <span id="viewModalInstructor" class="font-bold text-slate-800 text-xs sm:text-sm"></span>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[11px]">Tipe Sesi &amp; Format:</span>
+            <span id="viewModalDuration" class="font-bold text-primary text-xs sm:text-sm"></span>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[11px]">Tingkat Keahlian:</span>
+            <span id="viewModalLevel" class="font-bold text-slate-800 text-xs sm:text-sm"></span>
+          </div>
+        </div>
+
+        <div>
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Silabus &amp; Agenda Sesi:</span>
+          <div id="viewModalSyllabusList" class="space-y-2">
+            <!-- Injected -->
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-100">
+        <span class="text-xs text-slate-400 flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm text-emerald-500">verified</span>
+          Kurikulum Komunitas BDC Terverifikasi
+        </span>
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <a href="DasborSiswadanPembelajaran.html" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-sm">
+            <span class="material-symbols-outlined text-sm">play_circle</span>
+            <span>Buka di Ruang Belajar</span>
+          </a>
+          <button onclick="closeViewCourseModal()" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer">
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Usulkan Topik Belajar Baru (Request Topic - Fitur Komunitas) -->
+  <div id="requestTopicModal" class="fixed inset-0 bg-navy-admin-bg/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 flex flex-col max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3.5 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-2xl">lightbulb</span>
+          </div>
+          <div>
+            <h2 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-slate-900 leading-snug">Usulkan Topik Belajar Komunitas</h2>
+            <p class="text-xs text-slate-500">Ajukan ide sesi, topik coding, atau workshop yang ingin dipelajari bersama.</p>
+          </div>
+        </div>
+        <button onclick="closeRequestTopicModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <form id="requestTopicForm" onsubmit="event.preventDefault(); submitTopicRequest();" class="space-y-4">
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Judul Topik yang Diusulkan <span class="text-rose-500">*</span></label>
+          <input id="reqTopicTitle" type="text" required placeholder="Contoh: Belajar Next.js 14 App Router &amp; Server Actions" class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Kategori Aktivitas</label>
+            <select id="reqTopicCategory" class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary bg-white">
+              <option value="Sesi Minggu Ini">Sesi Minggu Ini</option>
+              <option value="Workshop & Hands-On" selected>Workshop &amp; Hands-On</option>
+              <option value="Arsip Recording">Arsip Recording</option>
+              <option value="Proyek Bersama">Proyek Bersama</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Format / Tipe Sesi</label>
+            <select id="reqTopicSessionType" class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary bg-white">
+              <option value="Live Session">Live Session</option>
+              <option value="Workshop Lab" selected>Workshop Lab</option>
+              <option value="Rekaman Web">Rekaman Web</option>
+              <option value="Project File">Project File</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Nama Pengusul</label>
+          <input id="reqTopicProposer" type="text" required class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary bg-slate-50"/>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Alasan / Manfaat Belajar Bareng</label>
+          <textarea id="reqTopicReason" rows="3" required placeholder="Jelaskan secara ringkas kenapa topik ini menarik atau bermanfaat untuk dipelajari bersama anggota..." class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary leading-relaxed"></textarea>
+        </div>
+
+        <div class="p-3 bg-violet-50/70 rounded-xl border border-violet-100 flex items-start gap-2 text-xs text-violet-800">
+          <span class="material-symbols-outlined text-base mt-0.5 text-violet-600">info</span>
+          <span>Usulan Anda akan ditinjau oleh inisiator komunitas dan dapat dijadwalkan pada agenda belajar mingguan.</span>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeRequestTopicModal()" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-all cursor-pointer">
+            Batal
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold shadow-md shadow-violet-600/20 transition-all cursor-pointer flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">send</span>
+            <span>Kirim Usulan Topik</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Daftar Usulan Topik (Admin View) -->
+  <div id="topicRequestsListModal" class="fixed inset-0 bg-navy-admin-bg/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-100 flex flex-col max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div>
+          <h2 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-slate-900">Usulan Topik Belajar dari Anggota</h2>
+          <p class="text-xs text-slate-500">Daftar aspirasi topik materi yang diajukan oleh anggota komunitas.</p>
+        </div>
+        <button onclick="closeTopicRequestsListModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <div id="topicRequestsContainer" class="space-y-3 mb-4">
+        <!-- Injected via JS -->
+      </div>
+
+      <div class="flex justify-end pt-3 border-t border-slate-100">
+        <button onclick="closeTopicRequestsListModal()" class="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl cursor-pointer">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit Course (KHUSUS ADMIN) -->
+  <div id="editCourseModal" class="fixed inset-0 bg-navy-admin-bg/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 flex flex-col max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-xl">edit</span>
+          </div>
+          <div>
+            <h2 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-slate-900">Edit Aktivitas Komunitas (Admin)</h2>
+            <p class="text-xs text-slate-500">Perubahan langsung tersimpan ke sistem database portal.</p>
+          </div>
+        </div>
+        <button onclick="closeEditCourseModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <form id="editCourseForm" onsubmit="event.preventDefault(); saveEditedCourse();" class="space-y-4">
+        <input type="hidden" id="editCourseId"/>
+
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Judul Aktivitas / Sesi Pembelajaran</label>
+          <input id="editTitle" type="text" required class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary"/>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Jenis Aktivitas Komunitas</label>
+            <select id="editCategory" class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary bg-white">
+              <option value="Sesi Minggu Ini">Sesi Minggu Ini</option>
+              <option value="Workshop & Hands-On">Workshop &amp; Hands-On</option>
+              <option value="Arsip Recording">Arsip Recording</option>
+              <option value="Proyek Bersama">Proyek Bersama</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Tingkat Kesulitan / Peserta</label>
+            <select id="editLevel" class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary bg-white">
+              <option value="Semua Tingkat (All Levels)">Semua Tingkat (All Levels)</option>
+              <option value="Pemula (Beginner)">Pemula (Beginner)</option>
+              <option value="Menengah (Intermediate)">Menengah (Intermediate)</option>
+              <option value="Mahir (Advanced)">Mahir (Advanced)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Inisiator / Pemateri Komunitas</label>
+            <input id="editInstructor" type="text" required class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary"/>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">Tipe Sesi &amp; Format Aktivitas</label>
+            <select id="editDuration" class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary bg-white">
+              <option value="Live Session">Live Session</option>
+              <option value="Workshop Lab">Workshop Lab</option>
+              <option value="Rekaman Web">Rekaman Web</option>
+              <option value="Project File">Project File</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Ringkasan Aktivitas &amp; Topik Bahasan</label>
+          <textarea id="editDescription" rows="3" required class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary leading-relaxed"></textarea>
+        </div>
+
+        <div>
+          <label class="text-xs font-bold text-slate-700 block mb-1">Agenda Sesi / Modul (1 baris per topik)</label>
+          <textarea id="editSyllabus" rows="4" class="w-full text-sm border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-primary font-mono text-xs leading-relaxed" placeholder="Topik 1: ...&#10;Topik 2: ..."></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+          <button type="button" onclick="closeEditCourseModal()" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-all cursor-pointer">
+            Batal
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold shadow-md shadow-primary/20 transition-all cursor-pointer">
+            Simpan Perubahan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Core System Script & Community Courses Logic -->
+  <script src="bdc-core.js"></script>
+  <script>
+    let activeCategory = 'all';
+
+    function getCategoryInfo(cat) {
+      switch(cat) {
+        case 'Sesi Minggu Ini':
+          return { icon: 'sensors', badge: 'bg-rose-50 text-rose-700 border-rose-200' };
+        case 'Workshop & Hands-On':
+          return { icon: 'terminal', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
+        case 'Arsip Recording':
+          return { icon: 'play_circle', badge: 'bg-blue-50 text-blue-700 border-blue-200' };
+        case 'Proyek Bersama':
+          return { icon: 'folder_zip', badge: 'bg-purple-50 text-purple-700 border-purple-200' };
+        default:
+          return { icon: 'forum', badge: 'bg-slate-50 text-slate-700 border-slate-200' };
+      }
+    }
+
+    function getSessionTypeInfo(type) {
+      const t = (type || 'Live Session').toLowerCase();
+      if (t.includes('live')) {
+        return {
+          icon: '<span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>',
+          label: 'Live Session',
+          pillClass: 'bg-rose-50 text-rose-700 border-rose-200'
+        };
+      } else if (t.includes('rekaman') || t.includes('video') || t.includes('web')) {
+        return {
+          icon: '<span class="material-symbols-outlined text-[15px] text-blue-600">play_circle</span>',
+          label: 'Rekaman Web',
+          pillClass: 'bg-blue-50 text-blue-700 border-blue-200'
+        };
+      } else if (t.includes('project') || t.includes('proyek') || t.includes('file')) {
+        return {
+          icon: '<span class="material-symbols-outlined text-[15px] text-purple-600">folder_zip</span>',
+          label: 'Project File',
+          pillClass: 'bg-purple-50 text-purple-700 border-purple-200'
+        };
+      } else {
+        return {
+          icon: '<span class="material-symbols-outlined text-[15px] text-emerald-600">terminal</span>',
+          label: 'Workshop Lab',
+          pillClass: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+        };
+      }
+    }
+
+    function getLevelBadge(level) {
+      const l = (level || '').toLowerCase();
+      if (l.includes('pemula') || l.includes('beginner')) {
+        return '<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">● Pemula</span>';
+      } else if (l.includes('menengah') || l.includes('intermediate')) {
+        return '<span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold">● Menengah</span>';
+      } else if (l.includes('mahir') || l.includes('advanced')) {
+        return '<span class="px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold">● Mahir</span>';
+      } else {
+        return '<span class="px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-bold">● Semua Tingkat</span>';
+      }
+    }
+
+    function getInitials(name) {
+      if (!name) return 'KM';
+      return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+    }
+
+    function renderCoursesList() {
+      const user = getAuthUser();
+      const isAdmin = (user.role === 'admin' || user.role === 'instructor');
+
+      // Update role banners
+      const adminBanner = document.getElementById('adminStatusBanner');
+      const studentBanner = document.getElementById('studentStatusBanner');
+      const adminActionButtons = document.getElementById('adminActionButtons');
+
+      if (isAdmin) {
+        if (adminBanner) adminBanner.classList.remove('hidden');
+        if (studentBanner) studentBanner.classList.add('hidden');
+        if (adminActionButtons) adminActionButtons.classList.remove('hidden');
+        updateRequestsBadge();
+      } else {
+        if (adminBanner) adminBanner.classList.add('hidden');
+        if (studentBanner) studentBanner.classList.remove('hidden');
+        if (adminActionButtons) adminActionButtons.classList.add('hidden');
+      }
+
+      // Filter and render courses
+      const allCourses = getCommunityCourses();
+      const searchKeyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+
+      const filtered = allCourses.filter(course => {
+        const matchCat = (activeCategory === 'all' || course.category === activeCategory);
+        const matchSearch = (!searchKeyword || 
+          course.title.toLowerCase().includes(searchKeyword) ||
+          course.instructor.toLowerCase().includes(searchKeyword) ||
+          course.description.toLowerCase().includes(searchKeyword) ||
+          course.category.toLowerCase().includes(searchKeyword) ||
+          (course.sessionType && course.sessionType.toLowerCase().includes(searchKeyword))
+        );
+        return matchCat && matchSearch;
+      });
+
+      const grid = document.getElementById('coursesGrid');
+      const emptyState = document.getElementById('emptyCoursesState');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add('hidden');
+      grid.innerHTML = filtered.map(c => {
+        const catInfo = getCategoryInfo(c.category);
+        const sessionInfo = getSessionTypeInfo(c.sessionType || c.duration);
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200/90 hover:border-primary/50 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between overflow-hidden group">
+            <div class="p-5 flex-1 flex flex-col">
+              <!-- Top Category & Level Bar -->
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border ${catInfo.badge}">
+                  <span class="material-symbols-outlined text-[15px]">${catInfo.icon}</span>
+                  <span>${c.category}</span>
+                </div>
+                <div>
+                  ${getLevelBadge(c.level)}
+                </div>
+              </div>
+
+              <!-- Course Title -->
+              <h3 class="font-['Plus_Jakarta_Sans'] font-bold text-slate-900 text-base group-hover:text-primary transition-colors leading-snug mb-2">
+                ${c.title}
+              </h3>
+
+              <!-- Clear Description -->
+              <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-4">
+                ${c.description}
+              </p>
+
+              <!-- Highlights: Session Type (Ganti Durasi Minggu) & Rating -->
+              <div class="mt-auto pt-2">
+                <div class="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs mb-3">
+                  <div class="flex items-center gap-1.5 text-slate-700 font-bold truncate">
+                    ${sessionInfo.icon}
+                    <span class="truncate">${sessionInfo.label}</span>
+                  </div>
+                  <div class="flex items-center justify-end gap-1 text-amber-500 font-bold">
+                    <span class="material-symbols-outlined text-sm">star</span>
+                    <span>${c.rating || 4.9}</span>
+                    <span class="text-[10px] text-slate-400 font-normal">(${c.learnersCount || 150} anggota)</span>
+                  </div>
+                </div>
+
+                <!-- Instructor Info: Label Inisiator / Pemateri Komunitas -->
+                <div class="flex items-center gap-2.5 pt-1">
+                  <div class="w-8 h-8 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-xs shrink-0 ring-1 ring-primary/20">
+                    ${getInitials(c.instructor)}
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-xs font-bold text-slate-800 truncate">${c.instructor}</span>
+                    <span class="text-[11px] text-slate-500 truncate font-semibold">Inisiator / Pemateri Komunitas</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Footer -->
+            <div class="p-4 pt-3 border-t border-slate-100 bg-slate-50/60 flex items-center gap-2">
+              <button onclick="viewCourseDetails('${c.id}')" class="flex-1 py-2.5 px-3 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm shadow-primary/20 transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-sm">visibility</span>
+                <span>Buka Materi</span>
+              </button>
+
+              ${isAdmin ? `
+                <button onclick="openEditCourseModal('${c.id}')" class="py-2.5 px-3 rounded-xl bg-white hover:bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold flex items-center gap-1 transition-all shadow-sm cursor-pointer" title="Edit Sesi Ini (Admin)">
+                  <span class="material-symbols-outlined text-sm">edit</span>
+                  <span>Edit</span>
+                </button>
+                <button onclick="handleDeleteCourse('${c.id}')" class="p-2.5 rounded-xl bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-xs font-bold flex items-center transition-all shadow-sm cursor-pointer" title="Hapus Sesi (Admin)">
+                  <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setCategoryFilter(cat) {
+      activeCategory = cat;
+      const pills = document.querySelectorAll('.cat-pill');
+      pills.forEach(pill => {
+        if (pill.dataset.cat === cat) {
+          pill.className = "cat-pill active px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white shadow-sm transition-all whitespace-nowrap cursor-pointer";
+        } else {
+          pill.className = "cat-pill px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all whitespace-nowrap cursor-pointer";
+        }
+      });
+      renderCoursesList();
+    }
+
+    function filterCourses() {
+      renderCoursesList();
+    }
+
+    // View Course Modal
+    function viewCourseDetails(courseId) {
+      const courses = getCommunityCourses();
+      const course = courses.find(c => c.id === courseId);
+      if (!course) return;
+
+      document.getElementById('viewModalCategory').textContent = course.category;
+      document.getElementById('viewModalId').textContent = course.id;
+      document.getElementById('viewModalTitle').textContent = course.title;
+      document.getElementById('viewModalDescription').textContent = course.description;
+      document.getElementById('viewModalInstructor').textContent = course.instructor;
+      document.getElementById('viewModalDuration').textContent = course.sessionType || course.duration;
+      document.getElementById('viewModalLevel').textContent = course.level;
+
+      const syllabusList = document.getElementById('viewModalSyllabusList');
+      if (course.syllabus && course.syllabus.length > 0) {
+        syllabusList.innerHTML = course.syllabus.map((s, idx) => `
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+            <span class="w-6 h-6 rounded-lg bg-primary/10 text-primary font-bold flex items-center justify-center shrink-0 text-xs font-mono">${idx + 1}</span>
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-800 leading-snug">${s}</span>
+              <span class="text-[11px] text-slate-400 mt-0.5">Topik sesi interaktif &amp; materi kolaborasi anggota</span>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        syllabusList.innerHTML = '<span class="text-xs text-slate-400 italic">Silabus modul sedang dalam proses sinkronisasi.</span>';
+      }
+
+      document.getElementById('viewCourseModal').classList.remove('hidden');
+    }
+
+    function closeViewCourseModal() {
+      document.getElementById('viewCourseModal').classList.add('hidden');
+    }
+
+    // Edit Course Modal (Admin Only)
+    function openEditCourseModal(courseId) {
+      const user = getAuthUser();
+      const isAdmin = (user.role === 'admin' || user.role === 'instructor');
+      if (!isAdmin) {
+        alert('Akses Ditolak: Hanya Administrator yang berhak mengedit materi pembelajaran. Mahasiswa hanya memiliki hak akses melihat/mempelajari materi.');
+        return;
+      }
+      const courses = getCommunityCourses();
+      const course = courses.find(c => c.id === courseId);
+      if (!course) return;
+
+      document.getElementById('editCourseId').value = course.id;
+      document.getElementById('editTitle').value = course.title;
+      document.getElementById('editCategory').value = course.category;
+      document.getElementById('editLevel').value = course.level;
+      document.getElementById('editInstructor').value = course.instructor;
+      document.getElementById('editDuration').value = course.sessionType || course.duration || 'Live Session';
+      document.getElementById('editDescription').value = course.description;
+      document.getElementById('editSyllabus').value = (course.syllabus || []).join('\n');
+
+      document.getElementById('editCourseModal').classList.remove('hidden');
+    }
+
+    function closeEditCourseModal() {
+      document.getElementById('editCourseModal').classList.add('hidden');
+    }
+
+    function saveEditedCourse() {
+      const user = getAuthUser();
+      const isAdmin = (user.role === 'admin' || user.role === 'instructor');
+      if (!isAdmin) {
+        alert('Akses Ditolak: Hanya Administrator yang berhak menyimpan perubahan materi.');
+        return;
+      }
+      const id = document.getElementById('editCourseId').value;
+      const title = document.getElementById('editTitle').value.trim();
+      const category = document.getElementById('editCategory').value;
+      const level = document.getElementById('editLevel').value;
+      const instructor = document.getElementById('editInstructor').value.trim();
+      const sessionType = document.getElementById('editDuration').value.trim();
+      const description = document.getElementById('editDescription').value.trim();
+      const syllabusRaw = document.getElementById('editSyllabus').value.trim();
+      const syllabus = syllabusRaw ? syllabusRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+
+      saveCommunityCourse({
+        id,
+        title,
+        category,
+        sessionType,
+        duration: sessionType,
+        level,
+        instructor,
+        instructorRole: 'Inisiator / Pemateri Komunitas',
+        description,
+        syllabus
+      });
+
+      closeEditCourseModal();
+      renderCoursesList();
+      showPortalToast(`Sesi ${id} "${title}" berhasil diperbarui oleh Admin!`);
+    }
+
+    // Add New Course (Admin Only)
+    function openAddCourseModal() {
+      const user = getAuthUser();
+      const isAdmin = (user.role === 'admin' || user.role === 'instructor');
+      if (!isAdmin) {
+        alert('Akses Ditolak: Hanya Administrator yang berhak menambah sesi komunitas.');
+        return;
+      }
+      const courses = getCommunityCourses();
+      const nextNum = courses.length + 1;
+      const newId = `ACT-0${nextNum}`;
+
+      document.getElementById('editCourseId').value = newId;
+      document.getElementById('editTitle').value = '';
+      document.getElementById('editCategory').value = 'Sesi Minggu Ini';
+      document.getElementById('editLevel').value = 'Semua Tingkat (All Levels)';
+      document.getElementById('editInstructor').value = user.name || 'Inisiator Komunitas';
+      document.getElementById('editDuration').value = 'Live Session';
+      document.getElementById('editDescription').value = '';
+      document.getElementById('editSyllabus').value = 'Topik 1: Pengenalan & Bedah Ide Sesi\nTopik 2: Live Praktik & Tanya Jawab\nTopik 3: Tindak Lanjut Kolaborasi';
+
+      document.getElementById('editCourseModal').classList.remove('hidden');
+    }
+
+    function handleDeleteCourse(courseId) {
+      const user = getAuthUser();
+      const isAdmin = (user.role === 'admin' || user.role === 'instructor');
+      if (!isAdmin) {
+        alert('Akses Ditolak: Hanya Administrator yang berhak menghapus sesi komunitas.');
+        return;
+      }
+      if (confirm(`Apakah Anda yakin ingin menghapus materi ${courseId} dari repositori komunitas?`)) {
+        deleteCommunityCourse(courseId);
+        renderCoursesList();
+        showPortalToast(`Materi ${courseId} berhasil dihapus.`);
+      }
+    }
+
+    function resetCoursesToDefault() {
+      if (confirm('Kembalikan seluruh aktivitas dan arsip sharing komunitas ke data default bawaan?')) {
+        resetCommunityCourses();
+        renderCoursesList();
+        showPortalToast('Aktivitas komunitas telah di-reset ke data bawaan.');
+      }
+    }
+
+    // Community Topic Requests Handlers (Fitur Usulkan Topik Belajar)
+    function openRequestTopicModal() {
+      const user = getAuthUser();
+      const proposerEl = document.getElementById('reqTopicProposer');
+      if (proposerEl) proposerEl.value = user.name || 'Anggota Komunitas';
+      const titleEl = document.getElementById('reqTopicTitle');
+      if (titleEl) titleEl.value = '';
+      const reasonEl = document.getElementById('reqTopicReason');
+      if (reasonEl) reasonEl.value = '';
+      
+      document.getElementById('requestTopicModal').classList.remove('hidden');
+    }
+
+    function closeRequestTopicModal() {
+      document.getElementById('requestTopicModal').classList.add('hidden');
+    }
+
+    function submitTopicRequest() {
+      const title = document.getElementById('reqTopicTitle').value.trim();
+      const category = document.getElementById('reqTopicCategory').value;
+      const sessionType = document.getElementById('reqTopicSessionType').value;
+      const proposer = document.getElementById('reqTopicProposer').value.trim();
+      const reason = document.getElementById('reqTopicReason').value.trim();
+
+      if (!title) return;
+
+      saveCommunityTopicRequest({
+        topic: title,
+        category: category,
+        sessionType: sessionType,
+        proposer: proposer,
+        reason: reason
+      });
+
+      closeRequestTopicModal();
+      updateRequestsBadge();
+      showPortalToast(`Usulan topik "${title}" berhasil dikirim ke inisiator komunitas! Terima kasih atas aspirasinya.`);
+    }
+
+    function updateRequestsBadge() {
+      const badge = document.getElementById('requestsCountBadge');
+      if (badge && typeof getCommunityTopicRequests === 'function') {
+        badge.textContent = getCommunityTopicRequests().length;
+      }
+    }
+
+    function openTopicRequestsListModal() {
+      const container = document.getElementById('topicRequestsContainer');
+      const reqs = getCommunityTopicRequests();
+      if (reqs.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 italic text-center py-4">Belum ada usulan topik baru dari anggota.</p>';
+      } else {
+        container.innerHTML = reqs.map(r => `
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col gap-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-700 text-[10px] font-bold">${r.category} • ${r.sessionType}</span>
+              <span class="text-[11px] text-slate-400">${r.date || 'Baru'}</span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-sm leading-snug">${r.topic}</h4>
+            <p class="text-xs text-slate-600">${r.reason || 'Tidak ada catatan tambahan.'}</p>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-200/60 text-xs text-slate-500">
+              <span>Diajukan oleh: <strong class="text-slate-800">${r.proposer}</strong></span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">${r.status || 'Tersimpan'}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+      document.getElementById('topicRequestsListModal').classList.remove('hidden');
+    }
+
+    function closeTopicRequestsListModal() {
+      document.getElementById('topicRequestsListModal').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCoursesList();
+
+      // Check if URL has ?course=ACT-XX or ?course=MOD-XX
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetCourse = urlParams.get('course');
+      if (targetCourse) {
+        setTimeout(() => {
+          viewCourseDetails(targetCourse);
+        }, 200);
+      }
+    });
+  </script>
+</body>
+</html>

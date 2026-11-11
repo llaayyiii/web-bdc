@@ -1,0 +1,537 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"secondary-fixed-dim":"#c0c1ff","inverse-surface":"#283044","secondary-container":"#6063ee","on-tertiary-fixed":"#23005c","navy-admin-bg":"#0F172A","tertiary-container":"#6029c9","surface-container-low":"#f2f3ff","on-secondary-fixed-variant":"#2f2ebe","on-surface-variant":"#464554","inverse-primary":"#c3c0ff","on-error":"#ffffff","background":"#faf8ff","on-primary-fixed":"#100069","accent-emerald-success":"#10B981","tertiary-fixed-dim":"#d0bcff","surface-dim":"#d2d9f4","surface-tint":"#5148d7","on-background":"#131b2e","primary":"#2a14b4","on-secondary-fixed":"#07006c","outline":"#777586","on-secondary":"#ffffff","error":"#ba1a1a","surface":"#faf8ff","surface-variant":"#dae2fd","accent-amber-warning":"#F59E0B","surface-bright":"#faf8ff","on-primary":"#ffffff","outline-variant":"#c7c4d7","slate-border":"#E2E8F0","primary-container":"#4338ca","on-primary-fixed-variant":"#372abf","error-container":"#ffdad6","secondary":"#4648d4","on-tertiary-container":"#cfbaff","on-secondary-container":"#fffbff","primary-fixed":"#e3dfff","primary-fixed-dim":"#c3c0ff","slate-surface":"#F8FAFC","tertiary-fixed":"#e9ddff","on-primary-container":"#c1beff","accent-rose-danger":"#EF4444","on-tertiary-fixed-variant":"#5516be","slate-muted":"#64748B","inverse-on-surface":"#eef0ff","on-error-container":"#93000a","tertiary":"#4700ab","accent-cyan-vibrant":"#06B6D4","navy-admin-card":"#1E293B","accent-electric-purple":"#A855F7","surface-container-highest":"#dae2fd","on-tertiary":"#ffffff","surface-container":"#eaedff","slate-elevated":"#FFFFFF","on-surface":"#131b2e","surface-container-lowest":"#ffffff","secondary-fixed":"#e1e0ff","surface-container-high":"#e2e7ff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-lg":"1.5rem","gutter-mobile":"0.75rem","space-xs":"0.5rem","space-md":"1rem","space-2xs":"0.25rem","margin-mobile":"1rem","space-2xl":"3rem","space-xl":"2rem","gutter":"1.5rem","margin":"2rem","space-sm":"0.75rem"},"fontFamily":{"headline-md":["Plus Jakarta Sans"],"metric-stat":["Plus Jakarta Sans"],"title-card":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"label-badge":["Plus Jakarta Sans"],"display-hero-mobile":["Plus Jakarta Sans"],"label-caps":["Plus Jakarta Sans"],"body-sm":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"display-hero":["Plus Jakarta Sans"]},"fontSize":{"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"700"}],"metric-stat":["28px",{"lineHeight":"34px","letterSpacing":"-0.02em","fontWeight":"800"}],"title-card":["16px",{"lineHeight":"24px","fontWeight":"600"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.015em","fontWeight":"700"}],"label-badge":["12px",{"lineHeight":"16px","fontWeight":"600"}],"display-hero-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"800"}],"label-caps":["11px",{"lineHeight":"16px","letterSpacing":"0.06em","fontWeight":"700"}],"body-sm":["12px",{"lineHeight":"18px","fontWeight":"400"}],"body-lg":["16px",{"lineHeight":"26px","fontWeight":"400"}],"body-md":["14px",{"lineHeight":"22px","fontWeight":"400"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","letterSpacing":"-0.015em","fontWeight":"700"}],"headline-sm":["18px",{"lineHeight":"26px","fontWeight":"600"}],"display-hero":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"800"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface">
+
+<!-- Mobile Sidebar Backdrop Overlay -->
+<div id="sidebarBackdrop" class="fixed inset-0 bg-navy-admin-bg/50 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300" onclick="toggleMobileSidebar(false)"></div>
+
+<!-- Responsive Sidebar (Drawer on mobile, sticky fixed on desktop) -->
+<aside id="appSidebar" class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-6 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+  <div class="flex flex-col">
+    <div class="px-6 mb-6 flex items-center justify-between">
+      <a href="DasborSiswadanPembelajaran.html" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary via-primary-container to-accent-electric-purple flex items-center justify-center shadow-md relative overflow-hidden shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 3L2 8.5L12 14L22 8.5L12 3Z" fill="currentColor" fill-opacity="0.3"></path>
+            <path d="M2 8.5L12 14L22 8.5L12 3L2 8.5Z" stroke="currentColor"></path>
+            <path d="M6 10.7V16.5C6 16.5 8.5 19 12 19C15.5 19 18 16.5 18 16.5V10.7" stroke="currentColor"></path>
+            <path d="M22 8.5V15.5" stroke="currentColor"></path>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">Business Dev Club</span>
+          <span class="font-label-caps text-label-caps uppercase text-slate-muted">Academic College Community</span>
+        </div>
+      </a>
+      <button onclick="toggleMobileSidebar(false)" class="lg:hidden p-1.5 rounded-lg text-slate-muted hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button" aria-label="Tutup Menu">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+    <div class="px-6 mb-2">
+      <span class="font-label-caps text-label-caps uppercase text-slate-muted tracking-wider">Curriculum &amp; Management</span>
+    </div>
+    <nav class="flex flex-col gap-1 px-4">
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="DasborSiswadanPembelajaran.html">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="courses" href="MateriPembelajaran.html">
+        <span class="material-symbols-outlined">school</span>
+        <span>Courses</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="assessments-&amp;-quizzes" href="AntarMukaUjiandanPembuatanUjian.html">
+        <span class="material-symbols-outlined">assignment_turned_in</span>
+        <span>Assessments &amp; Quizzes</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="certifications" href="SertifikatKelulusan.html">
+        <span class="material-symbols-outlined">verified</span>
+        <span>Certifications</span>
+      </a>
+      <a aria-current="page" class="flex items-center gap-3 px-4 py-3 transition-all bg-primary-container text-on-primary font-title-card shadow-sm rounded-xl" data-path="system-settings" href="PengaturanSistem.html">
+        <span class="material-symbols-outlined">settings</span>
+        <span>System Settings</span>
+      </a>
+    </nav>
+  </div>
+  <div class="px-4 flex flex-col gap-3">
+    <div class="bg-surface-container-high rounded-xl p-4 flex flex-col gap-2 shadow-sm">
+      <div class="flex items-center justify-between">
+        <span class="font-label-badge text-label-badge text-slate-muted uppercase">System Status</span>
+        <span class="h-2 w-2 rounded-full bg-accent-emerald-success"></span>
+      </div>
+      <span class="font-title-card text-title-card text-on-surface">Enterprise Tier v4.8</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Academic Cluster Online</span>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Wrapper with responsive padding -->
+<div class="pl-0 lg:pl-72 transition-all duration-300">
+  <!-- Top Responsive Header -->
+  <header class="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-30 flex items-center justify-between px-4 sm:px-8">
+    <div class="flex items-center gap-3 flex-1 max-w-md">
+      <!-- Mobile Hamburger Button -->
+      <button id="sidebarToggleBtn" onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl text-on-surface hover:bg-surface-container transition-colors flex items-center justify-center" type="button" aria-label="Buka Menu">
+        <span class="material-symbols-outlined text-2xl">menu</span>
+      </button>
+      <div class="relative w-full hidden sm:block">
+        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-muted">search</span>
+        <input class="w-full pl-10 pr-4 py-2 bg-surface-container rounded-full font-body-sm text-body-sm text-on-surface placeholder:text-slate-muted outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary transition-all" placeholder="Cari pengaturan, parameter keamanan, profil..." type="text">
+      </div>
+    </div>
+    <div class="flex items-center gap-3 sm:gap-5">
+      <!-- Role Switcher Pills -->
+      <div class="flex items-center bg-surface-container p-1 rounded-full gap-1">
+        <button id="headerRoleAdminBtn" class="px-3 py-1 text-on-surface-variant hover:text-on-surface font-label-badge text-label-badge rounded-full transition-all cursor-pointer" onclick="switchUserRole('admin')" type="button">Admin</button>
+        <button id="headerRoleStudentBtn" class="px-3 py-1 text-on-primary bg-primary font-label-badge text-label-badge rounded-full transition-all shadow-sm cursor-default" type="button">Student</button>
+      </div>
+      <button class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" type="button">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent-rose-danger"></span>
+      </button>
+      <div class="h-6 w-px bg-surface-variant hidden sm:block"></div>
+      <div class="flex items-center gap-3">
+        <div class="flex flex-col text-right hidden sm:flex">
+          <span id="headerUserName" class="font-title-card text-title-card text-on-surface leading-tight">Siti Rahmawati</span>
+          <span id="headerUserRole" class="font-label-badge text-label-badge text-slate-muted">Corporate Learner</span>
+        </div>
+        <img id="headerUserAvatar" alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ1LxFuF3I3HQ_8D-vTGJMvzbL1z_4obAal_Y8LuO3uZlPdPfHSEy3xxQTZqFhoLYgiK3JwiEH9bTmSYCfuwBJJfHM0iZQC4zj0c3XxkNmAqY4VuRyBofxCC3W3g0jz-PgISinz4iaQuUNiw0yO5tbNWQSAmRIK0z3dKUOe9iQYC_axiJSFoK2QC6KFwRmIE7AJixsHQUril1Z_JnjkwZ8xTRf_4CC2BzelJkeulQ">
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <main class="w-full pt-20 px-4 sm:px-space-lg pb-space-2xl bg-background min-h-screen">
+    <div class="flex flex-col w-full max-w-5xl mx-auto">
+      
+      <!-- Top Title & Navigation Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-space-lg">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-label-caps text-label-caps uppercase text-primary font-bold">Pengaturan &amp; Kepatuhan</span>
+            <span class="px-2 py-0.5 rounded-full bg-accent-emerald-success/15 text-accent-emerald-success font-label-badge text-label-badge font-semibold">Tersinkronisasi</span>
+          </div>
+          <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">System Settings</h1>
+          <p class="font-body-md text-body-md text-slate-muted mt-0.5">Kelola identitas pengguna, preferensi sesi akademik, dan parameter keamanan korporat.</p>
+        </div>
+        <div class="flex items-center gap-2 self-start sm:self-auto">
+          <button onclick="resetSettingsToDefault()" class="px-4 py-2 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-badge text-label-badge transition-all" type="button">
+            Reset Default
+          </button>
+          <button onclick="saveAllSettings()" class="px-5 py-2.5 rounded-full bg-primary hover:bg-primary-container text-on-primary font-title-card text-title-card shadow-md transition-all flex items-center gap-1.5" type="button">
+            <span class="material-symbols-outlined text-base">save</span>
+            <span>Simpan Semua</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Settings Tabs (Responsive Horizontal Scroll) -->
+      <div class="flex items-center gap-2 p-1.5 bg-surface-container-low rounded-2xl mb-space-lg overflow-x-auto">
+        <button id="tab-btn-profile" onclick="switchSettingsTab('profile')" class="tab-button px-5 py-2.5 rounded-xl font-title-card text-title-card bg-slate-elevated text-primary shadow-sm whitespace-nowrap transition-all flex items-center gap-2" type="button">
+          <span class="material-symbols-outlined text-base">person</span>
+          <span>Profil Pengguna</span>
+        </button>
+        <button id="tab-btn-security" onclick="switchSettingsTab('security')" class="tab-button px-5 py-2.5 rounded-xl font-title-card text-title-card text-slate-muted hover:text-on-surface whitespace-nowrap transition-all flex items-center gap-2" type="button">
+          <span class="material-symbols-outlined text-base">lock</span>
+          <span>Keamanan &amp; Kata Sandi</span>
+        </button>
+        <button id="tab-btn-preferences" onclick="switchSettingsTab('preferences')" class="tab-button px-5 py-2.5 rounded-xl font-title-card text-title-card text-slate-muted hover:text-on-surface whitespace-nowrap transition-all flex items-center gap-2" type="button">
+          <span class="material-symbols-outlined text-base">tune</span>
+          <span>Preferensi Platform</span>
+        </button>
+        <button id="tab-btn-academy" onclick="switchSettingsTab('academy')" class="tab-button px-5 py-2.5 rounded-xl font-title-card text-title-card text-slate-muted hover:text-on-surface whitespace-nowrap transition-all flex items-center gap-2" type="button">
+          <span class="material-symbols-outlined text-base">admin_panel_settings</span>
+          <span>Otoritas Akademik (Admin)</span>
+        </button>
+      </div>
+
+      <!-- Tab Content 1: Profil Pengguna -->
+      <section id="tab-content-profile" class="settings-tab-pane bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+        <div class="flex items-center justify-between pb-4 border-b border-surface-container">
+          <div>
+            <h2 class="font-headline-sm text-headline-sm text-on-surface">Informasi Akun &amp; Kredensial Pengguna</h2>
+            <p class="font-body-sm text-body-sm text-slate-muted">Data ini disinkronkan secara langsung ke dasbor dan sertifikat kelulusan.</p>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-primary-fixed text-primary font-label-badge text-label-badge font-bold uppercase" id="badgeCurrentRole">Learner</span>
+        </div>
+
+        <form id="profileForm" onsubmit="event.preventDefault(); saveProfileSettings();" class="space-y-5">
+          <!-- Profile Picture & Quick Stats Row -->
+          <div class="flex flex-col sm:flex-row items-center gap-6 p-4 rounded-xl bg-surface-container-low">
+            <div class="relative">
+              <img id="settingsAvatarPreview" class="w-20 h-20 rounded-full object-cover ring-4 ring-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ1LxFuF3I3HQ_8D-vTGJMvzbL1z_4obAal_Y8LuO3uZlPdPfHSEy3xxQTZqFhoLYgiK3JwiEH9bTmSYCfuwBJJfHM0iZQC4zj0c3XxkNmAqY4VuRyBofxCC3W3g0jz-PgISinz4iaQuUNiw0yO5tbNWQSAmRIK0z3dKUOe9iQYC_axiJSFoK2QC6KFwRmIE7AJixsHQUril1Z_JnjkwZ8xTRf_4CC2BzelJkeulQ" alt="Profile Preview">
+              <button type="button" onclick="triggerAvatarChange()" class="absolute bottom-0 right-0 p-1.5 rounded-full bg-primary text-on-primary shadow hover:bg-primary-container transition-all" title="Ganti Foto">
+                <span class="material-symbols-outlined text-sm">photo_camera</span>
+              </button>
+            </div>
+            <div class="flex flex-col text-center sm:text-left">
+              <span class="font-title-card text-title-card text-on-surface" id="profileCardName">Siti Rahmawati</span>
+              <span class="font-body-sm text-body-sm text-slate-muted" id="profileCardEmail">siti.rahmawati@perusahaan.co.id</span>
+              <div class="flex items-center justify-center sm:justify-start gap-2 mt-2">
+                <span class="font-label-badge text-label-badge px-2.5 py-0.5 rounded-full bg-accent-emerald-success/15 text-accent-emerald-success font-semibold">SSO Korporat Terverifikasi</span>
+                <span class="font-label-badge text-label-badge text-slate-muted font-mono" id="profileCardNip">NIP: ID-88420-EA</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="inputFullName">Nama Lengkap &amp; Gelar</label>
+              <input class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="inputFullName" required="" type="text" value="Siti Rahmawati">
+              <span class="font-body-sm text-xs text-slate-muted">Nama ini akan dicantumkan secara resmi pada lembar sertifikat kelulusan.</span>
+            </div>
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="inputEmail">Email Korporat Resmi</label>
+              <input class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="inputEmail" required="" type="email" value="siti.rahmawati@perusahaan.co.id">
+              <span class="font-body-sm text-xs text-slate-muted">Alamat login SSO IAM perusahaan.</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="inputDivision">Divisi / Penugasan Korporat</label>
+              <input class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="inputDivision" type="text" value="Enterprise Architecture &amp; Cyber Defense">
+            </div>
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="inputRoleTitle">Spesialisasi Peran / Jabatan</label>
+              <input class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="inputRoleTitle" type="text" value="Corporate Cyber Defense Specialist">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-4">
+            <button type="submit" class="px-6 py-2.5 rounded-full bg-primary hover:bg-primary-container text-on-primary font-title-card text-title-card shadow-sm transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-base">check</span>
+              <span>Simpan Profil</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Tab Content 2: Keamanan & Kata Sandi -->
+      <section id="tab-content-security" class="settings-tab-pane hidden bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+        <div class="flex items-center justify-between pb-4 border-b border-surface-container">
+          <div>
+            <h2 class="font-headline-sm text-headline-sm text-on-surface">Keamanan Kredensial &amp; Akses SSO</h2>
+            <p class="font-body-sm text-body-sm text-slate-muted">Konfigurasi kata sandi, otentikasi multi-faktor, dan riwayat sesi aktif.</p>
+          </div>
+          <span class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-emerald-success/15 text-accent-emerald-success font-label-badge text-label-badge font-semibold">
+            <span class="w-2 h-2 rounded-full bg-accent-emerald-success animate-pulse"></span> TLS 1.3 Strict
+          </span>
+        </div>
+
+        <form id="securityForm" onsubmit="event.preventDefault(); saveSecuritySettings();" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="inputOldPass">Kata Sandi Saat Ini</label>
+              <input class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="inputOldPass" placeholder="••••••••" type="password">
+            </div>
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="inputNewPass">Kata Sandi Baru</label>
+              <input class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="inputNewPass" placeholder="Min. 8 karakter" type="password">
+            </div>
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="inputConfirmPass">Konfirmasi Kata Sandi Baru</label>
+              <input class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="inputConfirmPass" placeholder="Ulangi kata sandi" type="password">
+            </div>
+          </div>
+
+          <!-- 2FA Multi-Factor Authentication Section -->
+          <div class="p-5 rounded-xl bg-surface-container-low flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-start gap-3">
+              <div class="p-2.5 rounded-xl bg-primary text-on-primary mt-0.5">
+                <span class="material-symbols-outlined text-xl">phonelink_lock</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-title-card text-title-card text-on-surface">Otentikasi Dua Faktor (2FA Korporat)</span>
+                <span class="font-body-sm text-body-sm text-slate-muted">Memerlukan kode OTP dari Google Authenticator atau YubiKey saat login perangkat baru.</span>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer select-none">
+              <input id="toggle2FA" type="checkbox" checked="" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-emerald-success"></div>
+            </label>
+          </div>
+
+          <!-- Session Termination -->
+          <div class="p-5 rounded-xl bg-surface-container-low flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="font-title-card text-title-card text-on-surface">Keluarkan Dari Semua Sesi Aktif</span>
+              <span class="font-body-sm text-body-sm text-slate-muted">Putuskan koneksi login dari browser lain yang tersimpan.</span>
+            </div>
+            <button type="button" onclick="terminateAllSessions()" class="px-4 py-2 rounded-full bg-accent-rose-danger/15 text-accent-rose-danger hover:bg-accent-rose-danger hover:text-white font-label-badge text-label-badge transition-all">
+              Putuskan Semua Sesi
+            </button>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-4">
+            <button type="submit" class="px-6 py-2.5 rounded-full bg-primary hover:bg-primary-container text-on-primary font-title-card text-title-card shadow-sm transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-base">check</span>
+              <span>Perbarui Kredensial</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Tab Content 3: Preferensi Platform -->
+      <section id="tab-content-preferences" class="settings-tab-pane hidden bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+        <div class="flex items-center justify-between pb-4 border-b border-surface-container">
+          <div>
+            <h2 class="font-headline-sm text-headline-sm text-on-surface">Preferensi Tampilan &amp; Notifikasi</h2>
+            <p class="font-body-sm text-body-sm text-slate-muted">Sesuaikan zona waktu, bahasa kurikulum, dan email pengingat ujian.</p>
+          </div>
+        </div>
+
+        <form id="preferencesForm" onsubmit="event.preventDefault(); savePlatformPreferences();" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="selectLanguage">Bahasa Antarmuka (Interface Language)</label>
+              <select class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="selectLanguage">
+                <option value="id" selected="">Bahasa Indonesia (Standar Korporat)</option>
+                <option value="en">English (International)</option>
+              </select>
+            </div>
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="selectTimezone">Zona Waktu Jadwal Akademik</label>
+              <select class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="selectTimezone">
+                <option value="WIB" selected="">WIB (Waktu Indonesia Barat - UTC+7)</option>
+                <option value="WITA">WITA (Waktu Indonesia Tengah - UTC+8)</option>
+                <option value="WIT">WIT (Waktu Indonesia Timur - UTC+9)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Notification Toggles -->
+          <div class="space-y-3 pt-2">
+            <span class="font-title-card text-title-card text-on-surface block">Pemberitahuan &amp; Pengingat Email</span>
+            
+            <div class="p-4 rounded-xl bg-surface-container-low flex items-center justify-between">
+              <div class="flex flex-col">
+                <span class="font-title-card text-title-card text-on-surface text-sm">Pengingat Jadwal Ujian &amp; Batas Waktu</span>
+                <span class="font-body-sm text-body-sm text-slate-muted">Kirimkan notifikasi 24 jam sebelum tenggat waktu ujian proctored.</span>
+              </div>
+              <input type="checkbox" checked="" class="w-5 h-5 rounded text-primary focus:ring-primary">
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface-container-low flex items-center justify-between">
+              <div class="flex flex-col">
+                <span class="font-title-card text-title-card text-on-surface text-sm">Penerbitan Sertifikat &amp; Kredensial Baru</span>
+                <span class="font-body-sm text-body-sm text-slate-muted">Kirimkan salinan digital sertifikat saat kelulusan diverifikasi.</span>
+              </div>
+              <input type="checkbox" checked="" class="w-5 h-5 rounded text-primary focus:ring-primary">
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface-container-low flex items-center justify-between">
+              <div class="flex flex-col">
+                <span class="font-title-card text-title-card text-on-surface text-sm">Pembaruan Silabus &amp; Kurikulum ISO 27001</span>
+                <span class="font-body-sm text-body-sm text-slate-muted">Informasi materi baru dan catatan instruktur pengampu.</span>
+              </div>
+              <input type="checkbox" class="w-5 h-5 rounded text-primary focus:ring-primary">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-4">
+            <button type="submit" class="px-6 py-2.5 rounded-full bg-primary hover:bg-primary-container text-on-primary font-title-card text-title-card shadow-sm transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-base">check</span>
+              <span>Simpan Preferensi</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Tab Content 4: Otoritas Akademik (Admin Only) -->
+      <section id="tab-content-academy" class="settings-tab-pane hidden bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
+        <div class="flex items-center justify-between pb-4 border-b border-surface-container">
+          <div>
+            <h2 class="font-headline-sm text-headline-sm text-on-surface">Konfigurasi Kebijakan Akademik</h2>
+            <p class="font-body-sm text-body-sm text-slate-muted">Hanya dapat diubah oleh Administrator / Dean Institusi.</p>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-accent-amber-warning/20 text-accent-amber-warning font-label-badge text-label-badge font-bold">Admin Authority Required</span>
+        </div>
+
+        <div id="adminLockedNotice" class="hidden p-5 rounded-xl bg-amber-500/10 border border-accent-amber-warning text-on-surface flex items-start gap-3">
+          <span class="material-symbols-outlined text-accent-amber-warning text-2xl mt-0.5">lock</span>
+          <div class="flex flex-col">
+            <span class="font-title-card text-title-card font-bold">Akses Terkunci untuk Akun Siswa</span>
+            <span class="font-body-sm text-body-sm text-slate-muted">Konfigurasi parameter evaluasi dan passing grade dikelola oleh Administrator. Silakan klik tombol 'Admin' di sudut kanan atas header untuk beralih mode.</span>
+          </div>
+        </div>
+
+        <form id="academyPolicyForm" onsubmit="event.preventDefault(); saveAcademyPolicy();" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="inputPassingGrade">Passing Grade Kelulusan (%)</label>
+              <input class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="inputPassingGrade" type="number" min="50" max="100" value="80">
+            </div>
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="inputExamTimer">Durasi Standar Ujian (Menit)</label>
+              <input class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="inputExamTimer" type="number" min="15" max="180" value="60">
+            </div>
+            <div class="space-y-1.5">
+              <label class="font-title-card text-title-card text-on-surface block" for="selectProctorStrictness">Tingkat Ketat Pengawasan Proctored</label>
+              <select class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary shadow-sm" id="selectProctorStrictness">
+                <option value="strict" selected="">Strict (Lockdown Browser + Webcam AI)</option>
+                <option value="moderate">Moderate (Webcam AI Saja)</option>
+                <option value="lenient">Standard (Audit Selesai Ujian)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex flex-col">
+              <span class="font-title-card text-title-card text-on-surface">Penerbitan Otomatis Sertifikat Kelulusan</span>
+              <span class="font-body-sm text-body-sm text-slate-muted">Jika diaktifkan, siswa yang melampaui passing grade langsung dapat mengunduh sertifikat tanpa audit manual tambahan.</span>
+            </div>
+            <input type="checkbox" class="w-5 h-5 rounded text-primary focus:ring-primary">
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-4">
+            <button type="submit" id="btnSaveAcademy" class="px-6 py-2.5 rounded-full bg-navy-admin-card text-on-primary hover:bg-navy-admin-bg font-title-card text-title-card shadow-sm transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-base">verified_user</span>
+              <span>Terapkan Kebijakan Akademik</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script src="bdc-core.js"></script>
+<script>
+  function switchSettingsTab(tabName) {
+    const tabs = ['profile', 'security', 'preferences', 'academy'];
+    tabs.forEach(t => {
+      const btn = document.getElementById(`tab-btn-${t}`);
+      const pane = document.getElementById(`tab-content-${t}`);
+      if (btn && pane) {
+        if (t === tabName) {
+          btn.className = "tab-button px-5 py-2.5 rounded-xl font-title-card text-title-card bg-slate-elevated text-primary shadow-sm whitespace-nowrap transition-all flex items-center gap-2";
+          pane.classList.remove('hidden');
+        } else {
+          btn.className = "tab-button px-5 py-2.5 rounded-xl font-title-card text-title-card text-slate-muted hover:text-on-surface whitespace-nowrap transition-all flex items-center gap-2";
+          pane.classList.add('hidden');
+        }
+      }
+    });
+
+    // Check role restrictions on academy tab
+    if (tabName === 'academy') {
+      const user = getAuthUser();
+      const isAdmin = (user.role === 'instructor' || user.role === 'admin');
+      const notice = document.getElementById('adminLockedNotice');
+      const form = document.getElementById('academyPolicyForm');
+      if (notice && form) {
+        if (!isAdmin) {
+          notice.classList.remove('hidden');
+          form.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+          notice.classList.add('hidden');
+          form.classList.remove('opacity-50', 'pointer-events-none');
+        }
+      }
+    }
+  }
+
+  function loadSettingsData() {
+    const user = getAuthUser();
+    if (!user) return;
+
+    // Populate profile inputs
+    const inputFullName = document.getElementById('inputFullName');
+    const inputEmail = document.getElementById('inputEmail');
+    const inputDivision = document.getElementById('inputDivision');
+    const inputRoleTitle = document.getElementById('inputRoleTitle');
+    const badgeRole = document.getElementById('badgeCurrentRole');
+    const cardName = document.getElementById('profileCardName');
+    const cardEmail = document.getElementById('profileCardEmail');
+    const cardNip = document.getElementById('profileCardNip');
+
+    if (inputFullName) inputFullName.value = user.name || '';
+    if (inputEmail) inputEmail.value = user.email || '';
+    if (inputDivision) inputDivision.value = user.division || 'Enterprise Architecture & Cyber Defense';
+    if (inputRoleTitle) inputRoleTitle.value = user.roleTitle || 'Corporate Cyber Defense Specialist';
+    if (badgeRole) badgeRole.textContent = user.role === 'instructor' || user.role === 'admin' ? 'Administrator' : 'Learner (Siswa)';
+    if (cardName) cardName.textContent = user.name || '';
+    if (cardEmail) cardEmail.textContent = user.email || '';
+    if (cardNip) cardNip.textContent = `NIP: ${user.nip || 'ID-88420-EA'}`;
+  }
+
+  function saveProfileSettings() {
+    const user = getAuthUser();
+    const inputFullName = document.getElementById('inputFullName').value.trim();
+    const inputEmail = document.getElementById('inputEmail').value.trim();
+    const inputDivision = document.getElementById('inputDivision').value.trim();
+    const inputRoleTitle = document.getElementById('inputRoleTitle').value.trim();
+
+    if (!inputFullName || !inputEmail) {
+      showPortalToast('Nama dan Email wajib diisi.', false);
+      return;
+    }
+
+    user.name = inputFullName;
+    user.email = inputEmail;
+    user.division = inputDivision;
+    user.roleTitle = inputRoleTitle;
+
+    setAuthUser(user);
+    renderDynamicUserData();
+    loadSettingsData();
+    showPortalToast('Perubahan profil berhasil disimpan!');
+  }
+
+  function saveSecuritySettings() {
+    const newPass = document.getElementById('inputNewPass').value;
+    const confirmPass = document.getElementById('inputConfirmPass').value;
+
+    if (newPass && newPass !== confirmPass) {
+      showPortalToast('Konfirmasi kata sandi tidak cocok!', false);
+      return;
+    }
+
+    showPortalToast('Kredensial keamanan dan token sesi berhasil diperbarui!');
+    document.getElementById('inputOldPass').value = '';
+    document.getElementById('inputNewPass').value = '';
+    document.getElementById('inputConfirmPass').value = '';
+  }
+
+  function savePlatformPreferences() {
+    const lang = document.getElementById('selectLanguage').value;
+    const tz = document.getElementById('selectTimezone').value;
+    showPortalToast(`Preferensi diperbarui: Bahasa [${lang.toUpperCase()}], Zona Waktu [${tz}]`);
+  }
+
+  function saveAcademyPolicy() {
+    const grade = document.getElementById('inputPassingGrade').value;
+    const timer = document.getElementById('inputExamTimer').value;
+    showPortalToast(`Kebijakan akademik diterapkan: Passing Grade ${grade}%, Durasi ${timer} Menit.`);
+  }
+
+  function saveAllSettings() {
+    saveProfileSettings();
+  }
+
+  function resetSettingsToDefault() {
+    const user = getAuthUser();
+    if (user.role === 'instructor' || user.role === 'admin') {
+      setAuthUser(BDC_DATABASE.defaultAdmin);
+    } else {
+      setAuthUser(BDC_DATABASE.defaultStudent);
+    }
+    loadSettingsData();
+    renderDynamicUserData();
+    showPortalToast('Pengaturan telah di-reset ke standar default.');
+  }
+
+  function triggerAvatarChange() {
+    showPortalToast('Fitur upload avatar korporat siap. Menggunakan avatar terotentikasi SSO.');
+  }
+
+  function terminateAllSessions() {
+    showPortalToast('Seluruh sesi eksternal TLS telah berhasil diputus demi keamanan.');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadSettingsData();
+  });
+</script>
+</body></html>

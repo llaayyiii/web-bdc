@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Login - Business Dev Club Academic College Community</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+  <!-- Portal Brand Header -->
+  <div class="mb-8 flex flex-col items-center text-center">
+    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-500/20 mb-3">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M12 3L2 8.5L12 14L22 8.5L12 3Z" fill="currentColor" fill-opacity="0.3"></path>
+        <path d="M2 8.5L12 14L22 8.5L12 3L2 8.5Z" stroke="currentColor"></path>
+        <path d="M6 10.7V16.5C6 16.5 8.5 19 12 19C15.5 19 18 16.5 18 16.5V10.7" stroke="currentColor"></path>
+        <path d="M22 8.5V15.5" stroke="currentColor"></path>
+      </svg>
+    </div>
+    <h1 class="text-xl font-bold text-slate-800 tracking-tight font-['Plus_Jakarta_Sans']">Business Dev Club</h1>
+    <span class="text-xs font-semibold text-slate-500 tracking-wider uppercase">Academic College Community</span>
+  </div>
+
+  <!-- Login Card matching user reference screenshot -->
+  <div class="w-full max-w-[380px] bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-slate-100 p-8">
+    <form onsubmit="event.preventDefault(); handleFormLogin();" class="flex flex-col">
+      
+      <!-- Field 1: User Icon + Text Input with underline -->
+      <div class="relative flex items-center border-b border-slate-300 pb-2 mb-5">
+        <div class="text-violet-600 flex items-center justify-center mr-2.5">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+        <input 
+          id="loginIdentifier" 
+          type="text" 
+          required 
+          value="255720056" 
+          placeholder="NIP, Email atau ID Pengguna"
+          class="w-full text-slate-800 text-base font-normal outline-none bg-transparent placeholder:text-slate-400"
+        />
+      </div>
+
+      <!-- Field 2: Light Blue/Lavender Password Box -->
+      <div class="mb-6">
+        <input 
+          id="loginPassword" 
+          type="password" 
+          required 
+          value="secretPassword123" 
+          placeholder="Password"
+          class="w-full bg-[#EEF4FF] text-slate-800 text-base px-4 py-3 rounded-lg outline-none focus:ring-2 focus:ring-violet-400 tracking-wider placeholder:text-slate-400"
+        />
+      </div>
+
+      <!-- Submit Button: Vibrant Purple/Violet Pill -->
+      <div class="flex justify-center mb-3">
+        <button 
+          id="btnSubmitLogin"
+          type="submit" 
+          class="bg-[#8B5CF6] hover:bg-[#7C3AED] active:scale-[0.98] text-white font-semibold text-base py-2.5 px-12 rounded-full shadow-md shadow-violet-500/20 transition-all cursor-pointer"
+        >
+          Log in
+        </button>
+      </div>
+
+      <!-- Lost Password Link -->
+      <div class="text-center mb-6">
+        <a href="#" onclick="handleLostPassword(event)" class="text-sky-600 hover:text-sky-700 hover:underline text-sm font-medium">
+          Lost password?
+        </a>
+      </div>
+
+      <!-- Subtle Divider Line -->
+      <div class="w-full border-t border-slate-200 mb-6"></div>
+
+      <!-- Google Section Header -->
+      <div class="text-center mb-4">
+        <span class="text-slate-700 font-bold text-sm tracking-tight">
+          Log in using your account on:
+        </span>
+      </div>
+
+      <!-- Google Button -->
+      <div class="flex justify-center">
+        <button 
+          type="button" 
+          onclick="openGoogleAuthModal()"
+          class="border border-slate-300 bg-[#f8fafc] hover:bg-slate-100 active:bg-slate-200 text-slate-700 font-medium text-sm py-2 px-6 rounded-md flex items-center justify-center gap-2.5 shadow-sm transition-all cursor-pointer"
+        >
+          <!-- Official Google "G" SVG -->
+          <svg class="w-4 h-4" viewBox="0 0 24 24">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+          </svg>
+          <span>Google</span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Google Account Picker Modal (Ensures email binding for each user) -->
+  <div id="googleAuthModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center gap-2">
+          <!-- Google G -->
+          <svg class="w-5 h-5" viewBox="0 0 24 24">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+          </svg>
+          <span class="font-bold text-slate-800 text-sm">Masuk dengan Akun Google</span>
+        </div>
+        <button onclick="closeGoogleAuthModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-500 mb-4">
+        Pilih akun Google Anda yang akan ditautkan ke akun portal akademik BDC:
+      </p>
+
+      <!-- Preset Google accounts -->
+      <div class="space-y-2 mb-4">
+        <button onclick="loginWithGoogleEmail('siti.rahmawati@gmail.com', 'Siti Rahmawati', '255720056', 'learner')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-violet-400 hover:bg-violet-50/50 flex items-center justify-between transition-all group">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-8 h-8 rounded-full bg-violet-100 text-violet-700 font-bold flex items-center justify-center text-xs">SR</div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-sm font-semibold text-slate-800 truncate">Siti Rahmawati</span>
+              <span class="text-xs text-slate-500 truncate">siti.rahmawati@gmail.com</span>
+            </div>
+          </div>
+          <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">Siswa</span>
+        </button>
+
+        <button onclick="loginWithGoogleEmail('budi.santoso@gmail.com', 'Budi Santoso, S.Kom.', '255720058', 'learner')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-violet-400 hover:bg-violet-50/50 flex items-center justify-between transition-all group">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs">BS</div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-sm font-semibold text-slate-800 truncate">Budi Santoso</span>
+              <span class="text-xs text-slate-500 truncate">budi.santoso@gmail.com</span>
+            </div>
+          </div>
+          <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">Siswa</span>
+        </button>
+
+        <button onclick="loginWithGoogleEmail('admin.dean@businessdevclub.id', 'Dr. Evelyn Vance', 'ADM-0001-EV', 'admin')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:border-violet-400 hover:bg-violet-50/50 flex items-center justify-between transition-all group">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs">EV</div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-sm font-semibold text-slate-800 truncate">Dr. Evelyn Vance</span>
+              <span class="text-xs text-slate-500 truncate">admin.dean@businessdevclub.id</span>
+            </div>
+          </div>
+          <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold">Admin</span>
+        </button>
+      </div>
+
+      <!-- Custom Google Email Input -->
+      <div class="pt-3 border-t border-slate-100">
+        <label class="text-xs font-semibold text-slate-700 block mb-1.5">Gunakan Akun Google Lain:</label>
+        <div class="flex items-center gap-2">
+          <input id="customGoogleEmail" type="email" placeholder="nama.anda@gmail.com" class="flex-1 text-xs border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-violet-500"/>
+          <button onclick="submitCustomGoogle()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs px-3 py-2 rounded-lg font-medium">Masuk</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core System Script -->
+  <script src="bdc-core.js"></script>
+  <script>
+    function handleFormLogin() {
+      const idInput = document.getElementById('loginIdentifier');
+      const val = idInput ? idInput.value.trim() : '255720056';
+      
+      // Look up user from core module by NIP, email, or username
+      const user = findUserByIdentifier(val);
+      setAuthUser(user);
+
+      showPortalToast(`Otentikasi Berhasil! Tertaut ke email: ${user.email}`);
+
+      const targetPage = (user.role === 'admin' || user.role === 'instructor') 
+        ? 'DasborAdmin.htm' 
+        : 'DasborSiswadanPembelajaran.html';
+
+      setTimeout(() => {
+        window.location.href = targetPage;
+      }, 1000);
+    }
+
+    function openGoogleAuthModal() {
+      document.getElementById('googleAuthModal').classList.remove('hidden');
+    }
+
+    function closeGoogleAuthModal() {
+      document.getElementById('googleAuthModal').classList.add('hidden');
+    }
+
+    function loginWithGoogleEmail(email, name, nip, role) {
+      const isAdmin = (role === 'admin' || role === 'instructor');
+      const user = {
+        name: name,
+        email: email, // specifically bound to this user's Google email
+        nip: nip,
+        role: isAdmin ? 'instructor' : 'learner',
+        roleTitle: isAdmin ? 'Academic Dean & Community Curator' : 'Corporate Learner (Google SSO)',
+        score: isAdmin ? 99.0 : (nip === '255720056' ? 94.8 : 89.2),
+        scoreCohort: isAdmin ? 'Top 1% Nasional Instructor' : 'Top 3% Nasional Cohort',
+        division: 'Academic College Community',
+        completedModules: 12,
+        totalHours: 64.5,
+        certLocked: !isAdmin,
+        authProvider: 'google'
+      };
+
+      setAuthUser(user);
+      closeGoogleAuthModal();
+      showPortalToast(`Login Google Berhasil! Akun tertaut dengan email: ${email}`);
+
+      setTimeout(() => {
+        window.location.href = isAdmin ? 'DasborAdmin.htm' : 'DasborSiswadanPembelajaran.html';
+      }, 1000);
+    }
+
+    function submitCustomGoogle() {
+      const customEmail = document.getElementById('customGoogleEmail').value.trim();
+      if (!customEmail || !customEmail.includes('@')) {
+        alert('Silakan masukkan format alamat email Google yang valid.');
+        return;
+      }
+      const derivedName = customEmail.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const isAdmin = customEmail.includes('admin') || customEmail.includes('dean');
+      loginWithGoogleEmail(customEmail, derivedName, '255720099', isAdmin ? 'admin' : 'learner');
+    }
+
+    function handleLostPassword(e) {
+      e.preventDefault();
+      const currentId = document.getElementById('loginIdentifier').value.trim() || '255720056';
+      showPortalToast(`Tautan reset kata sandi telah dikirim ke email tertaut untuk ID: ${currentId}`);
+    }
+  </script>
+</body>
+</html>

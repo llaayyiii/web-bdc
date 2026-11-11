@@ -1,0 +1,1409 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"secondary-fixed-dim":"#c0c1ff","inverse-surface":"#283044","secondary-container":"#6063ee","on-tertiary-fixed":"#23005c","navy-admin-bg":"#0F172A","tertiary-container":"#6029c9","surface-container-low":"#f2f3ff","on-secondary-fixed-variant":"#2f2ebe","on-surface-variant":"#464554","inverse-primary":"#c3c0ff","on-error":"#ffffff","background":"#faf8ff","on-primary-fixed":"#100069","accent-emerald-success":"#10B981","tertiary-fixed-dim":"#d0bcff","surface-dim":"#d2d9f4","surface-tint":"#5148d7","on-background":"#131b2e","primary":"#2a14b4","on-secondary-fixed":"#07006c","outline":"#777586","on-secondary":"#ffffff","error":"#ba1a1a","surface":"#faf8ff","surface-variant":"#dae2fd","accent-amber-warning":"#F59E0B","surface-bright":"#faf8ff","on-primary":"#ffffff","outline-variant":"#c7c4d7","slate-border":"#E2E8F0","primary-container":"#4338ca","on-primary-fixed-variant":"#372abf","error-container":"#ffdad6","secondary":"#4648d4","on-tertiary-container":"#cfbaff","on-secondary-container":"#fffbff","primary-fixed":"#e3dfff","primary-fixed-dim":"#c3c0ff","slate-surface":"#F8FAFC","tertiary-fixed":"#e9ddff","on-primary-container":"#c1beff","accent-rose-danger":"#EF4444","on-tertiary-fixed-variant":"#5516be","slate-muted":"#64748B","inverse-on-surface":"#eef0ff","on-error-container":"#93000a","tertiary":"#4700ab","accent-cyan-vibrant":"#06B6D4","navy-admin-card":"#1E293B","accent-electric-purple":"#A855F7","surface-container-highest":"#dae2fd","on-tertiary":"#ffffff","surface-container":"#eaedff","slate-elevated":"#FFFFFF","on-surface":"#131b2e","surface-container-lowest":"#ffffff","secondary-fixed":"#e1e0ff","surface-container-high":"#e2e7ff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-lg":"1.5rem","gutter-mobile":"0.75rem","space-xs":"0.5rem","space-md":"1rem","space-2xs":"0.25rem","margin-mobile":"1rem","space-2xl":"3rem","space-xl":"2rem","gutter":"1.5rem","margin":"2rem","space-sm":"0.75rem"},"fontFamily":{"headline-md":["Plus Jakarta Sans"],"metric-stat":["Plus Jakarta Sans"],"title-card":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"label-badge":["Plus Jakarta Sans"],"display-hero-mobile":["Plus Jakarta Sans"],"label-caps":["Plus Jakarta Sans"],"body-sm":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"display-hero":["Plus Jakarta Sans"]},"fontSize":{"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"700"}],"metric-stat":["28px",{"lineHeight":"34px","letterSpacing":"-0.02em","fontWeight":"800"}],"title-card":["16px",{"lineHeight":"24px","fontWeight":"600"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.015em","fontWeight":"700"}],"label-badge":["12px",{"lineHeight":"16px","fontWeight":"600"}],"display-hero-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"800"}],"label-caps":["11px",{"lineHeight":"16px","letterSpacing":"0.06em","fontWeight":"700"}],"body-sm":["12px",{"lineHeight":"18px","fontWeight":"400"}],"body-lg":["16px",{"lineHeight":"26px","fontWeight":"400"}],"body-md":["14px",{"lineHeight":"22px","fontWeight":"400"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","letterSpacing":"-0.015em","fontWeight":"700"}],"headline-sm":["18px",{"lineHeight":"26px","fontWeight":"600"}],"display-hero":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"800"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface">
+
+<!-- Mobile Sidebar Backdrop Overlay -->
+<div id="sidebarBackdrop" class="fixed inset-0 bg-navy-admin-bg/50 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300" onclick="toggleMobileSidebar(false)"></div>
+
+<aside id="appSidebar" class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-6 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+  <div class="flex flex-col">
+    <div class="px-6 mb-8 flex items-center justify-between">
+      <a href="DasborSiswadanPembelajaran.html" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary via-primary-container to-accent-electric-purple flex items-center justify-center shadow-md relative overflow-hidden shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 3L2 8.5L12 14L22 8.5L12 3Z" fill="currentColor" fill-opacity="0.3"></path>
+            <path d="M2 8.5L12 14L22 8.5L12 3L2 8.5Z" stroke="currentColor"></path>
+            <path d="M6 10.7V16.5C6 16.5 8.5 19 12 19C15.5 19 18 16.5 18 16.5V10.7" stroke="currentColor"></path>
+            <path d="M22 8.5V15.5" stroke="currentColor"></path>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">Business Dev Club</span>
+          <span class="font-label-caps text-label-caps uppercase text-slate-muted">Academic College Community</span>
+        </div>
+      </a>
+      <button onclick="toggleMobileSidebar(false)" class="lg:hidden p-1.5 rounded-lg text-slate-muted hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button" aria-label="Tutup Menu">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+    <div class="px-6 mb-2">
+      <span class="font-label-caps text-label-caps uppercase text-slate-muted tracking-wider">Curriculum &amp; Management</span>
+    </div>
+    <nav class="flex flex-col gap-1 px-4">
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="DasborSiswadanPembelajaran.html">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="courses" href="MateriPembelajaran.html">
+        <span class="material-symbols-outlined">school</span>
+        <span>Courses</span>
+      </a>
+      <a aria-current="page" class="flex items-center gap-3 px-4 py-3 transition-all bg-primary-container text-on-primary font-title-card shadow-sm rounded-xl" data-path="assessments-&amp;-quizzes" href="AntarMukaUjiandanPembuatanUjian.html">
+        <span class="material-symbols-outlined">checklist</span>
+        <span>Tugas &amp; Kuis Modul</span>
+      </a>
+      <!-- Analytics module completely removed per Requirement 6 -->
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="certifications" href="SertifikatKelulusan.html">
+        <span class="material-symbols-outlined">verified</span>
+        <span>Certifications</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="system-settings" href="PengaturanSistem.html">
+        <span class="material-symbols-outlined">settings</span>
+        <span>System Settings</span>
+      </a>
+    </nav>
+  </div>
+  <div class="px-4 flex flex-col gap-3">
+    <div class="bg-surface-container-high rounded-xl p-4 flex flex-col gap-2 shadow-sm">
+      <div class="flex items-center justify-between">
+        <span class="font-label-badge text-label-badge text-slate-muted uppercase">System Status</span>
+        <span class="h-2 w-2 rounded-full bg-accent-emerald-success"></span>
+      </div>
+      <span class="font-title-card text-title-card text-on-surface">Enterprise Tier v4.8</span>
+      <span class="font-body-sm text-body-sm text-on-surface-variant">Academic Cluster Online</span>
+    </div>
+  </div>
+</aside>
+
+<div class="pl-0 lg:pl-72 transition-all duration-300">
+  <header class="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-30 flex items-center justify-between px-4 sm:px-8">
+    <div class="flex items-center gap-3 flex-1 max-w-md">
+      <button id="sidebarToggleBtn" onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl text-on-surface hover:bg-surface-container transition-colors flex items-center justify-center" type="button" aria-label="Buka Menu">
+        <span class="material-symbols-outlined text-2xl">menu</span>
+      </button>
+      <div class="relative w-full hidden sm:block">
+        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-muted">search</span>
+        <input class="w-full pl-10 pr-4 py-2 bg-surface-container rounded-full font-body-sm text-body-sm text-on-surface placeholder:text-slate-muted outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary transition-all" placeholder="Cari nomor soal, klausul ISO 27001..." type="text">
+      </div>
+    </div>
+    <div class="flex items-center gap-3 sm:gap-5">
+      <div id="headerRoleToggleContainer" class="hidden flex items-center bg-surface-container p-1 rounded-full gap-1">
+        <button id="headerRoleAdminBtn" class="px-3 py-1 text-on-surface-variant hover:text-on-surface font-label-badge text-label-badge rounded-full transition-all cursor-pointer" onclick="toggleDemoRole('admin')" type="button">Admin</button>
+        <button id="headerRoleStudentBtn" class="px-3 py-1 text-on-primary bg-primary font-label-badge text-label-badge rounded-full transition-all shadow-sm cursor-pointer" onclick="toggleDemoRole('learner')" type="button">Student</button>
+      </div>
+      <button class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" type="button">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent-rose-danger"></span>
+      </button>
+      <div class="h-6 w-px bg-surface-variant hidden sm:block"></div>
+      <div class="flex items-center gap-3">
+        <div class="flex flex-col text-right hidden sm:flex">
+          <span id="headerUserName" class="font-title-card text-title-card text-on-surface leading-tight">Siti Rahmawati</span>
+          <span id="headerUserRole" class="font-label-badge text-label-badge text-slate-muted">Mahasiswa</span>
+        </div>
+        <img id="headerUserAvatar" alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-fixed" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&amp;fit=crop&amp;w=256&amp;q=80">
+      </div>
+    </div>
+  </header>
+  <main class="w-full pt-20 px-4 sm:px-space-lg pb-space-2xl bg-background min-h-screen"><div class="flex flex-col w-full">
+
+<!-- Dynamic Role Banner: Shown only when Admin is in Student Simulation Mode -->
+<div id="roleBannerContainer" class="mb-4">
+  <!-- Populated dynamically via renderRoleBanner() -->
+</div>
+
+<!-- Admin Task & Exam Management Action Bar (Visible only when in Admin Mode) -->
+<section id="adminExamCreatorPanel" class="hidden bg-surface-container-lowest rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col gap-4 mb-8 border-2 border-purple-300">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-surface-container">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 font-label-caps text-label-caps uppercase font-bold flex items-center gap-1">
+          <span class="material-symbols-outlined text-xs">admin_panel_settings</span> Administrator Console
+        </span>
+        <span class="text-xs font-bold text-emerald-600 flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">verified</span> Konten Dinamis (CRUD Penuh)
+        </span>
+      </div>
+      <h2 class="font-headline-sm text-headline-sm text-on-surface">Kelola Tugas &amp; Kuis Komunitas</h2>
+      <p class="font-body-sm text-body-sm text-slate-muted">Tambah tugas/kuis baru dengan judul bebas sesuai topik komunitas, edit deskripsi, atau hapus item.</p>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap">
+      <button onclick="openCreateTaskModal()" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-title-card text-title-card text-xs shadow-sm transition-all flex items-center gap-1.5" type="button">
+        <span class="material-symbols-outlined text-base">add_circle</span>
+        <span>+ Tambah Tugas / Kuis Baru</span>
+      </button>
+      <button onclick="clearAllTasks()" class="px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-title-card text-title-card text-xs transition-all flex items-center gap-1" type="button" title="Uji Tampilan Saat Kotak Kosong (0 Data)">
+        <span class="material-symbols-outlined text-base">inbox</span>
+        <span>Uji Kotak Kosong (0 Data)</span>
+      </button>
+      <button onclick="resetDefaultTasks()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-title-card text-title-card text-xs transition-all flex items-center gap-1" type="button" title="Pulihkan contoh data komunitas">
+        <span class="material-symbols-outlined text-base">restart_alt</span>
+        <span>Muat Contoh Data</span>
+      </button>
+      <button onclick="enterStudentSimulation()" class="px-3.5 py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 font-title-card text-title-card text-xs transition-all flex items-center gap-1.5 shadow-xs" type="button" title="Masuk ke Mode Siswa untuk melihat tampilan dari sisi Mahasiswa">
+        <span class="material-symbols-outlined text-base text-purple-600">visibility</span>
+        <span>Mode Jadi Siswa (Simulasi)</span>
+      </button>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- Breadcrumb & Top Page Header -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div>
+    <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+      <span class="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+        Academic College Community
+      </span>
+      <span class="text-xs text-slate-400 font-medium">• E-Learning Checklist Progres</span>
+      <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200 flex items-center gap-1">
+        <span class="material-symbols-outlined text-xs">check_circle</span> Fitur: Mark as Done Aktif
+      </span>
+    </div>
+    <h1 class="font-['Plus_Jakarta_Sans'] text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+      Daftar Tugas &amp; Kuis Modul Pembelajaran
+    </h1>
+    <p class="text-sm text-slate-600 mt-1 max-w-3xl">
+      Kurikulum interaktif berbasis topik komunitas. Klik tombol <strong class="text-emerald-700">"Mark as done"</strong> pada setiap item untuk menandai penyelesaian; persentase progres belajar akan bertambah otomatis.
+    </p>
+  </div>
+  <div class="flex items-center gap-2.5 self-start md:self-auto flex-wrap">
+    <button id="btnHeaderGiveTask" onclick="openCreateTaskModal()" class="hidden px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all" type="button">
+      <span class="material-symbols-outlined text-sm">add_circle</span>
+      <span>+ Tambah Tugas / Kuis Baru</span>
+    </button>
+    <button onclick="resetAllDone()" class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all shadow-xs" type="button">
+      <span class="material-symbols-outlined text-sm text-slate-500">restart_alt</span>
+      <span>Reset Progres</span>
+    </button>
+    <button onclick="markAllAsDone()" class="px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all" type="button">
+      <span class="material-symbols-outlined text-sm">done_all</span>
+      <span>Tandai Semua Selesai</span>
+    </button>
+  </div>
+</div>
+
+<!-- Live Student Progress Tracker Bar -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-slate-200/80 mb-8 relative overflow-hidden">
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+    <div class="flex items-center gap-4">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-primary to-indigo-600 text-white flex flex-col items-center justify-center shrink-0 shadow-md">
+        <span class="font-extrabold text-2xl leading-none" id="progress-percent-badge">0%</span>
+        <span class="text-[9px] font-bold text-white/80 uppercase tracking-wider mt-0.5">TUNTAS</span>
+      </div>
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2">
+          <h2 class="font-bold text-slate-900 text-lg leading-tight">Progres Pembelajaran Anda</h2>
+          <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary" id="progress-status-pill">
+            Sedang Berjalan
+          </span>
+        </div>
+        <p class="text-xs text-slate-500 mt-1" id="progress-count-text">
+          0 dari 0 Aktivitas Selesai
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Filter Tabs -->
+    <div class="flex items-center gap-1.5 flex-wrap bg-slate-100 p-1.5 rounded-xl border border-slate-200/60" id="filter-tabs-container">
+      <button onclick="filterItems('all')" id="filter-btn-all" class="filter-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-primary shadow-xs transition-all">
+        Semua (<span id="count-all">0</span>)
+      </button>
+      <button onclick="filterItems('tugas')" id="filter-btn-tugas" class="filter-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all">
+        Tugas (<span id="count-tugas">0</span>)
+      </button>
+      <button onclick="filterItems('kuis')" id="filter-btn-kuis" class="filter-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all">
+        Kuis (<span id="count-kuis">0</span>)
+      </button>
+      <button onclick="filterItems('done')" id="filter-btn-done" class="filter-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all">
+        Selesai ✓ (<span id="count-done">0</span>)
+      </button>
+      <button onclick="filterItems('pending')" id="filter-btn-pending" class="filter-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all">
+        Belum Selesai (<span id="count-pending">0</span>)
+      </button>
+    </div>
+  </div>
+
+  <!-- Progress Bar Line -->
+  <div class="mt-5">
+    <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1.5">
+      <span class="flex items-center gap-1.5 text-slate-500 font-semibold">
+        <span class="material-symbols-outlined text-base text-primary">trending_up</span>
+        Persentase Kelulusan Berdasarkan Item Ditandai "Mark as done"
+      </span>
+      <span id="progress-percent-text" class="text-primary font-extrabold text-sm">0%</span>
+    </div>
+    <div class="w-full bg-slate-100 rounded-full h-3.5 overflow-hidden p-0.5 border border-slate-200/80">
+      <div id="main-progress-bar" class="bg-gradient-to-r from-primary via-indigo-600 to-emerald-500 h-full rounded-full transition-all duration-500 shadow-sm" style="width: 0%;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Layout Grid: Dynamic Tasks Container & Sticky Navigator Sidebar -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+  <!-- Dynamic Learning Items & Tasks Container (Left 8 Cols) -->
+  <div class="lg:col-span-8 flex flex-col gap-4" id="dynamic-tasks-container">
+    <!-- Populated dynamically via renderDynamicTasks() -->
+  </div>
+
+  <!-- Right Sticky Sidebar (Right 4 Cols) -->
+  <div class="lg:col-span-4 flex flex-col gap-6 sticky top-24">
+    
+    <!-- Candidate / Student Profile Card -->
+    <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3.5 min-w-0">
+        <div class="relative shrink-0">
+          <img class="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20 shadow-sm" id="exam-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&amp;fit=crop&amp;w=256&amp;q=80" alt="Avatar Peserta">
+          <span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+        </div>
+        <div class="flex flex-col min-w-0">
+          <span class="font-bold text-slate-900 text-sm truncate" id="exam-user-name">Siti Rahmawati</span>
+          <span class="text-xs text-slate-500 font-mono" id="exam-user-id">NIM: 255720056</span>
+          <span class="text-[11px] font-semibold text-emerald-600 flex items-center gap-1 mt-0.5">
+            <span class="material-symbols-outlined text-xs">verified_user</span> Akun Pembelajar Aktif
+          </span>
+        </div>
+      </div>
+      <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold shrink-0" id="exam-user-role-badge">Mahasiswa</span>
+    </div>
+
+    <!-- Panduan Sesuai Role (Mahasiswa vs Admin) -->
+    <div id="sidebarGuideContainer">
+      <!-- Populated dynamically via renderSidebarCards() -->
+    </div>
+
+    <!-- Quick Shortcuts Sesuai Role (Mahasiswa vs Admin) -->
+    <div id="sidebarShortcutsContainer">
+      <!-- Populated dynamically via renderSidebarCards() -->
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= MODALS SECTION ================= -->
+
+<!-- Modal 1: Tambah Tugas / Kuis Baru (Admin Create) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-navy-admin-bg/60 backdrop-blur-md hidden transition-opacity" id="modalCreateTask">
+  <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 max-w-lg w-full mx-4 shadow-2xl flex flex-col gap-5 relative border-2 border-purple-300 max-h-[92vh] overflow-y-auto">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-2xl">add_circle</span>
+        </div>
+        <div class="flex flex-col">
+          <h2 class="font-bold text-slate-900 text-base sm:text-lg">Tambah Tugas / Kuis Baru</h2>
+          <span class="text-xs text-purple-700 font-semibold">Khusus Administrator Komunitas</span>
+        </div>
+      </div>
+      <button type="button" onclick="closeCreateTaskModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-all">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+
+    <div class="p-3.5 rounded-xl bg-purple-50/80 border border-purple-200 text-xs text-purple-900 flex items-start gap-2.5">
+      <span class="material-symbols-outlined text-purple-700 text-lg mt-0.5">info</span>
+      <p class="leading-relaxed">
+        Masukkan judul dan deskripsi tugas/kuis secara bebas sesuai topik mingguan yang sedang berjalan. Item akan <strong>langsung tampil di halaman mahasiswa</strong> dilengkapi tombol <strong>"Mark as done"</strong>.
+      </p>
+    </div>
+
+    <form id="formCreateTask" onsubmit="event.preventDefault(); saveNewTask();" class="flex flex-col gap-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1" for="createTaskTitle">Judul Tugas / Kuis</label>
+        <input type="text" id="createTaskTitle" required placeholder="Contoh: Tugas Diskusi Minggu Ini atau Kuis SCAMPER Matrix" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-600 font-medium text-slate-800">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1" for="createTaskType">Tipe Aktivitas</label>
+          <select id="createTaskType" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-600 font-medium text-slate-800">
+            <option value="tugas">Tugas Praktik / Diskusi</option>
+            <option value="kuis">Kuis Evaluasi Singkat</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1" for="createTaskCategory">Kategori / Topik</label>
+          <input type="text" id="createTaskCategory" value="Komunitas Bisnis" placeholder="Contoh: Inovasi & Ideasi" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-600 font-medium text-slate-800">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1" for="createTaskDeadline">Tenggat Waktu (Deadline)</label>
+          <input type="text" id="createTaskDeadline" value="Minggu Ini, 23:59 WIB" placeholder="Contoh: Besok, 20:00 WIB" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-600 font-medium text-slate-800">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1" for="createTaskPoints">Bobot Nilai / Poin</label>
+          <input type="text" id="createTaskPoints" value="25 Poin" placeholder="Contoh: 30 Poin" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-600 font-medium text-slate-800">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1" for="createTaskDesc">Deskripsi &amp; Petunjuk Pengerjaan</label>
+        <textarea id="createTaskDesc" rows="3" required placeholder="Tuliskan petunjuk pengerjaan atau instruksi diskusi untuk mahasiswa..." class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-purple-600 font-medium text-slate-800 leading-relaxed"></textarea>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+        <button type="button" onclick="closeCreateTaskModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md hover:shadow flex items-center gap-1.5 transition-all">
+          <span class="material-symbols-outlined text-base">publish</span>
+          <span>Terbitkan Tugas Baru 🚀</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal 2: Edit Tugas / Kuis (Admin Edit Judul & Deskripsi) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-navy-admin-bg/60 backdrop-blur-md hidden transition-opacity" id="modalEditTask">
+  <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 max-w-lg w-full mx-4 shadow-2xl flex flex-col gap-5 relative border-2 border-indigo-300 max-h-[92vh] overflow-y-auto">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-2xl">edit_note</span>
+        </div>
+        <div class="flex flex-col">
+          <h2 class="font-bold text-slate-900 text-base sm:text-lg">Edit Judul &amp; Deskripsi Tugas</h2>
+          <span class="text-xs text-indigo-700 font-semibold">Perubahan otomatis tersinkron ke mahasiswa</span>
+        </div>
+      </div>
+      <button type="button" onclick="closeEditTaskModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-all">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+
+    <form id="formEditTask" onsubmit="event.preventDefault(); saveEditTask();" class="flex flex-col gap-4">
+      <input type="hidden" id="editTaskId">
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1" for="editTaskTitle">Judul Tugas / Kuis</label>
+        <input type="text" id="editTaskTitle" required class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-slate-800">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1" for="editTaskType">Tipe Aktivitas</label>
+          <select id="editTaskType" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-slate-800">
+            <option value="tugas">Tugas Praktik / Diskusi</option>
+            <option value="kuis">Kuis Evaluasi Singkat</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1" for="editTaskCategory">Kategori / Topik</label>
+          <input type="text" id="editTaskCategory" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-slate-800">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1" for="editTaskDeadline">Tenggat Waktu</label>
+          <input type="text" id="editTaskDeadline" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-slate-800">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1" for="editTaskPoints">Bobot Poin</label>
+          <input type="text" id="editTaskPoints" class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-slate-800">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1" for="editTaskDesc">Deskripsi &amp; Petunjuk Pengerjaan</label>
+        <textarea id="editTaskDesc" rows="3" required class="w-full text-xs rounded-xl border border-slate-200 p-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-slate-800 leading-relaxed"></textarea>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+        <button type="button" onclick="closeEditTaskModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all">
+          Batal
+        </button>
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md hover:shadow flex items-center gap-1.5 transition-all">
+          <span class="material-symbols-outlined text-base">save</span>
+          <span>Simpan Perubahan 💾</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast Notification Trigger -->
+<div class="fixed bottom-6 right-6 z-50 bg-navy-admin-bg text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 transition-transform duration-300 translate-y-24 pointer-events-none" id="toast-message">
+  <span class="material-symbols-outlined text-accent-emerald-success" id="toast-icon">check_circle</span>
+  <span class="font-body-sm text-body-sm text-white" id="toast-text">Perubahan berhasil disimpan.</span>
+</div>
+
+</div></main></div>
+
+<script src="bdc-core.js"></script>
+<!-- Interactive JavaScript Logic: Dynamic CRUD & Mark as Done -->
+<script>
+  // Storage Keys for persistence
+  const DYNAMIC_TASKS_KEY = 'bdc_dynamic_tasks_list';
+  const DYNAMIC_DONE_KEY = 'bdc_dynamic_done_map';
+
+  // Seed initial community data (including user's requested examples)
+  const SEED_TASKS = [
+    {
+      id: "task-diskusi-mingguan",
+      type: "tugas",
+      typeLabel: "Tugas Diskusi",
+      category: "Komunitas Bisnis",
+      title: "Tugas Diskusi Minggu Ini",
+      desc: "Diskusikan studi kasus implementasi SaaS lokal dan bagikan kesimpulan kelompok pada forum mingguan.",
+      deadline: "Minggu Ini, 23:59 WIB",
+      points: "25 Poin",
+      defaultDone: false
+    },
+    {
+      id: "task-kuis-scamper",
+      type: "kuis",
+      typeLabel: "Kuis Mandiri",
+      category: "Ideation & Inovasi",
+      title: "Kuis SCAMPER Matrix",
+      desc: "Uji pemahaman mandiri seputar prinsip SCAMPER (Substitute, Combine, Adapt, Modify, Put to another use, Eliminate, Reverse) dan prioritas matriks.",
+      deadline: "Fleksibel",
+      points: "20 Poin",
+      defaultDone: true
+    },
+    {
+      id: "task-scamper-brainstorming",
+      type: "tugas",
+      typeLabel: "Tugas Praktik",
+      category: "Product Management",
+      title: "Brainstorming SCAMPER dan I/E Matrix",
+      desc: "Latihan praktis pemetaan ide inovasi produk ke dalam kuadran Impact vs Effort (I/E) Matrix bersama tim.",
+      deadline: "Besok, 20:00 WIB",
+      points: "30 Poin",
+      defaultDone: false
+    },
+    {
+      id: "task-kuis-bpm-6",
+      type: "kuis",
+      typeLabel: "Kuis Pilihan Ganda",
+      category: "BPM & Alur Kerja",
+      title: "Quis 6 multiple choice BPM",
+      desc: "Evaluasi pemahaman konsep dasar Business Process Management, siklus proses bisnis, dan eliminasi bottleneck.",
+      deadline: "Hari Ini, 23:59 WIB",
+      points: "25 Poin",
+      defaultDone: false
+    },
+    {
+      id: "task-bpmn-mapping",
+      type: "tugas",
+      typeLabel: "Tugas Praktik",
+      category: "BPM & Alur Kerja",
+      title: "Tugas Pemetaan Alur Bisnis BPMN 2.0",
+      desc: "Gambarkan notasi proses bisnis (Gateway, Event, Pool/Lane) pada studi kasus onboarding anggota baru komunitas.",
+      deadline: "3 Hari Lagi, 18:00 WIB",
+      points: "25 Poin",
+      defaultDone: true
+    }
+  ];
+
+  let activeFilter = 'all';
+
+  // Retrieve tasks from localStorage or initialize with seed
+  function getDynamicTasks() {
+    try {
+      const raw = localStorage.getItem(DYNAMIC_TASKS_KEY);
+      if (raw !== null) {
+        return JSON.parse(raw);
+      }
+    } catch (e) {
+      console.warn('Error reading dynamic tasks:', e);
+    }
+    // Initialize with seed if first time
+    saveDynamicTasks(SEED_TASKS);
+    return SEED_TASKS;
+  }
+
+  function saveDynamicTasks(tasks) {
+    try {
+      localStorage.setItem(DYNAMIC_TASKS_KEY, JSON.stringify(tasks));
+    } catch (e) {
+      console.warn('Error saving dynamic tasks:', e);
+    }
+  }
+
+  // Retrieve done map ({ [taskId]: boolean })
+  function getDoneMap() {
+    try {
+      const raw = localStorage.getItem(DYNAMIC_DONE_KEY);
+      if (raw !== null) {
+        return JSON.parse(raw);
+      }
+    } catch (e) {
+      console.warn('Error reading done map:', e);
+    }
+    // Default done map based on seed
+    const map = {};
+    SEED_TASKS.forEach(t => {
+      map[t.id] = !!t.defaultDone;
+    });
+    saveDoneMap(map);
+    return map;
+  }
+
+  function saveDoneMap(map) {
+    try {
+      localStorage.setItem(DYNAMIC_DONE_KEY, JSON.stringify(map));
+    } catch (e) {
+      console.warn('Error saving done map:', e);
+    }
+  }
+
+  function isUserAdmin() {
+    if (typeof getAuthUser !== 'function') return false;
+    const user = getAuthUser();
+    return (user.role === 'admin' || user.role === 'instructor');
+  }
+
+  // Switch Role
+  function toggleDemoRole(targetRole) {
+    let user;
+    if (targetRole === 'admin' || targetRole === 'instructor') {
+      sessionStorage.removeItem('bdc_admin_simulating_student');
+      user = (typeof BDC_DATABASE !== 'undefined' && BDC_DATABASE.defaultAdmin) 
+        ? BDC_DATABASE.defaultAdmin 
+        : { name: "Dr. Evelyn Vance", email: "admin@perusahaan.co.id", role: "admin", roleTitle: "Academic Dean & Community Curator", nip: "ADM-0001-EV", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80" };
+    } else {
+      sessionStorage.setItem('bdc_admin_simulating_student', 'true');
+      user = (typeof BDC_DATABASE !== 'undefined' && BDC_DATABASE.defaultStudent) 
+        ? BDC_DATABASE.defaultStudent 
+        : { name: "Siti Rahmawati", email: "siti.rahmawati@perusahaan.co.id", role: "learner", roleTitle: "Corporate Cyber Defense Specialist", nip: "255720056", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80" };
+    }
+    if (typeof setAuthUser === 'function') {
+      setAuthUser(user);
+    } else {
+      localStorage.setItem('bdc_auth_user', JSON.stringify(user));
+    }
+
+    checkExamRoleControl();
+    populateExamCandidateInfo();
+    renderRoleBanner();
+    renderDynamicTasks();
+    updateProgressBar();
+
+    showToast(`Peran dialihkan ke: ${user.name} (${user.role === 'admin' || user.role === 'instructor' ? 'Administrator' : 'Mahasiswa'})`);
+  }
+
+  // Student Feature: Toggle "Mark as done"
+  function toggleMarkAsDone(taskId) {
+    const map = getDoneMap();
+    const tasks = getDynamicTasks();
+    const task = tasks.find(t => t.id === taskId);
+    const newStatus = !map[taskId];
+    map[taskId] = newStatus;
+    saveDoneMap(map);
+
+    renderDynamicTasks();
+    updateProgressBar();
+
+    if (newStatus) {
+      showToast(`✓ "${task ? task.title : 'Tugas'}" berhasil ditandai sebagai Done! Progres belajar bertambah.`);
+    } else {
+      showToast(`Tugas "${task ? task.title : 'Item'}" ditandai belum selesai.`);
+    }
+  }
+
+  // Admin Feature: Create Task Modal
+  function openCreateTaskModal() {
+    if (!isUserAdmin()) {
+      showToast('Akses Ditolak: Hanya Administrator yang berhak menambah tugas.');
+      return;
+    }
+    const modal = document.getElementById('modalCreateTask');
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeCreateTaskModal() {
+    const modal = document.getElementById('modalCreateTask');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function saveNewTask() {
+    const titleInput = document.getElementById('createTaskTitle');
+    const typeSelect = document.getElementById('createTaskType');
+    const catInput = document.getElementById('createTaskCategory');
+    const deadInput = document.getElementById('createTaskDeadline');
+    const pointsInput = document.getElementById('createTaskPoints');
+    const descInput = document.getElementById('createTaskDesc');
+
+    const title = titleInput ? titleInput.value.trim() : '';
+    if (!title) {
+      showToast('Judul tugas/kuis wajib diisi!');
+      return;
+    }
+
+    const taskType = typeSelect ? typeSelect.value : 'tugas';
+    const newTask = {
+      id: 'task-dyn-' + Date.now(),
+      type: taskType,
+      typeLabel: taskType === 'kuis' ? 'Kuis Evaluasi' : 'Tugas Praktik',
+      category: (catInput && catInput.value.trim()) || 'Komunitas Bisnis',
+      title: title,
+      desc: (descInput && descInput.value.trim()) || 'Selesaikan instruksi penugasan berikut sesuai topik pembelajaran.',
+      deadline: (deadInput && deadInput.value.trim()) || 'Minggu Ini, 23:59 WIB',
+      points: (pointsInput && pointsInput.value.trim()) || '25 Poin',
+      defaultDone: false
+    };
+
+    const tasks = getDynamicTasks();
+    tasks.unshift(newTask); // Add to top
+    saveDynamicTasks(tasks);
+
+    // Reset Form
+    if (document.getElementById('formCreateTask')) {
+      document.getElementById('formCreateTask').reset();
+    }
+    closeCreateTaskModal();
+
+    renderDynamicTasks();
+    updateProgressBar();
+    showToast(`✓ Berhasil menambahkan: "${title}". Daftar di halaman mahasiswa langsung diperbarui!`);
+  }
+
+  // Admin Feature: Edit Task Modal
+  function openEditTaskModal(taskId) {
+    if (!isUserAdmin()) {
+      showToast('Akses Ditolak: Hanya Administrator yang dapat mengedit tugas.');
+      return;
+    }
+    const tasks = getDynamicTasks();
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    document.getElementById('editTaskId').value = task.id;
+    document.getElementById('editTaskTitle').value = task.title;
+    document.getElementById('editTaskType').value = task.type || 'tugas';
+    document.getElementById('editTaskCategory').value = task.category || 'Komunitas Bisnis';
+    document.getElementById('editTaskDeadline').value = task.deadline || 'Minggu Ini, 23:59 WIB';
+    document.getElementById('editTaskPoints').value = task.points || '25 Poin';
+    document.getElementById('editTaskDesc').value = task.desc || '';
+
+    const modal = document.getElementById('modalEditTask');
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function closeEditTaskModal() {
+    const modal = document.getElementById('modalEditTask');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function saveEditTask() {
+    const id = document.getElementById('editTaskId').value;
+    const tasks = getDynamicTasks();
+    const index = tasks.findIndex(t => t.id === id);
+    if (index === -1) return;
+
+    const title = document.getElementById('editTaskTitle').value.trim();
+    if (!title) {
+      showToast('Judul tidak boleh kosong!');
+      return;
+    }
+
+    const taskType = document.getElementById('editTaskType').value;
+    tasks[index].title = title;
+    tasks[index].type = taskType;
+    tasks[index].typeLabel = taskType === 'kuis' ? 'Kuis Evaluasi' : 'Tugas Praktik';
+    tasks[index].category = document.getElementById('editTaskCategory').value.trim() || 'Komunitas Bisnis';
+    tasks[index].deadline = document.getElementById('editTaskDeadline').value.trim() || 'Minggu Ini, 23:59 WIB';
+    tasks[index].points = document.getElementById('editTaskPoints').value.trim() || '25 Poin';
+    tasks[index].desc = document.getElementById('editTaskDesc').value.trim();
+
+    saveDynamicTasks(tasks);
+    closeEditTaskModal();
+
+    renderDynamicTasks();
+    updateProgressBar();
+    showToast(`✓ Perubahan "${title}" berhasil disimpan dan tersinkron!`);
+  }
+
+  // Admin Feature: Delete Task
+  function deleteTask(taskId) {
+    if (!isUserAdmin()) {
+      showToast('Akses Ditolak: Hanya Administrator yang dapat menghapus tugas.');
+      return;
+    }
+    const tasks = getDynamicTasks();
+    const task = tasks.find(t => t.id === taskId);
+    const title = task ? task.title : 'Item';
+
+    if (!confirm(`Apakah Anda yakin ingin menghapus "${title}" dari kurikulum?`)) {
+      return;
+    }
+
+    const updatedTasks = tasks.filter(t => t.id !== taskId);
+    saveDynamicTasks(updatedTasks);
+
+    // Also clean done map
+    const map = getDoneMap();
+    delete map[taskId];
+    saveDoneMap(map);
+
+    renderDynamicTasks();
+    updateProgressBar();
+    showToast(`Tugas "${title}" berhasil dihapus.`);
+  }
+
+  // Admin Feature: Empty State Tester ("Uji Kotak Kosong")
+  function clearAllTasks() {
+    saveDynamicTasks([]);
+    saveDoneMap({});
+    renderDynamicTasks();
+    updateProgressBar();
+    showToast('Seluruh data tugas dikosongkan. Status "Kotak Kosong" aktif.');
+  }
+
+  // Admin Feature: Reset to Default Seed Data
+  function resetDefaultTasks() {
+    saveDynamicTasks(SEED_TASKS);
+    const map = {};
+    SEED_TASKS.forEach(t => {
+      map[t.id] = !!t.defaultDone;
+    });
+    saveDoneMap(map);
+    renderDynamicTasks();
+    updateProgressBar();
+    showToast('Data contoh tugas & kuis komunitas berhasil dimuat ulang!');
+  }
+
+  // Student Helper: Mark All as Done
+  function markAllAsDone() {
+    const tasks = getDynamicTasks();
+    const map = getDoneMap();
+    tasks.forEach(t => {
+      map[t.id] = true;
+    });
+    saveDoneMap(map);
+    renderDynamicTasks();
+    updateProgressBar();
+    showToast('✓ Semua tugas dan kuis telah ditandai Done (100% Selesai)!');
+  }
+
+  // Student Helper: Reset All Done Status
+  function resetAllDone() {
+    const tasks = getDynamicTasks();
+    const map = {};
+    tasks.forEach(t => {
+      map[t.id] = false;
+    });
+    saveDoneMap(map);
+    renderDynamicTasks();
+    updateProgressBar();
+    showToast('Seluruh progres tugas telah di-reset ke 0%.');
+  }
+
+  // Filter functionality
+  function filterItems(type) {
+    activeFilter = type;
+    const tabIds = ['all', 'tugas', 'kuis', 'done', 'pending'];
+    tabIds.forEach(id => {
+      const btn = document.getElementById('filter-btn-' + id);
+      if (btn) {
+        if (id === type) {
+          btn.className = "filter-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-primary shadow-xs transition-all";
+        } else {
+          btn.className = "filter-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all";
+        }
+      }
+    });
+    renderDynamicTasks();
+  }
+
+  // Render Dynamic Tasks List (including Kotak Kosong empty state)
+  function renderDynamicTasks() {
+    const container = document.getElementById('dynamic-tasks-container');
+    if (!container) return;
+
+    const tasks = getDynamicTasks();
+    const map = getDoneMap();
+    const isAdmin = isUserAdmin();
+
+    // 1. Check for Empty State (Kotak Kosong)
+    if (!tasks || tasks.length === 0) {
+      container.innerHTML = `
+        <div class="bg-surface-container-lowest rounded-2xl p-10 sm:p-14 border-2 border-dashed border-slate-300 shadow-xs flex flex-col items-center justify-center text-center">
+          <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4 ring-8 ring-amber-50/50">
+            <span class="material-symbols-outlined text-3xl">assignment_late</span>
+          </div>
+          <h3 class="font-bold text-slate-800 text-lg sm:text-xl mb-1.5">
+            Belum ada tugas/kuis yang ditambahkan oleh Admin
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-500 max-w-md mb-6 leading-relaxed">
+            Saat ini kurikulum belum memiliki penugasan atau kuis yang aktif. Administrator dapat menambahkan topik belajar baru kapan saja melalui tombol di bawah.
+          </p>
+          <div class="flex items-center gap-3 flex-wrap justify-center">
+            ${isAdmin ? `
+              <button onclick="openCreateTaskModal()" class="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all" type="button">
+                <span class="material-symbols-outlined text-base">add_circle</span>
+                <span>+ Tambah Tugas / Kuis Pertama</span>
+              </button>
+              <button onclick="resetDefaultTasks()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all" type="button">
+                <span class="material-symbols-outlined text-base">restart_alt</span>
+                <span>Muat Contoh Data Komunitas</span>
+              </button>
+            ` : `
+              <button onclick="toggleDemoRole('admin')" class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all" type="button">
+                <span class="material-symbols-outlined text-base">admin_panel_settings</span>
+                <span>Masuk Mode Admin untuk Tambah Tugas</span>
+              </button>
+            `}
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    // 2. Filter tasks
+    let filteredTasks = tasks;
+    if (activeFilter === 'tugas') {
+      filteredTasks = tasks.filter(t => t.type === 'tugas');
+    } else if (activeFilter === 'kuis') {
+      filteredTasks = tasks.filter(t => t.type === 'kuis');
+    } else if (activeFilter === 'done') {
+      filteredTasks = tasks.filter(t => !!map[t.id]);
+    } else if (activeFilter === 'pending') {
+      filteredTasks = tasks.filter(t => !map[t.id]);
+    }
+
+    if (filteredTasks.length === 0) {
+      container.innerHTML = `
+        <div class="bg-surface-container-lowest rounded-2xl p-8 border border-slate-200 shadow-xs text-center flex flex-col items-center justify-center">
+          <span class="material-symbols-outlined text-3xl text-slate-400 mb-2">filter_alt_off</span>
+          <p class="text-sm font-semibold text-slate-700">Tidak ada tugas/kuis yang cocok dengan filter "${activeFilter}".</p>
+          <button onclick="filterItems('all')" class="mt-3 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition-all">Tampilkan Semua</button>
+        </div>
+      `;
+      return;
+    }
+
+    // 3. Render Task Cards
+    let html = '';
+    filteredTasks.forEach(item => {
+      const isDone = !!map[item.id];
+      const isKuis = item.type === 'kuis';
+
+      html += `
+      <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border ${isDone ? 'border-emerald-200 bg-gradient-to-r from-emerald-50/20 to-white' : 'border-slate-200/90 hover:border-slate-300'} transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        
+        <!-- Left: Status Indicator & Content -->
+        <div class="flex items-start gap-3.5 min-w-0 flex-1">
+          <!-- Checkmark Icon Button for rapid toggling -->
+          <button type="button" onclick="toggleMarkAsDone('${item.id}')" class="shrink-0 mt-0.5 focus:outline-none transition-transform active:scale-95" title="${isDone ? 'Tandai belum selesai' : 'Klik untuk Mark as Done'}">
+            ${isDone ? `
+              <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-sm shadow-emerald-500/30">
+                <span class="material-symbols-outlined text-lg">check</span>
+              </div>
+            ` : `
+              <div class="w-8 h-8 rounded-full border-2 border-slate-300 hover:border-emerald-500 text-transparent hover:text-emerald-500 flex items-center justify-center transition-colors">
+                <span class="material-symbols-outlined text-sm">check</span>
+              </div>
+            `}
+          </button>
+
+          <!-- Task Details -->
+          <div class="flex flex-col min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <!-- Type Badge -->
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isKuis ? 'bg-purple-50 text-purple-700 border border-purple-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+                ${item.typeLabel || (isKuis ? 'Kuis' : 'Tugas')}
+              </span>
+
+              <!-- Category Badge -->
+              <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">
+                ${item.category || 'Komunitas Bisnis'}
+              </span>
+
+              <!-- Status Pill -->
+              ${isDone ? `
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
+                  <span>Done ✓</span>
+                </span>
+              ` : `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                  <span class="material-symbols-outlined text-xs">hourglass_top</span>
+                  <span>Belum Selesai</span>
+                </span>
+              `}
+            </div>
+
+            <!-- Title -->
+            <h4 class="font-bold text-slate-900 text-sm sm:text-base leading-snug ${isDone ? 'text-slate-700' : ''}">
+              ${item.title}
+            </h4>
+
+            <!-- Description -->
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+              ${item.desc}
+            </p>
+
+            <!-- Meta & Admin Info -->
+            <div class="flex items-center gap-3 mt-2 flex-wrap text-[11px] text-slate-400">
+              <span class="flex items-center gap-1 font-medium text-slate-500">
+                <span class="material-symbols-outlined text-xs">schedule</span>
+                <span>${item.deadline || 'Minggu Ini'}</span>
+              </span>
+              <span>•</span>
+              <span class="font-medium text-slate-500">${item.points || '25 Poin'}</span>
+
+              ${isDone ? `
+                <span class="text-emerald-700 font-semibold flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">verified</span>
+                  <span>Tuntas Dipelajari</span>
+                </span>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Actions (Mark as done & Admin CRUD) -->
+        <div class="flex items-center gap-2 shrink-0 self-end sm:self-center flex-wrap">
+          
+          <!-- Admin Actions (Edit & Hapus) -->
+          ${isAdmin ? `
+            <div class="flex items-center gap-1 pr-1 border-r border-slate-200">
+              <button type="button" onclick="openEditTaskModal('${item.id}')" class="p-2 rounded-xl text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center gap-1 text-xs font-semibold" title="Edit Judul & Deskripsi">
+                <span class="material-symbols-outlined text-base">edit</span>
+                <span class="hidden sm:inline">Edit</span>
+              </button>
+              <button type="button" onclick="deleteTask('${item.id}')" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors flex items-center gap-1 text-xs font-semibold" title="Hapus Tugas">
+                <span class="material-symbols-outlined text-base">delete</span>
+                <span class="hidden sm:inline">Hapus</span>
+              </button>
+            </div>
+          ` : ''}
+
+          <!-- Student "Mark as done" Button -->
+          ${isDone ? `
+            <button type="button" onclick="toggleMarkAsDone('${item.id}')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm shadow-emerald-600/20 transition-all cursor-pointer whitespace-nowrap" title="Klik untuk membatalkan jika ingin mengulang">
+              <span class="material-symbols-outlined text-base">verified</span>
+              <span>Done ✓</span>
+            </button>
+          ` : `
+            <button type="button" onclick="toggleMarkAsDone('${item.id}')" class="px-4 py-2 rounded-xl bg-white hover:bg-emerald-50 border-2 border-slate-200 hover:border-emerald-500 text-slate-700 hover:text-emerald-700 font-bold text-xs flex items-center gap-1.5 shadow-xs transition-all cursor-pointer whitespace-nowrap group">
+              <span class="material-symbols-outlined text-base text-slate-400 group-hover:text-emerald-600">check_circle</span>
+              <span>Mark as done</span>
+            </button>
+          `}
+
+        </div>
+
+      </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  }
+
+  // Update Live Progress Bar
+  function updateProgressBar() {
+    const tasks = getDynamicTasks();
+    const map = getDoneMap();
+    const total = tasks.length;
+    let doneCount = 0;
+    let tugasCount = 0;
+    let kuisCount = 0;
+    let pendingCount = 0;
+
+    tasks.forEach(item => {
+      if (item.type === 'tugas') tugasCount++;
+      if (item.type === 'kuis') kuisCount++;
+      if (map[item.id]) {
+        doneCount++;
+      } else {
+        pendingCount++;
+      }
+    });
+
+    const percent = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+
+    const badgeEl = document.getElementById('progress-percent-badge');
+    const textEl = document.getElementById('progress-percent-text');
+    const barEl = document.getElementById('main-progress-bar');
+    const countTextEl = document.getElementById('progress-count-text');
+    const statusPill = document.getElementById('progress-status-pill');
+
+    if (badgeEl) badgeEl.textContent = `${percent}%`;
+    if (textEl) textEl.textContent = `${percent}%`;
+    if (barEl) barEl.style.width = `${percent}%`;
+    if (countTextEl) countTextEl.textContent = `${doneCount} dari ${total} Aktivitas Selesai (${percent}% Tuntas)`;
+
+    if (statusPill) {
+      if (total === 0) {
+        statusPill.textContent = 'Belum Ada Data';
+        statusPill.className = 'text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600';
+      } else if (percent === 100) {
+        statusPill.textContent = 'Semua Selesai ✓';
+        statusPill.className = 'text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300';
+      } else if (percent >= 50) {
+        statusPill.textContent = 'Sedang Berjalan';
+        statusPill.className = 'text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary';
+      } else {
+        statusPill.textContent = 'Perlu Dikerjakan';
+        statusPill.className = 'text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800';
+      }
+    }
+
+    const countAllEl = document.getElementById('count-all');
+    const countTugasEl = document.getElementById('count-tugas');
+    const countKuisEl = document.getElementById('count-kuis');
+    const countDoneEl = document.getElementById('count-done');
+    const countPendingEl = document.getElementById('count-pending');
+
+    if (countAllEl) countAllEl.textContent = total;
+    if (countTugasEl) countTugasEl.textContent = tugasCount;
+    if (countKuisEl) countKuisEl.textContent = kuisCount;
+    if (countDoneEl) countDoneEl.textContent = doneCount;
+    if (countPendingEl) countPendingEl.textContent = pendingCount;
+  }
+
+  // Role Banner (Only visible when Admin is previewing as student)
+  function renderRoleBanner() {
+    const container = document.getElementById('roleBannerContainer');
+    if (!container) return;
+    const isSimulating = (sessionStorage.getItem('bdc_admin_simulating_student') === 'true');
+
+    if (isSimulating) {
+      container.innerHTML = `
+        <div class="p-3.5 px-4 rounded-2xl bg-purple-100/90 border border-purple-300 text-purple-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div class="flex items-center gap-2.5">
+            <span class="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-lg">visibility</span>
+            </span>
+            <div class="flex flex-col">
+              <span class="text-xs font-bold text-purple-950">Mode Jadi Siswa (Pratinjau Khusus Administrator)</span>
+              <span class="text-[11px] text-purple-700">Anda sedang melihat checklist dari sudut pandang mahasiswa. Siswa asli tidak dapat mengakses kontrol Admin ini.</span>
+            </div>
+          </div>
+          <button onclick="exitStudentSimulation()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 self-start sm:self-auto cursor-pointer" type="button">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            <span>Kembali ke Mode Admin</span>
+          </button>
+        </div>
+      `;
+    } else {
+      // Hidden from regular students! Gambar 2 is not displayed
+      container.innerHTML = '';
+    }
+  }
+
+  function enterStudentSimulation() {
+    sessionStorage.setItem('bdc_admin_simulating_student', 'true');
+    const studentUser = (typeof BDC_DATABASE !== 'undefined' && BDC_DATABASE.defaultStudent) 
+      ? BDC_DATABASE.defaultStudent 
+      : { name: "Siti Rahmawati", email: "siti.rahmawati@perusahaan.co.id", role: "learner", roleTitle: "Corporate Cyber Defense Specialist", nip: "255720056", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80" };
+    if (typeof setAuthUser === 'function') {
+      setAuthUser(studentUser);
+    } else {
+      localStorage.setItem('bdc_auth_user', JSON.stringify(studentUser));
+    }
+
+    checkExamRoleControl();
+    populateExamCandidateInfo();
+    renderRoleBanner();
+    renderDynamicTasks();
+    updateProgressBar();
+
+    showToast('Masuk ke Mode Jadi Siswa (Pratinjau tampilan mahasiswa).');
+  }
+
+  function exitStudentSimulation() {
+    sessionStorage.removeItem('bdc_admin_simulating_student');
+    const adminUser = (typeof BDC_DATABASE !== 'undefined' && BDC_DATABASE.defaultAdmin) 
+      ? BDC_DATABASE.defaultAdmin 
+      : { name: "Dr. Evelyn Vance", email: "admin@perusahaan.co.id", role: "admin", roleTitle: "Academic Dean & Community Curator", nip: "ADM-0001-EV", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80" };
+    if (typeof setAuthUser === 'function') {
+      setAuthUser(adminUser);
+    } else {
+      localStorage.setItem('bdc_auth_user', JSON.stringify(adminUser));
+    }
+
+    checkExamRoleControl();
+    populateExamCandidateInfo();
+    renderRoleBanner();
+    renderDynamicTasks();
+    updateProgressBar();
+
+    showToast('Kembali ke Mode Administrator.');
+  }
+
+  // User Profile Data
+  function populateExamCandidateInfo() {
+    if (typeof getAuthUser !== 'function') return;
+    const user = getAuthUser();
+    const nameEl = document.getElementById('exam-user-name');
+    const idEl = document.getElementById('exam-user-id');
+    const roleBadgeEl = document.getElementById('exam-user-role-badge');
+    const avatarEl = document.getElementById('exam-user-avatar');
+    const headerName = document.getElementById('headerUserName');
+    const headerRole = document.getElementById('headerUserRole');
+    const headerAvatar = document.getElementById('headerUserAvatar');
+
+    const isAdmin = (user.role === 'admin' || user.role === 'instructor');
+
+    if (nameEl && user && user.name) nameEl.textContent = user.name;
+    if (headerName && user && user.name) headerName.textContent = user.name;
+
+    if (idEl && user) {
+      idEl.textContent = isAdmin 
+        ? `NIP: ${user.nip || 'ADM-0001-EV'}` 
+        : `NIM: ${user.nip || '255720056'}`;
+    }
+
+    if (roleBadgeEl && user) {
+      roleBadgeEl.textContent = isAdmin ? 'Administrator' : 'Mahasiswa';
+      if (isAdmin) {
+        roleBadgeEl.className = "px-2.5 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-bold shrink-0";
+      } else {
+        roleBadgeEl.className = "px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold shrink-0";
+      }
+    }
+
+    if (headerRole) {
+      headerRole.textContent = isAdmin ? 'Administrator' : 'Mahasiswa';
+    }
+
+    if (avatarEl && user && user.avatar) avatarEl.src = user.avatar;
+    if (headerAvatar && user && user.avatar) headerAvatar.src = user.avatar;
+
+    // Header switcher pills
+    const adminBtn = document.getElementById('headerRoleAdminBtn');
+    const studentBtn = document.getElementById('headerRoleStudentBtn');
+    if (adminBtn && studentBtn) {
+      if (isAdmin) {
+        adminBtn.className = "px-3 py-1 text-on-primary bg-primary font-label-badge text-label-badge rounded-full transition-all shadow-sm cursor-default";
+        studentBtn.className = "px-3 py-1 text-on-surface-variant hover:text-on-surface font-label-badge text-label-badge rounded-full transition-all cursor-pointer";
+      } else {
+        studentBtn.className = "px-3 py-1 text-on-primary bg-primary font-label-badge text-label-badge rounded-full transition-all shadow-sm cursor-default";
+        adminBtn.className = "px-3 py-1 text-on-surface-variant hover:text-on-surface font-label-badge text-label-badge rounded-full transition-all cursor-pointer";
+      }
+    }
+  }
+
+  function renderSidebarCards() {
+    const guideContainer = document.getElementById('sidebarGuideContainer');
+    const shortcutsContainer = document.getElementById('sidebarShortcutsContainer');
+    const isAdmin = isUserAdmin();
+
+    if (guideContainer) {
+      if (isAdmin) {
+        guideContainer.innerHTML = `
+          <div class="bg-gradient-to-br from-purple-50/80 via-white to-purple-50/40 rounded-2xl p-5 shadow-sm border border-purple-200/80 flex flex-col gap-3.5">
+            <div class="flex items-center gap-2 text-purple-700 font-bold text-sm">
+              <div class="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-base">admin_panel_settings</span>
+              </div>
+              <h3>Panduan Kurator / Admin</h3>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Wewenang penuh pengelolaan kurikulum dan aktivitas penugasan komunitas:
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-700">
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-purple-600 text-sm mt-0.5 shrink-0">add_task</span>
+                <span><strong>Tambah Topik:</strong> Gunakan tombol <em>"+ Tambah Tugas / Kuis Baru"</em> untuk menerbitkan penugasan mingguan.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-indigo-600 text-sm mt-0.5 shrink-0">edit_note</span>
+                <span><strong>Edit Judul/Deskripsi:</strong> Klik tombol <em>"Edit"</em> pada masing-masing kartu tugas untuk memperbarui instruksi.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-rose-600 text-sm mt-0.5 shrink-0">delete</span>
+                <span><strong>Hapus Tugas:</strong> Hapus item yang telah usang agar kurikulum selalu relevan.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-slate-500 text-sm mt-0.5 shrink-0">inbox</span>
+                <span><strong>Uji Kotak Kosong:</strong> Verifikasi tampilan saat tidak ada data tugas di kurikulum.</span>
+              </li>
+            </ul>
+          </div>
+        `;
+      } else {
+        guideContainer.innerHTML = `
+          <div class="bg-gradient-to-br from-indigo-50/70 via-white to-primary/5 rounded-2xl p-5 shadow-sm border border-indigo-100 flex flex-col gap-3.5">
+            <div class="flex items-center gap-2 text-primary font-bold text-sm">
+              <div class="w-7 h-7 rounded-lg bg-primary text-white flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-base">task_alt</span>
+              </div>
+              <h3>Panduan Belajar Mahasiswa</h3>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Panduan praktis menyelesaikan tugas kurikulum komunitas:
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-700">
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-emerald-600 text-sm mt-0.5 shrink-0">check_circle</span>
+                <span><strong>Tandai Selesai:</strong> Cukup klik tombol <strong>"Mark as done"</strong> pada tugas/kuis yang sudah Anda kerjakan.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-primary text-sm mt-0.5 shrink-0">trending_up</span>
+                <span><strong>Progres Otomatis:</strong> Nilai capaian kelulusan dan persentase progress bar langsung ter-update seketika.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-indigo-600 text-sm mt-0.5 shrink-0">menu_book</span>
+                <span><strong>Materi Terintegrasi:</strong> Buka halaman <em>Courses</em> untuk membaca silabus dan menonton arsip sharing.</span>
+              </li>
+            </ul>
+            <div class="p-3 rounded-xl bg-white/80 border border-indigo-100 text-[11px] text-slate-500 flex items-center gap-2">
+              <span class="material-symbols-outlined text-sm text-indigo-500">verified</span>
+              <span>Penugasan dikurasi langsung oleh Inisiator &amp; Pemateri Komunitas.</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    if (shortcutsContainer) {
+      if (isAdmin) {
+        shortcutsContainer.innerHTML = `
+          <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 class="font-bold text-slate-900 text-xs uppercase tracking-wider text-slate-500">Aksi Admin Kurikulum</h3>
+              <span class="text-[10px] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full">Admin CRUD</span>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <button type="button" onclick="openCreateTaskModal()" class="p-3 rounded-xl bg-purple-50 hover:bg-purple-100/70 border border-purple-200 text-left transition-all flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-purple-600 text-base">add_task</span>
+                  <div class="flex flex-col">
+                    <span class="font-bold text-xs text-purple-900">+ Buat Tugas Baru</span>
+                    <span class="text-[10px] text-purple-600">Terbitkan ke siswa</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-purple-800 bg-white px-2 py-0.5 rounded border border-purple-200">Buka</span>
+              </button>
+
+              <button type="button" onclick="clearAllTasks()" class="p-3 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-left transition-all flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-rose-600 text-base">inbox</span>
+                  <div class="flex flex-col">
+                    <span class="font-bold text-xs text-rose-800">Uji Kotak Kosong</span>
+                    <span class="text-[10px] text-rose-500">Simulasi 0 data</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-rose-700 bg-white px-2 py-0.5 rounded border border-rose-200">Kosongkan</span>
+              </button>
+
+              <a href="MateriPembelajaran.html" class="p-3 rounded-xl bg-indigo-50 hover:bg-indigo-100/70 border border-indigo-200 text-left transition-all flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-indigo-600 text-base">school</span>
+                  <div class="flex flex-col">
+                    <span class="font-bold text-xs text-indigo-900">Pusat Belajar &amp; Courses</span>
+                    <span class="text-[10px] text-indigo-600">Arsip materi &amp; sharing</span>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-indigo-600 text-sm">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        `;
+      } else {
+        // PURE STUDENT SHORTCUTS: Absolutely NO Admin CRUD actions!
+        shortcutsContainer.innerHTML = `
+          <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col gap-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 class="font-bold text-slate-900 text-xs uppercase tracking-wider text-slate-500">Aktivitas Mahasiswa</h3>
+              <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">Siswa</span>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <a href="MateriPembelajaran.html" class="p-3 rounded-xl bg-indigo-50 hover:bg-indigo-100/70 border border-indigo-200 text-left transition-all flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-indigo-600 text-base">school</span>
+                  <div class="flex flex-col">
+                    <span class="font-bold text-xs text-indigo-900">Pusat Belajar &amp; Courses</span>
+                    <span class="text-[10px] text-indigo-600">Buka modul &amp; rekaman sharing</span>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-indigo-600 text-sm">arrow_forward</span>
+              </a>
+
+              <button type="button" onclick="resetAllDone()" class="p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left transition-all flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-slate-500 text-base">restart_alt</span>
+                  <div class="flex flex-col">
+                    <span class="font-bold text-xs text-slate-800">Reset Progres Belajar Saya</span>
+                    <span class="text-[10px] text-slate-500">Mulai ulang penandaan tugas</span>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-slate-600 bg-white px-2 py-0.5 rounded border border-slate-200">Reset</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+  }
+
+  function checkExamRoleControl() {
+    const user = (typeof getAuthUser === 'function') ? getAuthUser() : { role: 'learner' };
+    const isAdmin = (user.role === 'instructor' || user.role === 'admin');
+    const isSimulating = (sessionStorage.getItem('bdc_admin_simulating_student') === 'true');
+    const creatorPanel = document.getElementById('adminExamCreatorPanel');
+    const btnGiveTask = document.getElementById('btnHeaderGiveTask');
+    const headerToggleContainer = document.getElementById('headerRoleToggleContainer');
+
+    if (!isAdmin) {
+      if (creatorPanel) creatorPanel.classList.add('hidden');
+      if (btnGiveTask) btnGiveTask.classList.add('hidden');
+      if (headerToggleContainer) {
+        if (isSimulating) {
+          headerToggleContainer.classList.remove('hidden');
+        } else {
+          headerToggleContainer.classList.add('hidden');
+        }
+      }
+    } else {
+      if (creatorPanel) creatorPanel.classList.remove('hidden');
+      if (btnGiveTask) btnGiveTask.classList.remove('hidden');
+      if (headerToggleContainer) headerToggleContainer.classList.remove('hidden');
+    }
+
+    renderSidebarCards();
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast-message');
+    const text = document.getElementById('toast-text');
+    if (text) text.innerText = msg;
+    if (toast) {
+      toast.classList.remove('translate-y-24');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24');
+      }, 3500);
+    }
+  }
+
+  // Mobile sidebar helper
+  function toggleMobileSidebar(show) {
+    const sidebar = document.getElementById('appSidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (!sidebar || !backdrop) return;
+    const isHidden = sidebar.classList.contains('-translate-x-full');
+    const open = (typeof show === 'boolean') ? show : isHidden;
+    if (open) {
+      sidebar.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+    } else {
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    }
+  }
+
+  // Initialization
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check URL parameters for mode
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode') === 'creator' || params.get('mode') === 'admin') {
+      if (typeof setAuthUser === 'function') {
+        const adminUser = (typeof BDC_DATABASE !== 'undefined' && BDC_DATABASE.defaultAdmin) 
+          ? BDC_DATABASE.defaultAdmin 
+          : { name: "Dr. Evelyn Vance", email: "admin@perusahaan.co.id", role: "admin", nip: "ADM-0001-EV" };
+        setAuthUser(adminUser);
+      }
+    }
+
+    checkExamRoleControl();
+    populateExamCandidateInfo();
+    renderRoleBanner();
+    renderDynamicTasks();
+    updateProgressBar();
+  });
+</script>
+</body></html>

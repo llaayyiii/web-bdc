@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="web_standard" name="shell-type"/>
+  <title>Pusat Cetak &amp; Editor Sertifikat (Admin) - Business Dev Club</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+
+    /* Print Stylesheet Isolation */
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #multi-page-export-wrapper, #multi-page-export-wrapper * {
+        visibility: visible;
+      }
+      #multi-page-export-wrapper {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .printable-page {
+        width: 297mm !important;
+        min-height: 210mm !important;
+        margin: 0 !important;
+        padding: 10mm 14mm !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        page-break-after: always !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      [contenteditable="true"] {
+        outline: none !important;
+        border: none !important;
+      }
+    }
+
+    /* Admin Inline Editing Highlights */
+    .admin-edit-active [contenteditable="true"] {
+      outline: 1.5px dashed #4338ca !important;
+      outline-offset: 2px;
+      border-radius: 4px;
+      cursor: text;
+    }
+    .admin-edit-active [contenteditable="true"]:hover {
+      background-color: rgba(67, 56, 202, 0.05);
+      outline-color: #2a14b4 !important;
+    }
+    .admin-edit-active [contenteditable="true"]:focus {
+      outline: 2px solid #2a14b4 !important;
+      background-color: rgba(67, 56, 202, 0.08);
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "navy-admin-bg": "#0F172A",
+            "navy-admin-card": "#1E293B",
+            "primary": "#2a14b4",
+            "primary-container": "#4338ca",
+            "on-primary": "#ffffff",
+            "secondary": "#4648d4",
+            "surface": "#faf8ff",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f2f3ff",
+            "surface-container": "#eaedff",
+            "surface-container-high": "#e2e7ff",
+            "on-surface": "#131b2e",
+            "on-surface-variant": "#464554",
+            "slate-border": "#E2E8F0",
+            "slate-elevated": "#FFFFFF",
+            "slate-muted": "#64748B",
+            "accent-emerald-success": "#10B981",
+            "accent-cyan-vibrant": "#06B6D4",
+            "accent-amber-warning": "#F59E0B"
+          },
+          fontFamily: {
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "title-card": ["Plus Jakarta Sans"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-badge": ["Plus Jakarta Sans"],
+            "label-caps": ["Plus Jakarta Sans"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface-container-low font-body-md text-on-surface">
+
+  <!-- TOP HEADER (Clean & Minimalist) -->
+  <header class="no-print fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="h-16 max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
+      
+      <!-- Left: Back Button & Title -->
+      <div class="flex items-center gap-3">
+        <a href="DasborAdmin.htm" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all text-xs font-bold" title="Kembali ke Dasbor Admin">
+          <span class="material-symbols-outlined text-base">arrow_back</span>
+          <span class="hidden sm:inline">Dasbor Admin</span>
+        </a>
+        <div class="h-5 w-px bg-slate-200 hidden sm:block"></div>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-sm shadow-sm">
+            B
+          </div>
+          <div>
+            <h1 class="font-bold text-sm text-navy-admin-bg leading-none">Pusat Cetak &amp; Editor Sertifikat</h1>
+            <span class="text-[10px] text-slate-400 uppercase font-semibold tracking-wider">Business Dev Club Print Suite</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Role & Student View Switcher -->
+      <div class="flex items-center gap-3">
+        <a href="SertifikatKelulusan.html" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary text-xs font-bold transition-all" title="Buka tampilan sertifikat yang dilihat siswa">
+          <span class="material-symbols-outlined text-sm">visibility</span>
+          <span>Lihat Versi Siswa</span>
+        </a>
+        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-bold">
+          <span class="material-symbols-outlined text-sm">admin_panel_settings</span>
+          <span>Admin Otoritas Penuh</span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- STICKY ACTION & VIEW TOOLBAR -->
+  <section class="no-print w-full pt-20 pb-3 px-4 sm:px-6 bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+      
+      <!-- View Switcher Tabs (Simple, Pill-based) -->
+      <div class="flex items-center gap-1 p-1 bg-slate-100 rounded-xl text-xs font-bold">
+        <button id="tab-view-both" onclick="switchPageView('both')" class="px-3.5 py-1.5 rounded-lg bg-primary text-white shadow-sm transition-all flex items-center gap-1.5" type="button">
+          <span class="material-symbols-outlined text-base">auto_stories</span>
+          <span>Bundel 2 Halaman</span>
+        </button>
+        <button id="tab-view-hal1" onclick="switchPageView('hal1')" class="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5" type="button">
+          <span class="material-symbols-outlined text-base">workspace_premium</span>
+          <span>Hal 1: Sertifikat</span>
+        </button>
+        <button id="tab-view-hal2" onclick="switchPageView('hal2')" class="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5" type="button">
+          <span class="material-symbols-outlined text-base">description</span>
+          <span>Hal 2: Transkrip Nilai</span>
+          <span id="tab-sks-badge" class="px-1.5 py-0.2 rounded bg-slate-200 text-[10px] text-slate-700">40 SKS</span>
+        </button>
+      </div>
+
+      <!-- Action Buttons: Print, Download, Edit Toggle -->
+      <div class="flex flex-wrap items-center gap-2 self-stretch md:self-auto justify-end">
+        
+        <!-- Toggle Form Editor Panel -->
+        <button id="btnToggleEditForm" onclick="toggleEditPanel()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm" type="button">
+          <span class="material-symbols-outlined text-base text-primary" id="iconEditForm">edit_note</span>
+          <span id="textEditForm">Formulir Data</span>
+        </button>
+
+        <!-- Button: Edit Nama Siswa (Live Auto-Sync Popover) -->
+        <div class="relative inline-block text-left" id="studentQuickEditContainer">
+          <button id="btnStudentQuickEdit" onclick="toggleStudentQuickEditPopover()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 group" type="button" title="Klik untuk membuka tempat edit nama siswa secara otomatis">
+            <span class="material-symbols-outlined text-base text-amber-600 group-hover:rotate-12 transition-transform">edit</span>
+            <span>Edit Langsung: <strong id="btnActiveStudentName" class="text-primary underline font-bold ml-0.5">Siti Rahmawati</strong></span>
+            <span class="material-symbols-outlined text-xs text-slate-400 group-hover:text-primary transition-transform duration-200" id="iconStudentQuickArrow">expand_more</span>
+          </button>
+
+          <!-- Popover / Dropdown Modal untuk Edit Nama Siswa & Kredensial -->
+          <div id="studentQuickEditPopover" class="hidden absolute left-0 sm:right-0 sm:left-auto mt-2 w-88 sm:w-[460px] max-h-[85vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 text-xs text-slate-800 animate-fadeIn">
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-slate-100 sticky top-0 bg-white z-10">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-base">edit_note</span>
+                </div>
+                <div>
+                  <h4 class="font-bold text-xs text-slate-900 leading-tight">Edit Data Sertifikat &amp; Siswa</h4>
+                  <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Auto-Sync Realtime ke Lembar 1 &amp; 2
+                  </span>
+                </div>
+              </div>
+              <button onclick="toggleStudentQuickEditPopover(false)" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" type="button">
+                <span class="material-symbols-outlined text-base">close</span>
+              </button>
+            </div>
+
+            <!-- Input Box & Auto-Sync -->
+            <div class="space-y-3">
+              <!-- BAGIAN 1: IDENTITAS SISWA -->
+              <div class="bg-slate-50/70 p-3 rounded-xl border border-slate-200/80 space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-primary text-[11px] uppercase tracking-wider flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">person</span> Identitas Siswa
+                  </span>
+                  <span id="autoSyncStatusBadge" class="text-[10px] text-emerald-600 font-bold hidden flex items-center gap-0.5">
+                    <span class="material-symbols-outlined text-xs">check</span> Tersimpan
+                  </span>
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1 text-[11px]">Nama Lengkap Siswa:</label>
+                  <div class="relative">
+                    <input id="quickInputStudentName" type="text" value="Siti Rahmawati" oninput="autoSyncStudentName(this.value)" placeholder="Ketik nama siswa..." class="w-full text-xs font-bold text-navy-admin-bg rounded-lg border border-slate-300 px-3 py-2 pr-8 focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white outline-none transition-all"/>
+                    <button type="button" onclick="clearStudentNameInput()" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" title="Hapus teks">
+                      <span class="material-symbols-outlined text-xs">backspace</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- NIM / ID Siswa, Periode & Cohort -->
+                <div class="grid grid-cols-3 gap-2">
+                  <div>
+                    <label class="block font-semibold text-slate-600 mb-0.5 text-[11px]">NIM / ID Siswa:</label>
+                    <input id="quickInputStudentId" type="text" value="255720056" oninput="autoSyncStudentId(this.value)" class="w-full text-xs font-mono font-bold text-primary rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-600 mb-0.5 text-[11px]">Periode Program:</label>
+                    <input id="quickInputStudentPeriod" type="text" value="2026/2027" oninput="autoSyncStudentPeriod(this.value)" class="w-full text-xs font-bold text-slate-700 rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-600 mb-0.5 text-[11px]">Angkatan / Cohort:</label>
+                    <input id="quickInputStudentCohort" type="text" value="Cohort VI Nasional" oninput="autoSyncStudentCohort(this.value)" class="w-full text-xs rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none"/>
+                  </div>
+                </div>
+
+                <!-- Pilihan Siswa Cepat (Preset Chips) -->
+                <div>
+                  <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Pilih Cepat Siswa:</span>
+                  <div class="flex flex-wrap gap-1">
+                    <button type="button" onclick="selectQuickPresetStudent('Siti Rahmawati', '255720056', 'Cohort VI Nasional')" class="px-2 py-0.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-primary font-semibold text-[10px] transition-colors">
+                      Siti Rahmawati (255720056)
+                    </button>
+                    <button type="button" onclick="selectQuickPresetStudent('Budi Santoso, S.Kom.', '255720058', 'Cohort VI Nasional')" class="px-2 py-0.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold text-[10px] transition-colors">
+                      Budi Santoso (255720058)
+                    </button>
+                    <button type="button" onclick="selectQuickPresetStudent('Arya Dananjaya, M.Kom', '255720057', 'Cohort VI Nasional')" class="px-2 py-0.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold text-[10px] transition-colors">
+                      Arya Dananjaya (255720057)
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- BAGIAN 2: PROGRAM & NO. REGISTRASI -->
+              <div class="bg-slate-50/70 p-3 rounded-xl border border-slate-200/80 space-y-2.5">
+                <span class="font-bold text-primary text-[11px] uppercase tracking-wider flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">workspace_premium</span> Kredensial &amp; Kurikulum
+                </span>
+                
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-0.5 text-[11px]">No. Registrasi Sertifikat:</label>
+                    <input id="quickInputCertReg" type="text" value="BDC-CERT-2026-99482-SEC" oninput="autoSyncCertReg(this.value)" class="w-full text-xs font-mono font-bold text-primary rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none" placeholder="BDC-CERT-2026-99482-SEC"/>
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-0.5 text-[11px]">No. Transkrip:</label>
+                    <input id="quickInputTransNo" type="text" value="BDC-TRX-2026-99482" oninput="autoSyncTransNo(this.value)" class="w-full text-xs font-mono font-bold text-slate-700 rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none" placeholder="BDC-TRX-2026-99482"/>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-0.5 text-[11px]">Program Spesialisasi / Kurikulum:</label>
+                  <input id="quickInputProgramTitle" type="text" value="Cybersecurity Compliance &amp; ISO/IEC 27001 Enterprise Defense" oninput="autoSyncProgramTitle(this.value)" class="w-full text-xs font-semibold rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none" placeholder="Nama program pelatihan..."/>
+                </div>
+
+                <!-- Pilihan Cepat Program -->
+                <div>
+                  <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Pilihan Cepat Program:</span>
+                  <div class="flex flex-wrap gap-1">
+                    <button type="button" onclick="selectQuickProgram('Cybersecurity Compliance &amp; ISO/IEC 27001 Enterprise Defense')" class="px-2 py-0.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-primary font-medium text-[10px] transition-colors">
+                      Cybersecurity Defense
+                    </button>
+                    <button type="button" onclick="selectQuickProgram('Cloud Solutions Architecture &amp; DevOps')" class="px-2 py-0.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-medium text-[10px] transition-colors">
+                      Cloud Architecture
+                    </button>
+                    <button type="button" onclick="selectQuickProgram('Executive AI Engineering &amp; Machine Learning')" class="px-2 py-0.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-medium text-[10px] transition-colors">
+                      AI Engineering
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- BAGIAN 3: NILAI, JAM PELATIHAN, CAPSTONE & YUDISIUM -->
+              <div class="bg-slate-50/70 p-3 rounded-xl border border-slate-200/80 space-y-2.5">
+                <span class="font-bold text-primary text-[11px] uppercase tracking-wider flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">grade</span> Jam Pelatihan, Nilai &amp; Yudisium
+                </span>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-0.5 text-[11px]">Status Kelulusan:</label>
+                    <input id="quickInputGradStatus" type="text" value="LULUS (KOMPETEN)" oninput="autoSyncGradStatus(this.value)" class="w-full text-xs font-bold text-emerald-700 rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none" placeholder="LULUS (KOMPETEN)"/>
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-0.5 text-[11px]">Nilai Rata-rata (%):</label>
+                    <input id="quickInputAvgScore" type="text" value="96.4" oninput="autoSyncAvgScore(this.value)" class="w-full text-xs font-mono font-bold rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none" placeholder="96.4"/>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-0.5 text-[11px]">Total Jam Pelatihan (Hours):</label>
+                    <input id="quickInputTotalHours" type="text" value="64.5 Jam" oninput="autoSyncTotalHours(this.value)" class="w-full text-xs font-semibold text-slate-800 rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none" placeholder="64.5 Jam"/>
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-0.5 text-[11px]">Lokasi Penetapan:</label>
+                    <input id="quickInputGradLocation" type="text" value="Yogyakarta" oninput="autoSyncGradLocation(this.value)" class="w-full text-xs font-bold text-slate-900 rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none" placeholder="Yogyakarta"/>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-0.5 text-[11px]">Capstone Project:</label>
+                  <input id="quickInputCapstoneTitle" type="text" value="BDC Hub (Web Presensi &amp; Pembelajaran Community)" oninput="autoSyncCapstoneTitle(this.value)" class="w-full text-xs font-semibold text-primary rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none" placeholder="Judul Capstone Project..."/>
+                </div>
+
+                <!-- Preset Status Kelulusan -->
+                <div>
+                  <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Preset Status Evaluasi:</span>
+                  <div class="flex flex-wrap gap-1">
+                    <button type="button" onclick="selectQuickStatusPreset('LULUS PARIPURNA (KOMPETEN UNGGUL)', '98.0')" class="px-2 py-0.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold text-[10px] transition-colors">
+                      Paripurna (98.0%)
+                    </button>
+                    <button type="button" onclick="selectQuickStatusPreset('LULUS (KOMPETEN)', '96.4')" class="px-2 py-0.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-[10px] transition-colors">
+                      Kompeten (96.4%)
+                    </button>
+                    <button type="button" onclick="selectQuickStatusPreset('LULUS MEMUASKAN', '88.5')" class="px-2 py-0.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold text-[10px] transition-colors">
+                      Memuaskan (88.5%)
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-0.5 text-[11px]">Tanggal Penetapan / Kelulusan:</label>
+                  <input id="quickInputGradDate" type="text" value="24 Maret 2026" oninput="autoSyncGradDate(this.value)" class="w-full text-xs rounded-lg border border-slate-300 px-2.5 py-1.5 bg-white focus:border-primary outline-none" placeholder="24 Maret 2026"/>
+                </div>
+              </div>
+
+              <!-- Footer Buttons -->
+              <div class="pt-2 flex items-center justify-between border-t border-slate-100 sticky bottom-0 bg-white">
+                <button type="button" onclick="toggleEditPanel(); toggleStudentQuickEditPopover(false);" class="text-[11px] text-primary hover:underline font-semibold flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">tune</span> Buka Form Lengkap
+                </button>
+                <button type="button" onclick="toggleStudentQuickEditPopover(false)" class="px-4 py-1.5 rounded-xl bg-primary text-white font-bold text-xs shadow-sm hover:bg-primary-container transition-all">
+                  Selesai
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Print All / Current -->
+        <button onclick="executePrintTranscript()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm" type="button">
+          <span class="material-symbols-outlined text-base">print</span>
+          <span>Cetak Dokumen</span>
+        </button>
+
+        <!-- Primary Export Dropdown Button -->
+        <div class="relative inline-block text-left" id="downloadDropdownContainer">
+          <button onclick="toggleDownloadMenu()" class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all" type="button">
+            <span class="material-symbols-outlined text-base">download</span>
+            <span>Unduh PDF</span>
+            <span class="material-symbols-outlined text-xs">expand_more</span>
+          </button>
+          
+          <div id="downloadMenu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 text-xs font-medium">
+            <button onclick="exportMultiPageBundlePDF(); toggleDownloadMenu();" class="w-full text-left px-3.5 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-800 font-bold" type="button">
+              <span class="material-symbols-outlined text-primary text-base">file_copy</span>
+              <span>Bundel Lengkap (Hal 1 &amp; 2)</span>
+            </button>
+            <button onclick="exportCertificatePDF(); toggleDownloadMenu();" class="w-full text-left px-3.5 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700" type="button">
+              <span class="material-symbols-outlined text-amber-600 text-base">workspace_premium</span>
+              <span>Sertifikat Saja (Hal 1)</span>
+            </button>
+            <button onclick="exportTranscriptPDF(); toggleDownloadMenu();" class="w-full text-left px-3.5 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700" type="button">
+              <span class="material-symbols-outlined text-emerald-600 text-base">description</span>
+              <span>Transkrip Saja (Hal 2)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- COLLAPSIBLE ADMIN DATA FORM DRAWER (Clean, Tabbed, Hidden by default for clarity) -->
+  <section id="adminEditDrawer" class="no-print hidden w-full px-4 sm:px-6 py-4 bg-white border-b border-slate-200 shadow-inner transition-all duration-300">
+    <div class="max-w-7xl mx-auto bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-sm">
+      
+      <!-- Drawer Top Bar -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 border-b border-slate-200 gap-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center font-bold">
+            <span class="material-symbols-outlined text-base">tune</span>
+          </div>
+          <div>
+            <h2 class="font-bold text-sm text-navy-admin-bg">Formulir Pengaturan Data Sertifikat &amp; Transkrip</h2>
+            <p class="text-xs text-slate-500">Perubahan di bawah langsung tersinkronisasi ke lembar cetak.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="resetDefaultData()" class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center gap-1 transition-all" type="button">
+            <span class="material-symbols-outlined text-sm">restart_alt</span> Reset Default
+          </button>
+          <button onclick="saveAdminDataFeedback()" class="px-4 py-1.5 rounded-lg bg-accent-emerald-success text-white text-xs font-bold flex items-center gap-1 shadow-sm hover:opacity-90 transition-all" type="button">
+            <span class="material-symbols-outlined text-sm">save</span> Simpan Perubahan
+          </button>
+          <button onclick="toggleEditPanel()" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200" type="button">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Form Grid (3 Logical Columns) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-4 text-xs">
+        
+        <!-- Column 1: Identitas Peserta Didik -->
+        <div class="space-y-3 bg-white p-4 rounded-xl border border-slate-200/80">
+          <span class="font-bold text-primary flex items-center gap-1 text-[11px] uppercase tracking-wider">
+            <span class="material-symbols-outlined text-sm">person</span> Identitas Peserta Didik
+          </span>
+          <div>
+            <label class="block font-semibold text-slate-600 mb-1">Nama Lengkap Peserta</label>
+            <input id="form-student-name" oninput="handleFormInputChange()" type="text" value="Siti Rahmawati" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 focus:border-primary focus:ring-1 focus:ring-primary"/>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">NIM / ID</label>
+              <input id="form-student-id" oninput="handleFormInputChange()" type="text" value="255720056" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-mono font-bold text-primary focus:border-primary focus:ring-1 focus:ring-primary"/>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">Periode Program</label>
+              <input id="form-program-period" oninput="handleFormInputChange()" type="text" value="2026/2027" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-bold focus:border-primary focus:ring-1 focus:ring-primary"/>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">Angkatan / Cohort</label>
+              <input id="form-student-cohort" oninput="handleFormInputChange()" type="text" value="Cohort VI Nasional" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 focus:border-primary focus:ring-1 focus:ring-primary"/>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">Badge Cohort</label>
+              <input id="form-cohort-badge" oninput="handleFormInputChange()" type="text" value="TOP 3% COHORT" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 focus:border-primary focus:ring-1 focus:ring-primary"/>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-600 mb-1">Program Keahlian / Spesialisasi</label>
+            <input id="form-program-title" oninput="handleFormInputChange()" type="text" value="Cybersecurity Compliance &amp; ISO/IEC 27001 Enterprise Defense" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 focus:border-primary focus:ring-1 focus:ring-primary"/>
+          </div>
+        </div>
+
+        <!-- Column 2: Jam Pelatihan, Capstone & Kelulusan -->
+        <div class="space-y-3 bg-white p-4 rounded-xl border border-slate-200/80">
+          <span class="font-bold text-primary flex items-center gap-1 text-[11px] uppercase tracking-wider">
+            <span class="material-symbols-outlined text-sm">grade</span> Jam Pelatihan, Nilai &amp; Yudisium
+          </span>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">Status Kelulusan</label>
+              <input id="form-status-kelulusan" oninput="handleFormInputChange()" type="text" value="LULUS (KOMPETEN)" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-bold text-emerald-700 focus:border-primary focus:ring-1 focus:ring-primary"/>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">Nilai Rata-rata Modul (%)</label>
+              <input id="form-avg-score" oninput="handleFormInputChange()" type="text" value="96.4" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-mono font-bold focus:border-primary focus:ring-1 focus:ring-primary"/>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">Total Jam Pelatihan (Hours)</label>
+              <input id="form-total-hours" oninput="handleFormInputChange()" type="text" value="64.5 Jam" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-semibold text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary"/>
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">Lokasi Penetapan</label>
+              <input id="form-location" oninput="handleFormInputChange()" type="text" value="Yogyakarta" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-bold text-slate-900 focus:border-primary focus:ring-1 focus:ring-primary"/>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-600 mb-1">Capstone Project (BDC Hub)</label>
+            <input id="form-capstone-title" oninput="handleFormInputChange()" type="text" value="BDC Hub (Web Presensi &amp; Pembelajaran Community)" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-semibold text-primary focus:border-primary focus:ring-1 focus:ring-primary"/>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-600 mb-1">Tanggal Penetapan / Yudisium</label>
+            <input id="form-graduation-date" oninput="handleFormInputChange()" type="text" value="24 Maret 2026" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 focus:border-primary focus:ring-1 focus:ring-primary"/>
+          </div>
+        </div>
+
+        <!-- Column 3: No. Registrasi & Penandatangan Resmi -->
+        <div class="space-y-3 bg-white p-4 rounded-xl border border-slate-200/80 flex flex-col justify-between">
+          <div>
+            <span class="font-bold text-primary flex items-center gap-1 text-[11px] uppercase tracking-wider mb-2">
+              <span class="material-symbols-outlined text-sm">verified</span> Registrasi &amp; Penandatangan
+            </span>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">No. Sertifikat</label>
+                <input id="form-cert-reg" oninput="handleFormInputChange()" type="text" value="BDC-CERT-2026-99482-SEC" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-mono focus:border-primary focus:ring-1 focus:ring-primary"/>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-1">No. Transkrip</label>
+                <input id="form-transcript-no" oninput="handleFormInputChange()" type="text" value="BDC-TRX-2026-99482" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-mono focus:border-primary focus:ring-1 focus:ring-primary"/>
+              </div>
+            </div>
+            <div class="mt-2 space-y-2">
+              <div>
+                <label class="block font-semibold text-slate-600 mb-0.5">Penandatangan 1 (Kemahasiswaan)</label>
+                <input id="form-sign-dean" oninput="handleFormInputChange()" type="text" value="Bagas Triaji S.Kom.,M.Kom" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-bold focus:border-primary focus:ring-1 focus:ring-primary"/>
+              </div>
+              <div>
+                <label class="block font-semibold text-slate-600 mb-0.5">Penandatangan 2 (PIC Program BDC)</label>
+                <input id="form-sign-instructor" oninput="handleFormInputChange()" type="text" value="Nurul Layli" class="w-full text-xs rounded-lg border-slate-300 px-3 py-1.5 font-bold focus:border-primary focus:ring-1 focus:ring-primary"/>
+              </div>
+            </div>
+          </div>
+          <button onclick="addModuleRow()" class="w-full mt-2 py-2 px-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 hover:bg-primary/10 text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors" type="button">
+            <span class="material-symbols-outlined text-base">add_circle</span> Tambah Mata Pelatihan di Transkrip
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WORKSPACE CANVAS: A4 SHEETS CONTAINER -->
+  <main class="w-full px-4 sm:px-6 py-8 flex justify-center items-center overflow-x-auto min-h-screen admin-edit-active" id="workspace-container">
+    <div class="w-full max-w-[1122px] flex flex-col gap-8" id="multi-page-export-wrapper">
+      
+      <!-- LEMBAR 1: SERTIFIKAT KELULUSAN RESMI (A4 LANDSCAPE) -->
+      <div class="printable-page w-full max-w-[1122px] min-h-[794px] bg-white text-on-surface rounded-2xl shadow-xl relative overflow-hidden p-8 sm:p-12 flex flex-col justify-between border border-slate-200/80" id="cert-sheet-page">
+        
+        <!-- Watermark Background -->
+        <div class="absolute inset-0 pointer-events-none opacity-[0.03] flex items-center justify-center">
+          <svg class="w-[500px] h-[500px]" fill="none" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="90" stroke="currentColor" stroke-dasharray="4 2" stroke-width="2"></circle>
+            <circle cx="100" cy="100" r="70" stroke="currentColor" stroke-width="1.5"></circle>
+            <text fill="currentColor" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="bold" text-anchor="middle" x="100" y="115">BUSINESS DEV CLUB</text>
+          </svg>
+        </div>
+
+        <!-- Page 1 Header -->
+        <div class="w-full flex items-center justify-between border-b-2 border-primary/20 pb-3 mb-2">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm font-extrabold text-lg">
+              B
+            </div>
+            <div>
+              <span class="text-base text-primary font-extrabold uppercase tracking-tight block leading-tight">
+                BUSINESS DEV CLUB (BDC)
+              </span>
+              <span class="text-[10px] text-slate-500 block tracking-wider uppercase font-semibold">
+                Community Academy &amp; Student Chapter
+              </span>
+            </div>
+          </div>
+          <div class="text-right flex flex-col items-end">
+            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs tracking-wide font-bold uppercase inline-block border border-emerald-200">
+              Official Community Certificate (Halaman 1 / 2)
+            </span>
+            <div class="flex items-center gap-2 mt-1 text-xs text-slate-500 group cursor-pointer" onclick="toggleStudentQuickEditPopover(true)" title="Klik untuk mengedit No. Registrasi">
+              <span>No. Reg: <strong class="text-slate-900 font-mono" id="cert-display-reg" oninput="handleInlineEdit('form-cert-reg', this.innerText)">BDC-CERT-2026-99482-SEC</strong></span>
+              <span class="material-symbols-outlined text-xs text-slate-400 group-hover:text-primary transition-colors no-print">edit</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 1 Certificate Core Content -->
+        <div class="text-center my-auto py-3 px-4">
+          <span class="text-xs uppercase font-bold text-primary tracking-widest block mb-1">
+            Sertifikat Kompetensi &amp; Kelulusan Program
+          </span>
+          <h2 class="font-headline-lg text-3xl sm:text-4xl font-extrabold text-navy-admin-bg tracking-tight uppercase leading-tight my-1">
+            Certificate of Completion
+          </h2>
+          <p class="text-sm text-slate-600 max-w-2xl mx-auto mt-1">
+            Dewan Penguji Akademik dan Akreditasi Komunitas dengan ini menyatakan bahwa:
+          </p>
+
+          <div class="my-3 py-1.5 border-b-2 border-primary/30 inline-flex items-center justify-center gap-2 px-10 min-w-[340px] group relative" title="Ketik langsung atau klik tombol edit untuk mengubah nama siswa">
+            <h3 class="font-headline-lg text-2xl sm:text-3xl font-extrabold text-primary tracking-tight leading-none" id="cert-display-name" oninput="handleInlineEdit('form-student-name', this.innerText)">
+              Siti Rahmawati
+            </h3>
+            <button onclick="toggleStudentQuickEditPopover(true)" class="no-print p-1 rounded text-slate-400 hover:text-primary transition-colors cursor-pointer" title="Buka menu edit nama siswa" type="button">
+              <span class="material-symbols-outlined text-sm">edit</span>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-center gap-3 sm:gap-4 text-xs font-mono text-slate-600 flex-wrap">
+            <span class="cursor-pointer group flex items-center gap-1" onclick="toggleStudentQuickEditPopover(true)" title="Klik untuk mengedit NIM / ID">
+              <span>NIM / ID: <strong class="text-slate-900 font-bold" id="cert-display-id">255720056</strong></span>
+              <span class="material-symbols-outlined text-[11px] text-slate-400 group-hover:text-primary transition-colors no-print">edit</span>
+            </span>
+            <span>•</span>
+            <span class="cursor-pointer group flex items-center gap-1" onclick="toggleStudentQuickEditPopover(true)" title="Klik untuk mengedit Periode Program">
+              <span>Periode: <strong class="text-slate-900 font-bold" id="cert-display-period">2026/2027</strong></span>
+              <span class="material-symbols-outlined text-[11px] text-slate-400 group-hover:text-primary transition-colors no-print">edit</span>
+            </span>
+            <span>•</span>
+            <span class="cursor-pointer group flex items-center gap-1" onclick="toggleStudentQuickEditPopover(true)" title="Klik untuk mengedit Angkatan">
+              <span>Angkatan: <strong class="text-slate-900 font-bold" id="cert-display-cohort">Cohort VI Nasional</strong></span>
+              <span class="material-symbols-outlined text-[11px] text-slate-400 group-hover:text-primary transition-colors no-print">edit</span>
+            </span>
+          </div>
+
+          <p class="text-sm text-slate-700 mt-3 max-w-2xl mx-auto leading-relaxed">
+            Telah berhasil menyelesaikan seluruh kurikulum terapan tingkat lanjut, modul pembelajaran, dan capstone project pertahanan enterprise pada program:
+          </p>
+
+          <div class="mt-2 p-2.5 rounded-xl bg-slate-50 border border-primary/20 inline-flex items-center justify-center gap-2 max-w-2xl group cursor-pointer" onclick="toggleStudentQuickEditPopover(true)" title="Klik untuk mengedit Program Spesialisasi">
+            <span class="font-bold text-base text-primary block" id="cert-display-program" oninput="handleInlineEdit('form-program-title', this.innerText)">
+              Cybersecurity Compliance &amp; ISO/IEC 27001 Enterprise Defense
+            </span>
+            <span class="material-symbols-outlined text-xs text-slate-400 group-hover:text-primary transition-colors no-print">edit</span>
+          </div>
+        </div>
+
+        <!-- Page 1 Bottom Signatures & Seal (KIRI: Kemahasiswaan, TENGAH: Validasi QR, KANAN: PIC Program BDC) -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mt-2 pt-3 border-t border-slate-200 items-end">
+          <!-- KIRI: Tanda Tangan Kemahasiswaan & Info Penetapan -->
+          <div class="md:col-span-4 flex flex-col items-center sm:items-start text-center sm:text-left">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider block mb-1">
+              Ditetapkan di Yogyakarta: <strong class="text-slate-900" id="cert-display-date">24 Maret 2026</strong>
+            </span>
+            <div class="h-11 flex items-center justify-center sm:justify-start opacity-90 my-0.5">
+              <svg class="w-28 h-8 text-primary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 140 40"><path d="M10 26 C28 8, 42 36, 56 14 C68 -4, 82 32, 102 18 C116 8, 124 24, 134 14"></path><path d="M38 24 Q65 28 116 11" stroke-width="1.4"></path></svg>
+            </div>
+            <div class="border-t-2 border-slate-300 w-48 pt-1">
+              <span class="text-xs font-bold text-slate-900 block leading-tight" id="cert-display-dean">Bagas Triaji S.Kom.,M.Kom</span>
+              <span class="text-[9px] text-slate-500 block uppercase tracking-wide">Kemahasiswaan</span>
+            </div>
+          </div>
+
+          <!-- TENGAH: Scan Validasi QR & Tervalidasi Resmi -->
+          <div class="md:col-span-4 flex flex-col items-center justify-center text-center px-2">
+            <div class="w-14 h-14 bg-navy-admin-bg p-1.5 rounded-xl flex items-center justify-center text-white shadow-sm ring-1 ring-slate-200">
+              <svg class="w-full h-full text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h4v4h-4v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zM5 5h2v2H5V5zm12 0h2v2h-2V5zM5 17h2v2H5v-2z"></path>
+              </svg>
+            </div>
+            <span class="text-[9px] text-slate-600 font-mono font-bold mt-1 uppercase tracking-wide">Scan Validasi Sertifikat Hal 1</span>
+            <div class="mt-1 px-2.5 py-0.5 rounded bg-slate-50 border border-slate-200 text-[9px] text-slate-500 font-mono truncate max-w-full" id="cert-display-verify-url">
+              verify.bdc.id/cert/BDC-CERT-2026-99482-SEC
+            </div>
+          </div>
+
+          <!-- KANAN: Tanda Tangan PIC Program BDC -->
+          <div class="md:col-span-4 flex flex-col items-center sm:items-end text-center sm:text-right">
+            <span class="text-[10px] uppercase font-bold text-emerald-700 tracking-wider flex items-center justify-center sm:justify-end gap-1 mb-1">
+              <span class="material-symbols-outlined text-[13px]">verified</span> Program Leadership &amp; Student Chapter
+            </span>
+            <div class="h-11 flex items-center justify-center sm:justify-end opacity-90 my-0.5">
+              <svg class="w-28 h-8 text-secondary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 140 40"><path d="M12 24 C24 4, 38 36, 52 16 C66 -2, 78 30, 98 19 C112 11, 122 26, 132 16"></path></svg>
+            </div>
+            <div class="border-t-2 border-slate-300 w-48 pt-1">
+              <span class="text-xs font-bold text-slate-900 block leading-tight" id="cert-display-instructor">Nurul Layli</span>
+              <span class="text-[9px] text-slate-500 block uppercase tracking-wide">PIC Program BDC</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Print Bottom Line Hal 1 -->
+        <div class="mt-2 pt-1 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400">
+          <span>Dokumen Terverifikasi Resmi • Sertifikat Resmi BUSINESS DEV CLUB (BDC)</span>
+          <span>Halaman 1 dari 2 (Bundel Sertifikat + Transkrip BDC)</span>
+        </div>
+      </div>
+
+      <!-- LEMBAR 2: TRANSKRIP PRESTASI AKADEMIK (A4 LANDSCAPE) -->
+      <div class="printable-page w-full max-w-[1122px] min-h-[794px] bg-white text-on-surface rounded-2xl shadow-xl relative overflow-hidden p-8 sm:p-12 flex flex-col justify-between border border-slate-200/80" id="a4-print-sheet">
+        
+        <!-- Watermark Pattern -->
+        <div class="absolute inset-0 pointer-events-none opacity-[0.03] flex items-center justify-center">
+          <svg class="w-[500px] h-[500px]" fill="none" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="90" stroke="currentColor" stroke-dasharray="4 2" stroke-width="2"></circle>
+            <circle cx="100" cy="100" r="70" stroke="currentColor" stroke-width="1.5"></circle>
+            <text fill="currentColor" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="bold" text-anchor="middle" x="100" y="115">BUSINESS DEV CLUB</text>
+          </svg>
+        </div>
+
+        <!-- Page 2 Header -->
+        <div class="w-full flex items-center justify-between border-b-2 border-primary/20 pb-3 mb-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-sm font-extrabold text-lg">
+              B
+            </div>
+            <div>
+              <span class="text-base text-primary font-extrabold uppercase tracking-tight block leading-tight">
+                BUSINESS DEV CLUB (BDC)
+              </span>
+              <span class="text-[10px] text-slate-500 block tracking-wider uppercase font-semibold">
+                Community Academy &amp; Student Chapter
+              </span>
+            </div>
+          </div>
+          <div class="text-right flex flex-col items-end">
+            <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs tracking-wide font-bold uppercase inline-block border border-indigo-200">
+              Official Community Transcript (Halaman 2 / 2)
+            </span>
+            <div class="flex items-center gap-2 mt-1 text-xs text-slate-500">
+              <span>Reg. Sertifikat: <strong class="text-slate-900 font-mono" id="live-cert-reg" oninput="handleInlineEdit('form-cert-reg', this.innerText)">BDC-CERT-2026-99482-SEC</strong></span>
+              <span>•</span>
+              <span>No. Transkrip: <strong class="text-slate-900 font-mono" id="live-transcript-no" oninput="handleInlineEdit('form-transcript-no', this.innerText)">BDC-TRX-2026-99482</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Header Title -->
+        <div class="text-center my-1">
+          <h2 class="text-2xl font-extrabold text-navy-admin-bg tracking-tight uppercase">
+            Transkrip Prestasi &amp; Jam Pelatihan Komunitas
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            Diterbitkan oleh BUSINESS DEV CLUB (BDC) - Community Academy &amp; Student Chapter berdasarkan Evaluasi Capstone Project BDC Hub
+          </p>
+        </div>
+
+        <!-- Bento Info Box: Identitas & Ringkasan Evaluasi (Bebas dari IPK/SKS/Summa Cum Laude) -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3 my-2 text-xs">
+          <div class="md:col-span-8 p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-2 gap-x-4">
+              <div>
+                <span class="text-[10px] uppercase text-slate-400 block font-semibold">Nama Peserta Didik</span>
+                <div class="flex items-center gap-1.5 group">
+                  <span class="font-bold text-slate-900 block text-sm" id="live-student-name" oninput="handleInlineEdit('form-student-name', this.innerText)">Siti Rahmawati</span>
+                  <button onclick="toggleStudentQuickEditPopover(true)" class="no-print p-0.5 rounded text-slate-400 hover:text-primary transition-colors cursor-pointer" title="Buka menu edit nama siswa" type="button">
+                    <span class="material-symbols-outlined text-xs">edit</span>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase text-slate-400 block font-semibold">NIM / ID Registrasi</span>
+                <span class="font-mono text-primary font-bold block" id="live-student-id" oninput="handleInlineEdit('form-student-id', this.innerText)">255720056</span>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase text-slate-400 block font-semibold">Periode Program</span>
+                <span class="font-bold text-slate-800 block" id="live-program-period" oninput="handleInlineEdit('form-program-period', this.innerText)">2026/2027</span>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase text-slate-400 block font-semibold">Angkatan / Cohort</span>
+                <span class="font-semibold text-slate-700 block" id="live-student-cohort" oninput="handleInlineEdit('form-student-cohort', this.innerText)">Cohort VI Nasional</span>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase text-slate-400 block font-semibold">Lokasi Penetapan</span>
+                <span class="font-semibold text-slate-800 block" id="live-location" oninput="handleInlineEdit('form-location', this.innerText)">Yogyakarta</span>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase text-slate-400 block font-semibold">Tanggal Kelulusan</span>
+                <span class="font-medium text-slate-800 block" id="live-graduation-date" oninput="handleInlineEdit('form-graduation-date', this.innerText)">24 Maret 2026</span>
+              </div>
+              <div class="sm:col-span-3 pt-1 border-t border-slate-200/60">
+                <span class="text-[10px] uppercase text-slate-400 block font-semibold">Program Keahlian Spesialisasi</span>
+                <span class="font-semibold text-slate-800 block text-xs" id="live-program-title" oninput="handleInlineEdit('form-program-title', this.innerText)">
+                  Cybersecurity Compliance &amp; ISO/IEC 27001 Enterprise Defense
+                </span>
+              </div>
+            </div>
+          </div>
+          <!-- Ringkasan Evaluasi Pelatihan & Jam Belajar -->
+          <div class="md:col-span-4 p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-100 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-primary font-bold uppercase tracking-wider">Ringkasan Evaluasi Pelatihan</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-bold" id="live-cohort-badge" oninput="handleInlineEdit('form-cohort-badge', this.innerText)">TOP 3% COHORT</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-1">
+              <div>
+                <span class="text-[10px] text-slate-500 uppercase block">Rata-rata Nilai Modul</span>
+                <div class="flex items-baseline gap-0.5">
+                  <span class="text-3xl text-primary font-extrabold leading-none" id="live-avg-score" oninput="handleInlineEdit('form-avg-score', this.innerText)">96.4</span>
+                  <span class="text-xs text-slate-600 font-bold">%</span>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] text-slate-500 uppercase block">Jam Pelatihan</span>
+                <span class="text-lg font-extrabold text-slate-900 block leading-tight" id="live-total-hours">64.5 Jam</span>
+                <span class="text-[9px] text-slate-500 block">Learning Hours</span>
+              </div>
+            </div>
+            <div class="mt-2 pt-1.5 border-t border-indigo-100 flex items-center justify-between text-[11px]">
+              <span class="text-slate-600 font-medium">Status Kelulusan:</span>
+              <span class="font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 uppercase" id="live-summary-status-badge">LULUS (KOMPETEN)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course & Capstone Table (Format Jam Pelatihan & Nilai Modul %) -->
+        <div class="my-2 overflow-hidden rounded-xl border border-slate-200">
+          <table class="w-full text-left border-collapse text-xs" id="transcript-table">
+            <thead>
+              <tr class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 text-[11px]">
+                <th class="py-2 px-3 uppercase tracking-wider w-20">Kode</th>
+                <th class="py-2 px-3 uppercase tracking-wider">Mata Pelatihan &amp; Modul Kurikulum</th>
+                <th class="py-2 px-3 text-center uppercase tracking-wider w-32">Jam Pelatihan (Hours)</th>
+                <th class="py-2 px-3 text-center uppercase tracking-wider w-24">Nilai Modul (%)</th>
+                <th class="py-2 px-3 text-center uppercase tracking-wider w-16">Grade</th>
+                <th class="py-2 px-4 text-right uppercase tracking-wider w-44">Status &amp; Hasil Evaluasi</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-slate-800" id="transcript-tbody">
+              <tr class="hover:bg-slate-50/50 transition-colors module-row" data-hours="10.0">
+                <td class="py-1.5 px-3 font-mono font-bold text-primary">SEC-501</td>
+                <td class="py-1.5 px-3">
+                  <div class="font-semibold text-slate-900">Dasar Kriptografi Modern &amp; Enkripsi Kunci Asimetris</div>
+                  <div class="text-[10px] text-slate-400">Public Key Infrastructure (PKI), TLS 1.3, &amp; Post-Quantum Standards</div>
+                </td>
+                <td class="py-1.5 px-3 text-center font-medium row-hours-cell" onblur="recalculateAllScores()">10.0 Jam</td>
+                <td class="py-1.5 px-3 text-center font-mono font-semibold row-score-cell" onblur="updateRowGrade(this)">96.0</td>
+                <td class="py-1.5 px-3 text-center">
+                  <span class="inline-block px-2 py-0.5 rounded font-bold bg-indigo-50 text-indigo-700 text-[10px] row-grade-badge">A</span>
+                </td>
+                <td class="py-1.5 px-4 text-right font-medium text-slate-700 row-predikat-cell">Tuntas (Kompeten)</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 transition-colors module-row" data-hours="12.0">
+                <td class="py-1.5 px-3 font-mono font-bold text-primary">SEC-502</td>
+                <td class="py-1.5 px-3">
+                  <div class="font-semibold text-slate-900">Proteksi Endpoint, Web App Sec &amp; Mitigasi Serangan XSS</div>
+                  <div class="text-[10px] text-slate-400">OWASP Top 10, WAF Configuration, &amp; Zero Trust Micro-segmentation</div>
+                </td>
+                <td class="py-1.5 px-3 text-center font-medium row-hours-cell" onblur="recalculateAllScores()">12.0 Jam</td>
+                <td class="py-1.5 px-3 text-center font-mono font-semibold row-score-cell" onblur="updateRowGrade(this)">98.0</td>
+                <td class="py-1.5 px-3 text-center">
+                  <span class="inline-block px-2 py-0.5 rounded font-bold bg-emerald-50 text-emerald-700 text-[10px] row-grade-badge">A+</span>
+                </td>
+                <td class="py-1.5 px-4 text-right font-semibold text-emerald-700 row-predikat-cell">Unggul (Paripurna)</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 transition-colors module-row" data-hours="12.0">
+                <td class="py-1.5 px-3 font-mono font-bold text-primary">SEC-503</td>
+                <td class="py-1.5 px-3">
+                  <div class="font-semibold text-slate-900">Audit Regulasi ISO/IEC 27001:2022 &amp; Framework Tata Kelola</div>
+                  <div class="text-[10px] text-slate-400">ISMS Annex A Controls, Risk Assessment Governance &amp; Compliance Matrix</div>
+                </td>
+                <td class="py-1.5 px-3 text-center font-medium row-hours-cell" onblur="recalculateAllScores()">12.0 Jam</td>
+                <td class="py-1.5 px-3 text-center font-mono font-semibold row-score-cell" onblur="updateRowGrade(this)">94.5</td>
+                <td class="py-1.5 px-3 text-center">
+                  <span class="inline-block px-2 py-0.5 rounded font-bold bg-indigo-50 text-indigo-700 text-[10px] row-grade-badge">A</span>
+                </td>
+                <td class="py-1.5 px-4 text-right font-medium text-slate-700 row-predikat-cell">Tuntas (Kompeten)</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 transition-colors module-row" data-hours="14.0">
+                <td class="py-1.5 px-3 font-mono font-bold text-primary">SEC-504</td>
+                <td class="py-1.5 px-3">
+                  <div class="font-semibold text-slate-900">Incident Response, Forensik Siber &amp; Cloud SOC Telemetri</div>
+                  <div class="text-[10px] text-slate-400">SIEM Rule Tuning, Memory Forensics, &amp; Automated Threat Hunting</div>
+                </td>
+                <td class="py-1.5 px-3 text-center font-medium row-hours-cell" onblur="recalculateAllScores()">14.0 Jam</td>
+                <td class="py-1.5 px-3 text-center font-mono font-semibold row-score-cell" onblur="updateRowGrade(this)">97.0</td>
+                <td class="py-1.5 px-3 text-center">
+                  <span class="inline-block px-2 py-0.5 rounded font-bold bg-indigo-50 text-indigo-700 text-[10px] row-grade-badge">A</span>
+                </td>
+                <td class="py-1.5 px-4 text-right font-medium text-slate-700 row-predikat-cell">Tuntas (Kompeten)</td>
+              </tr>
+              <!-- Capstone Project (BDC Hub) Row Khusus -->
+              <tr class="bg-indigo-50/30 hover:bg-indigo-50/60 transition-colors module-row border-l-4 border-l-primary" data-hours="16.5" id="capstone-project-row">
+                <td class="py-2 px-3 font-mono font-bold text-primary flex items-center gap-1">
+                  <span>CAP-BDC</span>
+                  <span class="material-symbols-outlined text-xs text-amber-500" title="Proyek Utama Capstone">stars</span>
+                </td>
+                <td class="py-2 px-3">
+                  <div class="font-bold text-primary flex items-center gap-1.5">
+                    <span id="live-capstone-title">Capstone Project (BDC Hub) - Web Presensi &amp; Pembelajaran Community</span>
+                    <span class="px-1.5 py-0.2 rounded bg-primary text-white text-[9px] font-bold">CAPSTONE</span>
+                  </div>
+                  <div class="text-[10px] text-slate-500">Pengembangan &amp; Implementasi Sistem Portal Komunitas BDC Hub (Next.js, Supabase, Tailwind, &amp; Evaluasi Capstone)</div>
+                </td>
+                <td class="py-2 px-3 text-center font-bold text-primary row-hours-cell" onblur="recalculateAllScores()">16.5 Jam</td>
+                <td class="py-2 px-3 text-center font-mono font-bold text-primary row-score-cell" onblur="updateRowGrade(this)">98.0</td>
+                <td class="py-2 px-3 text-center">
+                  <span class="inline-block px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-800 text-[10px] row-grade-badge">A+</span>
+                </td>
+                <td class="py-2 px-4 text-right font-bold text-emerald-700 row-predikat-cell">Lulus Paripurna (Unggul)</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="bg-slate-100 font-bold border-t-2 border-primary/20">
+                <td class="py-2 px-3 text-slate-900" colspan="2">
+                  TOTAL JAM PELATIHAN (LEARNING HOURS) &amp; STATUS KELULUSAN
+                </td>
+                <td class="py-2 px-3 text-center text-primary font-mono font-extrabold" id="live-total-hours-footer">64.5 Jam</td>
+                <td class="py-2 px-3 text-center text-primary font-mono font-extrabold" id="live-summary-avg">96.4%</td>
+                <td class="py-2 px-3 text-center text-emerald-700 font-extrabold" id="live-summary-grade">A+</td>
+                <td class="py-2 px-4 text-right text-emerald-700 font-extrabold uppercase" id="live-summary-status">
+                  LULUS (MEMENUHI SYARAT KELULUSAN)
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Document Validation & Signatures Hal 2 (KIRI: Skala Evaluasi, TENGAH: Validasi Hal 2, KANAN: Penandatangan) -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mt-2 pt-2 border-t border-slate-200 items-end text-xs">
+          <div class="md:col-span-4 flex flex-col justify-between text-slate-500 space-y-1">
+            <span class="text-[10px] text-slate-700 font-bold uppercase">Standar Evaluasi Pelatihan &amp; Modul BDC</span>
+            <div class="grid grid-cols-2 gap-x-2 text-[10px] font-mono">
+              <span>A+ (97 - 100%) : Unggul</span>
+              <span>A  (93 - 96.9%) : Sangat Baik</span>
+              <span>B+ (88 - 92.9%) : Baik</span>
+              <span>B  (80 - 87.9%) : Kompeten</span>
+            </div>
+            <p class="text-[9px] text-slate-400 italic">
+              *Batas minimal kelulusan program &amp; Capstone Project BDC Hub: 80.0% (Kompeten).
+            </p>
+          </div>
+          <div class="md:col-span-4 flex flex-col items-center justify-center text-center px-2">
+            <div class="w-14 h-14 bg-navy-admin-bg p-1 rounded-lg flex items-center justify-center text-white shadow-sm">
+              <svg class="w-full h-full text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h4v4h-4v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zM5 5h2v2H5V5zm12 0h2v2h-2V5zM5 17h2v2H5v-2z"></path>
+              </svg>
+            </div>
+            <span class="text-[9px] text-slate-500 font-mono font-bold mt-1 uppercase tracking-wide">Scan Validasi Hal 2</span>
+            <div class="mt-0.5 text-[8.5px] text-slate-400 font-mono" id="transcript-display-verify-url">verify.bdc.id/cert/BDC-CERT-2026-99482-SEC</div>
+          </div>
+          <div class="md:col-span-4 grid grid-cols-2 gap-2 text-center">
+            <div class="flex flex-col items-center">
+              <div class="h-10 flex items-center justify-center opacity-90">
+                <svg class="w-24 h-8 text-primary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 140 40"><path d="M10 26 C28 8, 42 36, 56 14 C68 -4, 82 32, 102 18 C116 8, 124 24, 134 14"></path><path d="M38 24 Q65 28 116 11" stroke-width="1.4"></path></svg>
+              </div>
+              <div class="border-t border-slate-300 w-full pt-1">
+                <span class="text-xs font-bold text-slate-900 block leading-tight" id="live-sign-dean" oninput="handleInlineEdit('form-sign-dean', this.innerText)">Bagas Triaji S.Kom.,M.Kom</span>
+                <span class="text-[9px] text-slate-500 block uppercase">Kemahasiswaan</span>
+              </div>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="h-10 flex items-center justify-center opacity-90">
+                <svg class="w-24 h-8 text-secondary" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 140 40"><path d="M12 24 C24 4, 38 36, 52 16 C66 -2, 78 30, 98 19 C112 11, 122 26, 132 16"></path></svg>
+              </div>
+              <div class="border-t border-slate-300 w-full pt-1">
+                <span class="text-xs font-bold text-slate-900 block leading-tight" id="live-sign-instructor" oninput="handleInlineEdit('form-sign-instructor', this.innerText)">Nurul Layli</span>
+                <span class="text-[9px] text-slate-500 block uppercase">PIC Program BDC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Print Bottom Line Hal 2 -->
+        <div class="mt-2 pt-1 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400">
+          <span>Dokumen Terverifikasi Resmi • Transkrip Prestasi BUSINESS DEV CLUB (BDC)</span>
+          <span>Halaman 2 dari 2 (Bundel Sertifikat + Transkrip BDC)</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- PDF PROGRESS / EXPORT MODAL -->
+  <div id="pdf-export-modal" class="no-print fixed inset-0 z-50 flex items-center justify-center bg-navy-admin-bg/60 backdrop-blur-sm hidden p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+            <span class="material-symbols-outlined text-xl">picture_as_pdf</span>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-navy-admin-bg" id="modal-pdf-title">Mengekspor Dokumen PDF</h3>
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider">Standar ISO 216 • A4 Lanskap</span>
+          </div>
+        </div>
+        <button onclick="closePdfModal()" class="w-8 h-8 rounded-full hover:bg-slate-100 text-slate-400 flex items-center justify-center transition-colors" type="button">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="py-5" id="modal-progress-view">
+        <div class="flex items-center justify-between mb-2 text-xs font-semibold text-slate-800">
+          <span id="modal-progress-status">Menyiapkan berkas PDF...</span>
+          <span class="font-mono text-primary font-bold" id="modal-progress-pct">45%</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+          <div id="modal-progress-bar" class="bg-gradient-to-r from-primary to-accent-emerald-success h-2.5 rounded-full transition-all duration-300 w-5/12"></div>
+        </div>
+        <p class="text-xs text-slate-500 mt-3 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm text-amber-500">info</span>
+          <span>Merender dengan resolusi tinggi (300 DPI siap cetak).</span>
+        </p>
+      </div>
+
+      <div class="py-4 hidden" id="modal-success-view">
+        <div class="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 mb-3">
+          <span class="material-symbols-outlined text-emerald-600 text-2xl">check_circle</span>
+          <div>
+            <h4 class="font-bold text-xs text-slate-900">PDF Berhasil Dibuat &amp; Diunduh!</h4>
+            <p class="text-[11px] font-mono text-slate-600 truncate max-w-[280px]" id="downloaded-filename-label">Dokumen_BDC.pdf</p>
+          </div>
+        </div>
+        <div class="mt-4 flex gap-2">
+          <button onclick="executePrintTranscript()" class="flex-1 py-2 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all" type="button">
+            Cetak (Print)
+          </button>
+          <button onclick="closePdfModal()" class="flex-1 py-2 px-3 rounded-xl bg-primary text-white text-xs font-bold shadow-sm transition-all" type="button">
+            Selesai
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="adminToast" class="no-print fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-5 py-3 rounded-xl bg-navy-admin-bg text-white text-xs font-medium shadow-2xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4">
+    <span class="material-symbols-outlined text-emerald-400 text-base" id="adminToastIcon">check_circle</span>
+    <span id="adminToastMsg">Perubahan berhasil disimpan!</span>
+  </div>
+
+  <!-- CORE LOGIC & SYNC SCRIPT -->
+  <script>
+    const STORAGE_KEY = 'bdc_academic_credential_data';
+
+    const defaultCredentialData = {
+      studentName: "Siti Rahmawati",
+      studentId: "255720056",
+      period: "2026/2027",
+      location: "Yogyakarta",
+      cohort: "Cohort VI Nasional",
+      programTitle: "Cybersecurity Compliance & ISO/IEC 27001 Enterprise Defense",
+      issueDate: "24 Maret 2026",
+      transNo: "BDC-TRX-2026-99482",
+      certNo: "BDC-CERT-2026-99482-SEC",
+      totalHours: "64.5 Jam",
+      avgScore: "96.4",
+      statusKelulusan: "LULUS (KOMPETEN)",
+      cohortRank: "TOP 3% COHORT",
+      deanName: "Bagas Triaji S.Kom.,M.Kom",
+      deanRole: "Kemahasiswaan",
+      instructorName: "Nurul Layli",
+      instructorRole: "PIC Program BDC",
+      capstoneTitle: "BDC Hub (Web Presensi & Pembelajaran Community)"
+    };
+
+    let adminModeActive = true;
+
+    // Load data from Storage
+    function loadDataFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        let data = defaultCredentialData;
+        if (raw) {
+          data = Object.assign({}, defaultCredentialData, JSON.parse(raw));
+        }
+
+        // Auto-sanitize legacy cached dean name
+        if (!data.deanName || data.deanName.includes('Evelyn') || data.deanName.includes('Vance') || data.deanName === "Bagas Triaji, S.Kom., M.Kom.") {
+          data.deanName = "Bagas Triaji S.Kom.,M.Kom";
+        }
+        if (!data.instructorName || data.instructorName.includes('Hendra') || data.instructorName.includes('Saputra')) {
+          data.instructorName = "Nurul Layli";
+        }
+
+        // Fill form fields
+        if (document.getElementById('form-student-name')) document.getElementById('form-student-name').value = data.studentName;
+        if (document.getElementById('form-student-id')) document.getElementById('form-student-id').value = data.studentId;
+        if (document.getElementById('form-program-period')) document.getElementById('form-program-period').value = data.period || "2026/2027";
+        if (document.getElementById('form-location')) document.getElementById('form-location').value = data.location || "Yogyakarta";
+        if (document.getElementById('form-student-cohort')) document.getElementById('form-student-cohort').value = data.cohort;
+        if (document.getElementById('form-program-title')) document.getElementById('form-program-title').value = data.programTitle;
+        if (document.getElementById('form-graduation-date')) document.getElementById('form-graduation-date').value = data.issueDate;
+        if (document.getElementById('form-transcript-no')) document.getElementById('form-transcript-no').value = data.transNo;
+        if (document.getElementById('form-cert-reg')) document.getElementById('form-cert-reg').value = data.certNo;
+        if (document.getElementById('form-total-hours')) document.getElementById('form-total-hours').value = data.totalHours || "64.5 Jam";
+        if (document.getElementById('form-avg-score')) document.getElementById('form-avg-score').value = data.avgScore || "96.4";
+        if (document.getElementById('form-status-kelulusan')) document.getElementById('form-status-kelulusan').value = data.statusKelulusan || "LULUS (KOMPETEN)";
+        if (document.getElementById('form-cohort-badge')) document.getElementById('form-cohort-badge').value = data.cohortRank;
+        if (document.getElementById('form-capstone-title')) document.getElementById('form-capstone-title').value = data.capstoneTitle || "BDC Hub (Web Presensi & Pembelajaran Community)";
+        if (document.getElementById('form-sign-dean')) document.getElementById('form-sign-dean').value = data.deanName || "Bagas Triaji S.Kom.,M.Kom";
+        if (document.getElementById('form-sign-instructor')) document.getElementById('form-sign-instructor').value = data.instructorName || "Nurul Layli";
+
+        // Fill quick-edit student popover fields
+        if (document.getElementById('quickInputStudentName')) document.getElementById('quickInputStudentName').value = data.studentName;
+        if (document.getElementById('quickInputStudentId')) document.getElementById('quickInputStudentId').value = data.studentId;
+        if (document.getElementById('quickInputStudentPeriod')) document.getElementById('quickInputStudentPeriod').value = data.period || "2026/2027";
+        if (document.getElementById('quickInputStudentCohort')) document.getElementById('quickInputStudentCohort').value = data.cohort;
+        if (document.getElementById('quickInputCertReg')) document.getElementById('quickInputCertReg').value = data.certNo;
+        if (document.getElementById('quickInputTransNo')) document.getElementById('quickInputTransNo').value = data.transNo;
+        if (document.getElementById('quickInputProgramTitle')) document.getElementById('quickInputProgramTitle').value = data.programTitle;
+        if (document.getElementById('quickInputGradStatus')) document.getElementById('quickInputGradStatus').value = data.statusKelulusan || "LULUS (KOMPETEN)";
+        if (document.getElementById('quickInputAvgScore')) document.getElementById('quickInputAvgScore').value = data.avgScore || "96.4";
+        if (document.getElementById('quickInputTotalHours')) document.getElementById('quickInputTotalHours').value = data.totalHours || "64.5 Jam";
+        if (document.getElementById('quickInputGradLocation')) document.getElementById('quickInputGradLocation').value = data.location || "Yogyakarta";
+        if (document.getElementById('quickInputGradDate')) document.getElementById('quickInputGradDate').value = data.issueDate;
+        if (document.getElementById('quickInputCapstoneTitle')) document.getElementById('quickInputCapstoneTitle').value = data.capstoneTitle || "BDC Hub (Web Presensi & Pembelajaran Community)";
+        if (document.getElementById('btnActiveStudentName')) document.getElementById('btnActiveStudentName').innerText = data.studentName;
+
+        syncFromForm();
+      } catch (err) {
+        console.error("Storage load error:", err);
+      }
+    }
+
+    // Save Data to Storage
+    function saveDataToStorage() {
+      const data = {
+        studentName: (document.getElementById('form-student-name') ? document.getElementById('form-student-name').value.trim() : '') || defaultCredentialData.studentName,
+        studentId: (document.getElementById('form-student-id') ? document.getElementById('form-student-id').value.trim() : '') || defaultCredentialData.studentId,
+        period: (document.getElementById('form-program-period') ? document.getElementById('form-program-period').value.trim() : '') || defaultCredentialData.period,
+        location: (document.getElementById('form-location') ? document.getElementById('form-location').value.trim() : '') || defaultCredentialData.location,
+        cohort: (document.getElementById('form-student-cohort') ? document.getElementById('form-student-cohort').value.trim() : '') || defaultCredentialData.cohort,
+        programTitle: (document.getElementById('form-program-title') ? document.getElementById('form-program-title').value.trim() : '') || defaultCredentialData.programTitle,
+        issueDate: (document.getElementById('form-graduation-date') ? document.getElementById('form-graduation-date').value.trim() : '') || defaultCredentialData.issueDate,
+        transNo: (document.getElementById('form-transcript-no') ? document.getElementById('form-transcript-no').value.trim() : '') || defaultCredentialData.transNo,
+        certNo: (document.getElementById('form-cert-reg') ? document.getElementById('form-cert-reg').value.trim() : '') || defaultCredentialData.certNo,
+        totalHours: (document.getElementById('form-total-hours') ? document.getElementById('form-total-hours').value.trim() : '') || defaultCredentialData.totalHours,
+        avgScore: (document.getElementById('form-avg-score') ? document.getElementById('form-avg-score').value.trim() : '') || defaultCredentialData.avgScore,
+        statusKelulusan: (document.getElementById('form-status-kelulusan') ? document.getElementById('form-status-kelulusan').value.trim() : '') || defaultCredentialData.statusKelulusan,
+        cohortRank: (document.getElementById('form-cohort-badge') ? document.getElementById('form-cohort-badge').value.trim() : '') || defaultCredentialData.cohortRank,
+        capstoneTitle: (document.getElementById('form-capstone-title') ? document.getElementById('form-capstone-title').value.trim() : '') || defaultCredentialData.capstoneTitle,
+        deanName: (document.getElementById('form-sign-dean') ? document.getElementById('form-sign-dean').value.trim() : '') || defaultCredentialData.deanName,
+        instructorName: (document.getElementById('form-sign-instructor') ? document.getElementById('form-sign-instructor').value.trim() : '') || defaultCredentialData.instructorName
+      };
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {
+        console.error("Storage save error:", e);
+      }
+    }
+
+    // Two-way sync: Form inputs -> Sheet elements
+    function syncFromForm() {
+      const sName = document.getElementById('form-student-name') ? document.getElementById('form-student-name').value : '';
+      const sId = document.getElementById('form-student-id') ? document.getElementById('form-student-id').value : '';
+      const sPeriod = document.getElementById('form-program-period') ? document.getElementById('form-program-period').value : '2026/2027';
+      const sLocation = document.getElementById('form-location') ? document.getElementById('form-location').value : 'Yogyakarta';
+      const sCohort = document.getElementById('form-student-cohort') ? document.getElementById('form-student-cohort').value : '';
+      const progTitle = document.getElementById('form-program-title') ? document.getElementById('form-program-title').value : '';
+      const gradDate = document.getElementById('form-graduation-date') ? document.getElementById('form-graduation-date').value : '';
+      const transNo = document.getElementById('form-transcript-no') ? document.getElementById('form-transcript-no').value : '';
+      const certReg = document.getElementById('form-cert-reg') ? document.getElementById('form-cert-reg').value : '';
+      const totalHours = document.getElementById('form-total-hours') ? document.getElementById('form-total-hours').value : '64.5 Jam';
+      const avgScore = document.getElementById('form-avg-score') ? document.getElementById('form-avg-score').value : '96.4';
+      const statusKelulusan = document.getElementById('form-status-kelulusan') ? document.getElementById('form-status-kelulusan').value : 'LULUS (KOMPETEN)';
+      const cohortBadge = document.getElementById('form-cohort-badge') ? document.getElementById('form-cohort-badge').value : '';
+      const capstoneTitle = document.getElementById('form-capstone-title') ? document.getElementById('form-capstone-title').value : '';
+      const dean = document.getElementById('form-sign-dean') ? document.getElementById('form-sign-dean').value : '';
+      const instructor = document.getElementById('form-sign-instructor') ? document.getElementById('form-sign-instructor').value : '';
+
+      // Update Page 2 (Transcript Sheet)
+      if (document.getElementById('live-student-name')) document.getElementById('live-student-name').innerText = sName;
+      if (document.getElementById('live-student-id')) document.getElementById('live-student-id').innerText = sId;
+      if (document.getElementById('live-program-period')) document.getElementById('live-program-period').innerText = sPeriod;
+      if (document.getElementById('live-location')) document.getElementById('live-location').innerText = sLocation;
+      if (document.getElementById('live-student-cohort')) document.getElementById('live-student-cohort').innerText = sCohort;
+      if (document.getElementById('live-program-title')) document.getElementById('live-program-title').innerText = progTitle;
+      if (document.getElementById('live-graduation-date')) document.getElementById('live-graduation-date').innerText = gradDate;
+      if (document.getElementById('live-transcript-no')) document.getElementById('live-transcript-no').innerText = transNo;
+      if (document.getElementById('live-cert-reg')) document.getElementById('live-cert-reg').innerText = certReg;
+      if (document.getElementById('live-total-hours')) document.getElementById('live-total-hours').innerText = totalHours;
+      if (document.getElementById('live-total-hours-footer')) document.getElementById('live-total-hours-footer').innerText = totalHours;
+      if (document.getElementById('live-avg-score')) document.getElementById('live-avg-score').innerText = avgScore;
+      if (document.getElementById('live-summary-avg')) document.getElementById('live-summary-avg').innerText = avgScore.includes('%') ? avgScore : avgScore + '%';
+      if (document.getElementById('live-summary-status-badge')) document.getElementById('live-summary-status-badge').innerText = statusKelulusan;
+      if (document.getElementById('live-summary-status')) document.getElementById('live-summary-status').innerText = statusKelulusan;
+      if (document.getElementById('live-cohort-badge')) document.getElementById('live-cohort-badge').innerText = cohortBadge;
+      if (document.getElementById('live-capstone-title')) document.getElementById('live-capstone-title').innerText = capstoneTitle;
+      if (document.getElementById('live-sign-dean')) document.getElementById('live-sign-dean').innerText = dean;
+      if (document.getElementById('live-sign-instructor')) document.getElementById('live-sign-instructor').innerText = instructor;
+      if (document.getElementById('transcript-display-verify-url')) {
+        document.getElementById('transcript-display-verify-url').innerText = `verify.bdc.id/cert/${certReg}?nim=${sId}&period=${encodeURIComponent(sPeriod)}&loc=${encodeURIComponent(sLocation)}`;
+      }
+
+      // Update Page 1 (Certificate Sheet)
+      if (document.getElementById('cert-display-name')) document.getElementById('cert-display-name').innerText = sName;
+      if (document.getElementById('cert-display-id')) document.getElementById('cert-display-id').innerText = sId;
+      if (document.getElementById('cert-display-period')) document.getElementById('cert-display-period').innerText = sPeriod;
+      if (document.getElementById('cert-display-cohort')) document.getElementById('cert-display-cohort').innerText = sCohort;
+      if (document.getElementById('cert-display-program')) document.getElementById('cert-display-program').innerText = progTitle;
+      if (document.getElementById('cert-display-date')) document.getElementById('cert-display-date').innerText = gradDate;
+      if (document.getElementById('cert-display-reg')) document.getElementById('cert-display-reg').innerText = certReg;
+      if (document.getElementById('cert-display-status')) document.getElementById('cert-display-status').innerText = 'Status: ' + statusKelulusan;
+      if (document.getElementById('cert-display-hours')) document.getElementById('cert-display-hours').innerText = totalHours.includes('Jam') ? totalHours : totalHours + ' Jam';
+      if (document.getElementById('cert-display-score')) document.getElementById('cert-display-score').innerText = avgScore.includes('%') ? avgScore : avgScore + '%';
+      if (document.getElementById('cert-display-dean')) document.getElementById('cert-display-dean').innerText = dean;
+      if (document.getElementById('cert-display-instructor')) document.getElementById('cert-display-instructor').innerText = instructor;
+      if (document.getElementById('cert-display-verify-url')) {
+        document.getElementById('cert-display-verify-url').innerText = `verify.bdc.id/cert/${certReg}?nim=${sId}&period=${encodeURIComponent(sPeriod)}&loc=${encodeURIComponent(sLocation)}`;
+      }
+
+      // Update Toolbar Button & Quick Popover inputs
+      if (document.getElementById('btnActiveStudentName')) document.getElementById('btnActiveStudentName').innerText = sName || "Nama Siswa";
+      if (document.getElementById('tab-sks-badge')) document.getElementById('tab-sks-badge').innerText = totalHours;
+      if (document.getElementById('quickInputStudentName') && document.getElementById('quickInputStudentName') !== document.activeElement) {
+        document.getElementById('quickInputStudentName').value = sName;
+      }
+      if (document.getElementById('quickInputStudentId') && document.getElementById('quickInputStudentId') !== document.activeElement) {
+        document.getElementById('quickInputStudentId').value = sId;
+      }
+      if (document.getElementById('quickInputStudentPeriod') && document.getElementById('quickInputStudentPeriod') !== document.activeElement) {
+        document.getElementById('quickInputStudentPeriod').value = sPeriod;
+      }
+      if (document.getElementById('quickInputStudentCohort') && document.getElementById('quickInputStudentCohort') !== document.activeElement) {
+        document.getElementById('quickInputStudentCohort').value = sCohort;
+      }
+      if (document.getElementById('quickInputCertReg') && document.getElementById('quickInputCertReg') !== document.activeElement) {
+        document.getElementById('quickInputCertReg').value = certReg;
+      }
+      if (document.getElementById('quickInputTransNo') && document.getElementById('quickInputTransNo') !== document.activeElement) {
+        document.getElementById('quickInputTransNo').value = transNo;
+      }
+      if (document.getElementById('quickInputProgramTitle') && document.getElementById('quickInputProgramTitle') !== document.activeElement) {
+        document.getElementById('quickInputProgramTitle').value = progTitle;
+      }
+      if (document.getElementById('quickInputGradStatus') && document.getElementById('quickInputGradStatus') !== document.activeElement) {
+        document.getElementById('quickInputGradStatus').value = statusKelulusan;
+      }
+      if (document.getElementById('quickInputAvgScore') && document.getElementById('quickInputAvgScore') !== document.activeElement) {
+        document.getElementById('quickInputAvgScore').value = avgScore;
+      }
+      if (document.getElementById('quickInputTotalHours') && document.getElementById('quickInputTotalHours') !== document.activeElement) {
+        document.getElementById('quickInputTotalHours').value = totalHours;
+      }
+      if (document.getElementById('quickInputGradLocation') && document.getElementById('quickInputGradLocation') !== document.activeElement) {
+        document.getElementById('quickInputGradLocation').value = sLocation;
+      }
+      if (document.getElementById('quickInputGradDate') && document.getElementById('quickInputGradDate') !== document.activeElement) {
+        document.getElementById('quickInputGradDate').value = gradDate;
+      }
+      if (document.getElementById('quickInputCapstoneTitle') && document.getElementById('quickInputCapstoneTitle') !== document.activeElement) {
+        document.getElementById('quickInputCapstoneTitle').value = capstoneTitle;
+      }
+    }
+
+    function handleFormInputChange() {
+      syncFromForm();
+      saveDataToStorage();
+    }
+
+    function handleInlineEdit(formId, val) {
+      const input = document.getElementById(formId);
+      if (input) {
+        input.value = val.trim();
+        saveDataToStorage();
+        if (formId === 'form-student-name') {
+          const btnName = document.getElementById('btnActiveStudentName');
+          if (btnName) btnName.innerText = val.trim() || "Nama Siswa";
+          const quickInput = document.getElementById('quickInputStudentName');
+          if (quickInput) quickInput.value = val.trim();
+        }
+      }
+    }
+
+    // Toggle Student Quick Edit Popover
+    function toggleStudentQuickEditPopover(forceState) {
+      const popover = document.getElementById('studentQuickEditPopover');
+      const arrow = document.getElementById('iconStudentQuickArrow');
+      if (!popover) return;
+
+      const isClosed = popover.classList.contains('hidden');
+      const shouldOpen = (typeof forceState === 'boolean') ? forceState : isClosed;
+
+      if (shouldOpen) {
+        popover.classList.remove('hidden');
+        if (arrow) arrow.classList.add('rotate-180');
+        const input = document.getElementById('quickInputStudentName');
+        if (input) {
+          setTimeout(() => {
+            input.focus();
+            input.select();
+          }, 60);
+        }
+      } else {
+        popover.classList.add('hidden');
+        if (arrow) arrow.classList.remove('rotate-180');
+      }
+    }
+
+    // Auto-Sync Student Name in Real-Time
+    function autoSyncStudentName(val) {
+      const cleanVal = val.trim();
+      const displayVal = val || "Nama Peserta";
+
+      // 1. Update Page 1 (Sertifikat)
+      const certDisplayName = document.getElementById('cert-display-name');
+      if (certDisplayName) certDisplayName.innerText = displayVal;
+
+      // 2. Update Page 2 (Transkrip)
+      const liveStudentName = document.getElementById('live-student-name');
+      if (liveStudentName) liveStudentName.innerText = displayVal;
+
+      // 3. Update Full Form Input
+      const formStudentName = document.getElementById('form-student-name');
+      if (formStudentName && formStudentName !== document.activeElement) {
+        formStudentName.value = val;
+      }
+
+      // 4. Update the trigger button label in toolbar
+      const btnActiveStudentName = document.getElementById('btnActiveStudentName');
+      if (btnActiveStudentName) btnActiveStudentName.innerText = cleanVal || "Nama Siswa";
+
+      // 5. Update Quick Input in Popover
+      const quickInput = document.getElementById('quickInputStudentName');
+      if (quickInput && quickInput !== document.activeElement) {
+        quickInput.value = val;
+      }
+
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function autoSyncStudentId(val) {
+      const cleanVal = val.trim();
+      const certId = document.getElementById('cert-display-id');
+      const liveId = document.getElementById('live-student-id');
+      const formId = document.getElementById('form-student-id');
+      const quickId = document.getElementById('quickInputStudentId');
+      if (certId) certId.innerText = cleanVal || "255720056";
+      if (liveId) liveId.innerText = cleanVal || "255720056";
+      if (formId && formId !== document.activeElement) formId.value = val;
+      if (quickId && quickId !== document.activeElement) quickId.value = val;
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function autoSyncStudentPeriod(val) {
+      const cleanVal = val.trim();
+      const certPeriod = document.getElementById('cert-display-period');
+      const livePeriod = document.getElementById('live-program-period');
+      const formPeriod = document.getElementById('form-program-period');
+      const quickPeriod = document.getElementById('quickInputStudentPeriod');
+      if (certPeriod) certPeriod.innerText = cleanVal || "2026/2027";
+      if (livePeriod) livePeriod.innerText = cleanVal || "2026/2027";
+      if (formPeriod && formPeriod !== document.activeElement) formPeriod.value = val;
+      if (quickPeriod && quickPeriod !== document.activeElement) quickPeriod.value = val;
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function autoSyncStudentCohort(val) {
+      const cleanVal = val.trim();
+      const certCohort = document.getElementById('cert-display-cohort');
+      const liveCohort = document.getElementById('live-student-cohort');
+      const formCohort = document.getElementById('form-student-cohort');
+      const quickCohort = document.getElementById('quickInputStudentCohort');
+      if (certCohort) certCohort.innerText = cleanVal || "Cohort VI Nasional";
+      if (liveCohort) liveCohort.innerText = cleanVal || "Cohort VI Nasional";
+      if (formCohort && formCohort !== document.activeElement) formCohort.value = val;
+      if (quickCohort && quickCohort !== document.activeElement) quickCohort.value = val;
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function autoSyncGradLocation(val) {
+      const cleanVal = val.trim();
+      const liveLocation = document.getElementById('live-location');
+      const formLocation = document.getElementById('form-location');
+      const quickLocation = document.getElementById('quickInputGradLocation');
+      if (liveLocation) liveLocation.innerText = cleanVal || "Yogyakarta";
+      if (formLocation && formLocation !== document.activeElement) formLocation.value = val;
+      if (quickLocation && quickLocation !== document.activeElement) quickLocation.value = val;
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function autoSyncGradStatus(val) {
+      const cleanVal = val.trim();
+      const displayVal = cleanVal || "LULUS (KOMPETEN)";
+      const certStatus = document.getElementById('cert-display-status');
+      const liveStatus = document.getElementById('live-summary-status');
+      const liveBadge = document.getElementById('live-summary-status-badge');
+      const formStatus = document.getElementById('form-status-kelulusan');
+      const quickStatus = document.getElementById('quickInputGradStatus');
+      if (certStatus) certStatus.innerText = "Status: " + displayVal;
+      if (liveStatus) liveStatus.innerText = displayVal;
+      if (liveBadge) liveBadge.innerText = displayVal;
+      if (formStatus && formStatus !== document.activeElement) formStatus.value = val;
+      if (quickStatus && quickStatus !== document.activeElement) quickStatus.value = val;
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function autoSyncAvgScore(val) {
+      const cleanVal = val.trim();
+      const displayVal = cleanVal || "96.4";
+      const certScore = document.getElementById('cert-display-score');
+      const liveAvg = document.getElementById('live-avg-score');
+      const liveSummaryAvg = document.getElementById('live-summary-avg');
+      const formAvg = document.getElementById('form-avg-score');
+      const quickAvg = document.getElementById('quickInputAvgScore');
+      if (certScore) certScore.innerText = displayVal + "%";
+      if (liveAvg) liveAvg.innerText = displayVal;
+      if (liveSummaryAvg) liveSummaryAvg.innerText = displayVal + "%";
+      if (formAvg && formAvg !== document.activeElement) formAvg.value = val;
+      if (quickAvg && quickAvg !== document.activeElement) quickAvg.value = val;
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function autoSyncTotalHours(val) {
+      const cleanVal = val.trim();
+      const displayVal = cleanVal || "64.5 Jam";
+      const certHours = document.getElementById('cert-display-hours');
+      const liveHours = document.getElementById('live-total-hours');
+      const liveFooterHours = document.getElementById('live-total-hours-footer');
+      const tabBadge = document.getElementById('tab-sks-badge');
+      const formHours = document.getElementById('form-total-hours');
+      const quickHours = document.getElementById('quickInputTotalHours');
+      if (certHours) certHours.innerText = displayVal + " (Learning Hours)";
+      if (liveHours) liveHours.innerText = displayVal;
+      if (liveFooterHours) liveFooterHours.innerText = displayVal;
+      if (tabBadge) tabBadge.innerText = displayVal;
+      if (formHours && formHours !== document.activeElement) formHours.value = val;
+      if (quickHours && quickHours !== document.activeElement) quickHours.value = val;
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function autoSyncTransNo(val) {
+      const cleanVal = val.trim();
+      const liveTrans = document.getElementById('live-transcript-no');
+      const formTrans = document.getElementById('form-transcript-no');
+      const quickTrans = document.getElementById('quickInputTransNo');
+      if (liveTrans) liveTrans.innerText = cleanVal || "BDC-TRX-2026-99482";
+      if (formTrans && formTrans !== document.activeElement) formTrans.value = val;
+      if (quickTrans && quickTrans !== document.activeElement) quickTrans.value = val;
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function autoSyncCapstoneTitle(val) {
+      const cleanVal = val.trim();
+      const liveCapstone = document.getElementById('live-capstone-title');
+      const formCapstone = document.getElementById('form-capstone-title');
+      const quickCapstone = document.getElementById('quickInputCapstoneTitle');
+      if (liveCapstone) liveCapstone.innerText = cleanVal || "Capstone Project (BDC Hub) - Web Presensi & Pembelajaran Community";
+      if (formCapstone && formCapstone !== document.activeElement) formCapstone.value = val;
+      if (quickCapstone && quickCapstone !== document.activeElement) quickCapstone.value = val;
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    function selectQuickPresetStudent(name, id, cohort) {
+      const quickInput = document.getElementById('quickInputStudentName');
+      const quickId = document.getElementById('quickInputStudentId');
+      const quickCohort = document.getElementById('quickInputStudentCohort');
+
+      if (quickInput) quickInput.value = name;
+      if (quickId) quickId.value = id;
+      if (quickCohort) quickCohort.value = cohort;
+
+      autoSyncStudentName(name);
+      autoSyncStudentId(id);
+      autoSyncStudentCohort(cohort);
+      showToast("Nama siswa diubah ke: " + name);
+    }
+
+    function selectQuickStatusPreset(status, badge) {
+      autoSyncGradStatus(status);
+      const cohortBadge = document.getElementById('form-cohort-badge');
+      const liveBadge = document.getElementById('live-cohort-badge');
+      if (cohortBadge) cohortBadge.value = badge;
+      if (liveBadge) liveBadge.innerText = badge;
+      saveDataToStorage();
+      showToast("Status diubah ke: " + status);
+    }
+
+    // Auto-Sync Credential No / Reg
+    function autoSyncCertReg(val) {
+      const cleanVal = val.trim();
+      const displayVal = cleanVal || "BDC-CERT-2026-99482-SEC";
+
+      const certReg = document.getElementById('cert-display-reg');
+      const liveReg = document.getElementById('live-cert-reg');
+      const formReg = document.getElementById('form-cert-reg');
+      const quickReg = document.getElementById('quickInputCertReg');
+
+      if (certReg) certReg.innerText = displayVal;
+      if (liveReg) liveReg.innerText = displayVal;
+      if (formReg && formReg !== document.activeElement) formReg.value = val;
+      if (quickReg && quickReg !== document.activeElement) quickReg.value = val;
+
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    // Auto-Sync Program Title
+    function autoSyncProgramTitle(val) {
+      const cleanVal = val.trim();
+      const displayVal = cleanVal || "Cybersecurity Compliance & ISO/IEC 27001 Enterprise Defense";
+
+      const certProg = document.getElementById('cert-display-program');
+      const liveProg = document.getElementById('live-program-title');
+      const formProg = document.getElementById('form-program-title');
+      const quickProg = document.getElementById('quickInputProgramTitle');
+
+      if (certProg) certProg.innerText = displayVal;
+      if (liveProg) liveProg.innerText = displayVal;
+      if (formProg && formProg !== document.activeElement) formProg.value = val;
+      if (quickProg && quickProg !== document.activeElement) quickProg.value = val;
+
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    // Auto-Sync Graduation Date
+    function autoSyncGradDate(val) {
+      const cleanVal = val.trim();
+      const displayVal = cleanVal || "24 Maret 2026";
+
+      const certDate = document.getElementById('cert-display-date');
+      const liveDate = document.getElementById('live-graduation-date');
+      const formDate = document.getElementById('form-graduation-date');
+      const quickDate = document.getElementById('quickInputGradDate');
+
+      if (certDate) certDate.innerText = displayVal;
+      if (liveDate) liveDate.innerText = displayVal;
+      if (formDate && formDate !== document.activeElement) formDate.value = val;
+      if (quickDate && quickDate !== document.activeElement) quickDate.value = val;
+
+      saveDataToStorage();
+      flashAutoSyncBadge();
+    }
+
+    // Quick presets for program
+    function selectQuickProgram(title) {
+      const quickProg = document.getElementById('quickInputProgramTitle');
+      if (quickProg) quickProg.value = title;
+      autoSyncProgramTitle(title);
+      showToast("Program diubah ke: " + title);
+    }
+
+    function clearStudentNameInput() {
+      const input = document.getElementById('quickInputStudentName');
+      if (input) {
+        input.value = "";
+        input.focus();
+        autoSyncStudentName("");
+      }
+    }
+
+    function flashAutoSyncBadge() {
+      const badge = document.getElementById('autoSyncStatusBadge');
+      if (badge) {
+        badge.classList.remove('hidden');
+        clearTimeout(badge._timer);
+        badge._timer = setTimeout(() => {
+          badge.classList.add('hidden');
+        }, 1500);
+      }
+    }
+
+    // Close quick edit popover on click outside
+    document.addEventListener('click', (e) => {
+      const container = document.getElementById('studentQuickEditContainer');
+      const popover = document.getElementById('studentQuickEditPopover');
+      if (container && !container.contains(e.target) && popover && !popover.classList.contains('hidden')) {
+        if (!e.target.closest('#cert-display-name') && !e.target.closest('#live-student-name')) {
+          toggleStudentQuickEditPopover(false);
+        }
+      }
+    });
+
+    // Toggle Form Drawer
+    function toggleEditPanel() {
+      const drawer = document.getElementById('adminEditDrawer');
+      const text = document.getElementById('textEditForm');
+      if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+        text.textContent = "Tutup Form";
+      } else {
+        drawer.classList.add('hidden');
+        text.textContent = "Formulir Data";
+      }
+    }
+
+    // Toggle Inline Edit Highlights
+    function toggleInlineEditMode() {
+      const workspace = document.getElementById('workspace-container');
+      const text = document.getElementById('textInlineEdit');
+      adminModeActive = !adminModeActive;
+      
+      const editables = document.querySelectorAll('#workspace-container [contenteditable]');
+      if (adminModeActive) {
+        workspace.classList.add('admin-edit-active');
+        text.innerHTML = "Edit Langsung: <strong>Aktif</strong>";
+        editables.forEach(el => el.setAttribute('contenteditable', 'true'));
+      } else {
+        workspace.classList.remove('admin-edit-active');
+        text.innerHTML = "Edit Langsung: <strong>Mati</strong>";
+        editables.forEach(el => el.setAttribute('contenteditable', 'false'));
+      }
+    }
+
+    // Toggle Download Dropdown Menu
+    function toggleDownloadMenu() {
+      const menu = document.getElementById('downloadMenu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    // Close download menu on click outside
+    document.addEventListener('click', (e) => {
+      const container = document.getElementById('downloadDropdownContainer');
+      const menu = document.getElementById('downloadMenu');
+      if (container && !container.contains(e.target) && menu && !menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    // View Switcher logic (Hal 1, Hal 2, Both)
+    let currentViewMode = 'both';
+    function switchPageView(mode) {
+      currentViewMode = mode;
+      const certPage = document.getElementById('cert-sheet-page');
+      const trxPage = document.getElementById('a4-print-sheet');
+      const tabBoth = document.getElementById('tab-view-both');
+      const tabHal1 = document.getElementById('tab-view-hal1');
+      const tabHal2 = document.getElementById('tab-view-hal2');
+
+      const activeClasses = ['bg-primary', 'text-white', 'shadow-sm'];
+      const inactiveClasses = ['text-slate-600', 'hover:text-slate-900'];
+
+      [tabBoth, tabHal1, tabHal2].forEach(tab => {
+        if (tab) {
+          tab.classList.remove(...activeClasses);
+          tab.classList.add(...inactiveClasses);
+        }
+      });
+
+      if (mode === 'both') {
+        if (certPage) certPage.style.display = 'flex';
+        if (trxPage) trxPage.style.display = 'flex';
+        if (tabBoth) {
+          tabBoth.classList.remove(...inactiveClasses);
+          tabBoth.classList.add(...activeClasses);
+        }
+      } else if (mode === 'hal1') {
+        if (certPage) certPage.style.display = 'flex';
+        if (trxPage) trxPage.style.display = 'none';
+        if (tabHal1) {
+          tabHal1.classList.remove(...inactiveClasses);
+          tabHal1.classList.add(...activeClasses);
+        }
+      } else if (mode === 'hal2') {
+        if (certPage) certPage.style.display = 'none';
+        if (trxPage) trxPage.style.display = 'flex';
+        if (tabHal2) {
+          tabHal2.classList.remove(...inactiveClasses);
+          tabHal2.classList.add(...activeClasses);
+        }
+      }
+    }
+
+    // Add Module Row Dynamically
+    function addModuleRow() {
+      const tbody = document.getElementById('transcript-tbody');
+      const capstone = document.getElementById('capstone-project-row');
+      const newTr = document.createElement('tr');
+      newTr.className = 'hover:bg-slate-50/50 transition-colors module-row';
+      newTr.innerHTML = `
+        <td class="py-1.5 px-3 font-mono font-bold text-primary" contenteditable="true">SEC-${Math.floor(510 + Math.random() * 80)}</td>
+        <td class="py-1.5 px-3">
+          <div class="font-semibold text-slate-900" contenteditable="true">Modul Tambahan: Advanced Security Framework</div>
+          <div class="text-[10px] text-slate-400" contenteditable="true">Implementasi Kontrol Keamanan Terapan &amp; Kepatuhan</div>
+        </td>
+        <td class="py-1.5 px-3 text-center font-medium row-hours-cell" contenteditable="true" onblur="recalculateAllScores()">8.0 Jam</td>
+        <td class="py-1.5 px-3 text-center font-mono font-semibold row-score-cell" contenteditable="true" onblur="updateRowGrade(this)">95.0</td>
+        <td class="py-1.5 px-3 text-center">
+          <span class="inline-block px-2 py-0.5 rounded font-bold bg-indigo-50 text-indigo-700 text-[10px] row-grade-badge" contenteditable="true">A</span>
+        </td>
+        <td class="py-1.5 px-4 text-right font-medium text-slate-700 row-predikat-cell" contenteditable="true">Tuntas (Kompeten)</td>
+      `;
+      if (capstone) {
+        tbody.insertBefore(newTr, capstone);
+      } else {
+        tbody.appendChild(newTr);
+      }
+      recalculateAllScores();
+      saveDataToStorage();
+      showToast("Mata pelatihan baru berhasil ditambahkan!");
+    }
+
+    // Reset Default Data
+    function resetDefaultData() {
+      localStorage.removeItem(STORAGE_KEY);
+      loadDataFromStorage();
+      showToast("Data sertifikat dikembalikan ke default!");
+    }
+
+    function saveAdminDataFeedback() {
+      saveDataToStorage();
+      showToast("Perubahan data sertifikat berhasil disimpan!");
+    }
+
+    // Row grade update
+    function updateRowGrade(scoreCell) {
+      const row = scoreCell.closest('tr');
+      let rawScore = parseFloat(scoreCell.innerText.replace(',', '.'));
+      if (isNaN(rawScore)) rawScore = 0;
+      scoreCell.innerText = rawScore.toFixed(1);
+
+      const gradeBadge = row.querySelector('.row-grade-badge');
+      const predikatCell = row.querySelector('.row-predikat-cell');
+
+      if (rawScore >= 97) {
+        if (gradeBadge) {
+          gradeBadge.innerText = 'A+';
+          gradeBadge.className = 'inline-block px-2 py-0.5 rounded font-bold bg-emerald-50 text-emerald-700 text-[10px] row-grade-badge';
+        }
+        if (predikatCell) predikatCell.innerText = 'Unggul (Paripurna)';
+      } else if (rawScore >= 93) {
+        if (gradeBadge) {
+          gradeBadge.innerText = 'A';
+          gradeBadge.className = 'inline-block px-2 py-0.5 rounded font-bold bg-indigo-50 text-indigo-700 text-[10px] row-grade-badge';
+        }
+        if (predikatCell) predikatCell.innerText = 'Tuntas (Kompeten)';
+      } else if (rawScore >= 88) {
+        if (gradeBadge) {
+          gradeBadge.innerText = 'B+';
+          gradeBadge.className = 'inline-block px-2 py-0.5 rounded font-bold bg-slate-100 text-slate-800 text-[10px] row-grade-badge';
+        }
+        if (predikatCell) predikatCell.innerText = 'Kompeten';
+      } else if (rawScore >= 80) {
+        if (gradeBadge) {
+          gradeBadge.innerText = 'B';
+          gradeBadge.className = 'inline-block px-2 py-0.5 rounded font-bold bg-slate-100 text-slate-800 text-[10px] row-grade-badge';
+        }
+        if (predikatCell) predikatCell.innerText = 'Memenuhi Syarat';
+      } else {
+        if (gradeBadge) {
+          gradeBadge.innerText = 'C';
+          gradeBadge.className = 'inline-block px-2 py-0.5 rounded font-bold bg-rose-50 text-rose-700 text-[10px] row-grade-badge';
+        }
+        if (predikatCell) predikatCell.innerText = 'Belum Lulus';
+      }
+
+      recalculateAllScores();
+      saveDataToStorage();
+    }
+
+    // Recalculate totals across table
+    function recalculateAllScores() {
+      const rows = document.querySelectorAll('#transcript-tbody tr.module-row');
+      let totalHours = 0;
+      let weightedScoreSum = 0;
+
+      rows.forEach(r => {
+        const hoursEl = r.querySelector('.row-hours-cell');
+        const scoreEl = r.querySelector('.row-score-cell');
+        if (!hoursEl || !scoreEl) return;
+        
+        let hours = parseFloat(hoursEl.innerText.replace(/[^\d.]/g, ''));
+        if (isNaN(hours)) hours = 8.0;
+        totalHours += hours;
+
+        let score = parseFloat(scoreEl.innerText.replace(',', '.'));
+        if (isNaN(score)) score = 90.0;
+        weightedScoreSum += (score * hours);
+      });
+
+      if (totalHours > 0) {
+        const avgScore = (weightedScoreSum / totalHours).toFixed(1);
+        const hoursText = totalHours.toFixed(1) + ' Jam';
+
+        let summaryGrade = 'B';
+        let summaryStatus = 'LULUS (MEMENUHI SYARAT KELULUSAN)';
+        let summaryStatusBadge = 'LULUS (KOMPETEN)';
+
+        if (avgScore >= 97) {
+          summaryGrade = 'A+';
+          summaryStatus = 'LULUS PARIPURNA (UNGGUL & KOMPETEN)';
+          summaryStatusBadge = 'LULUS PARIPURNA';
+        } else if (avgScore >= 93) {
+          summaryGrade = 'A';
+          summaryStatus = 'LULUS (TUNTAS & KOMPETEN)';
+          summaryStatusBadge = 'LULUS (KOMPETEN)';
+        } else if (avgScore >= 88) {
+          summaryGrade = 'B+';
+          summaryStatus = 'LULUS (KOMPETEN)';
+          summaryStatusBadge = 'LULUS (KOMPETEN)';
+        } else if (avgScore >= 80) {
+          summaryGrade = 'B';
+          summaryStatus = 'LULUS (MEMENUHI SYARAT)';
+          summaryStatusBadge = 'LULUS (KOMPETEN)';
+        } else {
+          summaryGrade = 'C';
+          summaryStatus = 'BELUM MEMENUHI SYARAT KELULUSAN';
+          summaryStatusBadge = 'BELUM LULUS';
+        }
+
+        if (document.getElementById('live-total-hours')) document.getElementById('live-total-hours').innerText = hoursText;
+        if (document.getElementById('live-total-hours-footer')) document.getElementById('live-total-hours-footer').innerText = hoursText;
+        if (document.getElementById('tab-sks-badge')) document.getElementById('tab-sks-badge').innerText = hoursText;
+        if (document.getElementById('cert-display-hours')) document.getElementById('cert-display-hours').innerText = hoursText + ' (Learning Hours)';
+        
+        if (document.getElementById('live-summary-avg')) document.getElementById('live-summary-avg').innerText = avgScore + '%';
+        if (document.getElementById('live-avg-score')) document.getElementById('live-avg-score').innerText = avgScore;
+        if (document.getElementById('cert-display-score')) document.getElementById('cert-display-score').innerText = avgScore + '%';
+        if (document.getElementById('form-avg-score')) document.getElementById('form-avg-score').value = avgScore;
+
+        if (document.getElementById('live-summary-grade')) document.getElementById('live-summary-grade').innerText = summaryGrade;
+        if (document.getElementById('live-summary-status')) document.getElementById('live-summary-status').innerText = summaryStatus;
+        if (document.getElementById('live-summary-status-badge')) document.getElementById('live-summary-status-badge').innerText = summaryStatusBadge;
+        if (document.getElementById('cert-display-status')) document.getElementById('cert-display-status').innerText = 'Status: ' + summaryStatusBadge;
+        if (document.getElementById('form-status-kelulusan')) document.getElementById('form-status-kelulusan').value = summaryStatusBadge;
+      }
+    }
+
+    // Modal Helpers
+    function showPdfProgressModal() {
+      document.getElementById('pdf-export-modal').classList.remove('hidden');
+      document.getElementById('modal-progress-view').classList.remove('hidden');
+      document.getElementById('modal-success-view').classList.add('hidden');
+    }
+
+    function updatePdfProgress(pct, statusText) {
+      const bar = document.getElementById('modal-progress-bar');
+      const text = document.getElementById('modal-progress-pct');
+      const status = document.getElementById('modal-progress-status');
+      if (bar) bar.style.width = pct + '%';
+      if (text) text.innerText = pct + '%';
+      if (status) status.innerText = statusText;
+    }
+
+    function showPdfSuccessModal(filename) {
+      document.getElementById('modal-progress-view').classList.add('hidden');
+      document.getElementById('modal-success-view').classList.remove('hidden');
+      const label = document.getElementById('downloaded-filename-label');
+      if (label) label.innerText = filename;
+    }
+
+    function closePdfModal() {
+      document.getElementById('pdf-export-modal').classList.add('hidden');
+    }
+
+    // PDF Exports
+    function exportCertificatePDF() {
+      const rawName = (document.getElementById('form-student-name').value || 'Peserta').replace(/[^a-zA-Z0-9_-]/g, '_');
+      const filename = 'Sertifikat_Kelulusan_BDC_' + rawName + '.pdf';
+
+      showPdfProgressModal();
+      document.getElementById('modal-pdf-title').innerText = 'Ekspor Dokumen PDF Sertifikat (Hal 1)';
+
+      const target = document.getElementById('cert-sheet-page');
+      const prevDisp = target.style.display;
+      target.style.display = 'flex';
+
+      updatePdfProgress(50, 'Merender sertifikat A4 Landscape...');
+
+      if (typeof html2pdf !== 'undefined') {
+        const opt = {
+          margin: [0, 0, 0, 0],
+          filename: filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 1122 },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+
+        updatePdfProgress(80, 'Mengonversi layout...');
+        html2pdf().set(opt).from(target).save().then(() => {
+          target.style.display = prevDisp;
+          updatePdfProgress(100, 'Selesai');
+          setTimeout(() => showPdfSuccessModal(filename), 300);
+        }).catch(err => {
+          target.style.display = prevDisp;
+          window.print();
+          closePdfModal();
+        });
+      } else {
+        window.print();
+        closePdfModal();
+      }
+    }
+
+    function exportTranscriptPDF() {
+      const rawName = (document.getElementById('form-student-name').value || 'Peserta').replace(/[^a-zA-Z0-9_-]/g, '_');
+      const filename = 'Transkrip_Akademik_BDC_' + rawName + '.pdf';
+
+      showPdfProgressModal();
+      document.getElementById('modal-pdf-title').innerText = 'Ekspor Transkrip Nilai PDF (Hal 2)';
+
+      const target = document.getElementById('a4-print-sheet');
+      const prevDisp = target.style.display;
+      target.style.display = 'flex';
+
+      updatePdfProgress(50, 'Merender transkrip A4 Landscape...');
+
+      if (typeof html2pdf !== 'undefined') {
+        const opt = {
+          margin: [0, 0, 0, 0],
+          filename: filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 1122 },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+
+        updatePdfProgress(80, 'Mengonversi layout...');
+        html2pdf().set(opt).from(target).save().then(() => {
+          target.style.display = prevDisp;
+          updatePdfProgress(100, 'Selesai');
+          setTimeout(() => showPdfSuccessModal(filename), 300);
+        }).catch(err => {
+          target.style.display = prevDisp;
+          window.print();
+          closePdfModal();
+        });
+      } else {
+        window.print();
+        closePdfModal();
+      }
+    }
+
+    function exportMultiPageBundlePDF() {
+      const rawName = (document.getElementById('form-student-name').value || 'Peserta').replace(/[^a-zA-Z0-9_-]/g, '_');
+      const filename = 'Bundel_Sertifikat_Transkrip_BDC_' + rawName + '.pdf';
+
+      showPdfProgressModal();
+      document.getElementById('modal-pdf-title').innerText = 'Ekspor Bundel 2 Halaman (1 File PDF)';
+
+      const certPage = document.getElementById('cert-sheet-page');
+      const trxPage = document.getElementById('a4-print-sheet');
+      const wrapper = document.getElementById('multi-page-export-wrapper');
+
+      certPage.style.display = 'flex';
+      trxPage.style.display = 'flex';
+
+      updatePdfProgress(50, 'Memproses lembar bundel multi-page...');
+
+      if (typeof html2pdf !== 'undefined') {
+        const opt = {
+          margin: [0, 0, 0, 0],
+          filename: filename,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 1122 },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        };
+
+        updatePdfProgress(80, 'Menggabungkan 2 Halaman ke 1 File PDF...');
+        html2pdf().set(opt).from(wrapper).save().then(() => {
+          switchPageView(currentViewMode);
+          updatePdfProgress(100, 'Selesai');
+          setTimeout(() => showPdfSuccessModal(filename), 300);
+        }).catch(err => {
+          switchPageView(currentViewMode);
+          window.print();
+          closePdfModal();
+        });
+      } else {
+        window.print();
+        closePdfModal();
+      }
+    }
+
+    function executePrintTranscript() {
+      window.print();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('adminToast');
+      const text = document.getElementById('adminToastMsg');
+      if (text) text.innerText = msg;
+      if (toast) {
+        toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+        }, 3000);
+      }
+    }
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDataFromStorage();
+      if (!localStorage.getItem(STORAGE_KEY)) {
+        saveDataToStorage();
+      }
+    });
+  </script>
+</body>
+</html>

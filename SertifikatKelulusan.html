@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="web_dashboard" name="shell-type"/>
+  <title>Sertifikat Kelulusan Resmi - Business Dev Club</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+
+    /* Print Isolation Styles */
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #certificateCanvas, #certificateCanvas * {
+        visibility: visible;
+      }
+      #certificateCanvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 297mm !important;
+        min-height: 210mm !important;
+        margin: 0 !important;
+        padding: 10mm 14mm !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      "darkMode": "class",
+      "theme": {
+        "extend": {
+          "colors": {
+            "navy-admin-bg": "#0F172A",
+            "navy-admin-card": "#1E293B",
+            "primary": "#2a14b4",
+            "primary-container": "#4338ca",
+            "on-primary": "#ffffff",
+            "secondary": "#4648d4",
+            "secondary-container": "#6063ee",
+            "surface": "#faf8ff",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f2f3ff",
+            "surface-container": "#eaedff",
+            "surface-container-high": "#e2e7ff",
+            "surface-container-highest": "#dae2fd",
+            "on-surface": "#131b2e",
+            "on-surface-variant": "#464554",
+            "slate-muted": "#64748B",
+            "accent-emerald-success": "#10B981",
+            "accent-cyan-vibrant": "#06B6D4",
+            "accent-amber-warning": "#F59E0B",
+            "accent-rose-danger": "#EF4444",
+            "accent-electric-purple": "#A855F7"
+          },
+          "fontFamily": {
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "title-card": ["Plus Jakarta Sans"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-badge": ["Plus Jakarta Sans"],
+            "label-caps": ["Plus Jakarta Sans"]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-background font-body-md text-on-surface">
+
+<!-- Mobile Sidebar Backdrop Overlay -->
+<div id="sidebarBackdrop" class="fixed inset-0 bg-navy-admin-bg/50 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300" onclick="toggleMobileSidebar(false)"></div>
+
+<!-- Main Navigation Sidebar -->
+<aside id="appSidebar" class="no-print fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between py-6 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+  <div class="flex flex-col">
+    <div class="px-6 mb-8 flex items-center justify-between">
+      <a href="DasborSiswadanPembelajaran.html" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary via-primary-container to-accent-electric-purple flex items-center justify-center shadow-md relative overflow-hidden shrink-0">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 3L2 8.5L12 14L22 8.5L12 3Z" fill="currentColor" fill-opacity="0.3"></path>
+            <path d="M2 8.5L12 14L22 8.5L12 3L2 8.5Z" stroke="currentColor"></path>
+            <path d="M6 10.7V16.5C6 16.5 8.5 19 12 19C15.5 19 18 16.5 18 16.5V10.7" stroke="currentColor"></path>
+            <path d="M22 8.5V15.5" stroke="currentColor"></path>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">Business Dev Club</span>
+          <span class="font-label-caps text-label-caps uppercase text-slate-muted">Academic College Community</span>
+        </div>
+      </a>
+      <button onclick="toggleMobileSidebar(false)" class="lg:hidden p-1.5 rounded-lg text-slate-muted hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button" aria-label="Tutup Menu">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+    
+    <div class="px-6 mb-2">
+      <span class="font-label-caps text-label-caps uppercase text-slate-muted tracking-wider">Curriculum &amp; Management</span>
+    </div>
+    
+    <nav class="flex flex-col gap-1 px-4">
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="DasborSiswadanPembelajaran.html">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="courses" href="MateriPembelajaran.html">
+        <span class="material-symbols-outlined">school</span>
+        <span>Courses</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="assessments-&amp;-quizzes" href="AntarMukaUjiandanPembuatanUjian.html">
+        <span class="material-symbols-outlined">assignment_turned_in</span>
+        <span>Assessments &amp; Quizzes</span>
+      </a>
+      <a aria-current="page" class="flex items-center gap-3 px-4 py-3 transition-all bg-primary-container text-on-primary font-title-card shadow-sm rounded-xl" data-path="certifications" href="SertifikatKelulusan.html">
+        <span class="material-symbols-outlined">verified</span>
+        <span>Certifications</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-body-md text-body-md hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="system-settings" href="PengaturanSistem.html">
+        <span class="material-symbols-outlined">settings</span>
+        <span>System Settings</span>
+      </a>
+    </nav>
+  </div>
+  
+  <div class="px-4 flex flex-col gap-3">
+    <div class="bg-surface-container-high rounded-xl p-4 flex flex-col gap-2 shadow-sm">
+      <div class="flex items-center justify-between">
+        <span class="font-label-badge text-label-badge text-slate-muted uppercase">Status Sertifikat</span>
+        <span class="h-2 w-2 rounded-full bg-accent-emerald-success"></span>
+      </div>
+      <span class="font-title-card text-title-card text-on-surface">Resmi &amp; Terverifikasi</span>
+      <span class="font-body-sm text-body-sm text-accent-emerald-success font-semibold flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm">verified_user</span> Siap Diunduh / Dicetak
+      </span>
+    </div>
+  </div>
+</aside>
+
+<div class="pl-0 lg:pl-72 transition-all duration-300">
+  <!-- Header Bar -->
+  <header class="no-print fixed top-0 left-0 lg:left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-30 flex items-center justify-between px-4 sm:px-8">
+    <div class="flex items-center gap-3 flex-1 max-w-md">
+      <button id="sidebarToggleBtn" onclick="toggleMobileSidebar()" class="lg:hidden p-2 rounded-xl text-on-surface hover:bg-surface-container transition-colors flex items-center justify-center" type="button" aria-label="Buka Menu">
+        <span class="material-symbols-outlined text-2xl">menu</span>
+      </button>
+      <div class="relative w-full hidden sm:block">
+        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-muted">search</span>
+        <input class="w-full pl-10 pr-4 py-2 bg-surface-container rounded-full font-body-sm text-body-sm text-on-surface placeholder:text-slate-muted outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary transition-all" placeholder="Cari sertifikat, kurikulum, modul..." type="text"/>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-3 sm:gap-5">
+      <!-- Role Switcher -->
+      <div class="flex items-center bg-surface-container p-1 rounded-full gap-1">
+        <button id="headerRoleAdminBtn" class="px-3 py-1 text-on-surface-variant hover:text-on-surface font-label-badge text-label-badge rounded-full transition-all cursor-pointer" onclick="switchUserRole('admin')" type="button">Admin</button>
+        <button id="headerRoleStudentBtn" class="px-3 py-1 text-on-primary bg-primary font-label-badge text-label-badge rounded-full transition-all shadow-sm cursor-default" onclick="switchUserRole('student')" type="button">Student</button>
+      </div>
+      
+      <button class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" type="button" aria-label="Notifikasi">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent-rose-danger"></span>
+      </button>
+      
+      <div class="h-6 w-px bg-surface-variant hidden sm:block"></div>
+      
+      <div class="flex items-center gap-3">
+        <div class="flex flex-col text-right hidden sm:flex">
+          <span id="headerUserName" class="font-title-card text-title-card text-on-surface leading-tight">Siti Rahmawati</span>
+          <span id="headerUserRole" class="font-label-badge text-label-badge text-slate-muted">Corporate Learner</span>
+        </div>
+        <img id="headerUserAvatar" alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtL98YLoHSVEsEeTTa9JTDEe_SAPWgj8wqpAfnaUJbX8510HmjAC1XP-99rJNFtk4LAiMYtYgJedOpb1bF7u10FEhb3hib00syesSPOPV8dvprSH4zSbls7hpw5yfqMlNUADmvl_PHMq5rYu9IOHcwknBQPaUFPiE_Bq1FUSbv0c3dPQcoESJx3zSIJIurfY5Md6OBS4u6i91R4IhueF8dRFFbJbwxbCGY8UX6y-8"/>
+      </div>
+    </div>
+  </header>
+
+  <main class="w-full pt-20 px-4 sm:px-6 lg:px-8 pb-16 bg-background min-h-screen">
+    <div class="max-w-7xl mx-auto flex flex-col w-full">
+      
+      <!-- Toast Notification -->
+      <div class="no-print fixed bottom-8 right-8 z-50 flex items-center gap-3 px-5 py-3.5 bg-navy-admin-bg text-white rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none transform translate-y-4" id="toastNotification">
+        <span class="material-symbols-outlined text-accent-emerald-success text-xl" id="toastIcon">verified</span>
+        <span class="font-body-md text-body-md" id="toastMessage">Tautan kredensial berhasil disalin!</span>
+      </div>
+
+      <!-- ADMIN SHORTCUT BANNER (Hanya tampil jika user login sebagai Admin) -->
+      <div id="adminNoticeBanner" class="no-print hidden p-4 rounded-2xl bg-indigo-50 border border-primary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-xl">admin_panel_settings</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-navy-admin-bg">Mode Administrator Aktif</span>
+              <span class="px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-bold">Admin View</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-0.5">
+              Anda sedang melihat halaman sertifikat versi Mahasiswa. Untuk mengubah teks, nilai, atau mencetak bundel 2 lembar sekaligus, gunakan panel editor admin.
+            </p>
+          </div>
+        </div>
+        <a href="PratinjauEditor&CetakBundel2.html" class="shrink-0 px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">edit_document</span>
+          <span>Buka Editor &amp; Bundel Cetak</span>
+        </a>
+      </div>
+
+      <!-- Breadcrumb Navigation & Top Action Bar -->
+      <div class="no-print flex flex-col gap-4 mb-6">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-slate-muted">
+          <a class="hover:text-primary transition-colors flex items-center gap-1" href="DasborSiswadanPembelajaran.html">
+            <span class="material-symbols-outlined text-sm">home</span>
+            <span>Beranda</span>
+          </a>
+          <span class="material-symbols-outlined text-xs">chevron_right</span>
+          <span class="text-slate-500 font-medium">Sertifikasi &amp; Lisensi</span>
+          <span class="material-symbols-outlined text-xs">chevron_right</span>
+          <span class="text-on-surface font-bold">Sertifikat Kelulusan Resmi</span>
+        </nav>
+
+        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 pb-2">
+          <div class="flex flex-col gap-1 max-w-3xl">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-2.5 py-1 rounded-full bg-accent-emerald-success/15 text-accent-emerald-success text-[11px] font-bold flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-xs">verified</span>
+                Status: Resmi Diterbitkan &amp; Sah
+              </span>
+              <span class="px-2.5 py-1 rounded-full bg-surface-container-high text-slate-600 text-[11px] font-medium">
+                Siklus Akademik Q1 2026
+              </span>
+            </div>
+            <h1 class="font-headline-lg text-2xl sm:text-3xl text-navy-admin-bg font-extrabold tracking-tight mt-1">
+              Sertifikat Kelulusan &amp; Kompetensi Resmi
+            </h1>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Diterbitkan resmi oleh <span class="text-primary font-bold">Business Dev Club Academy</span> untuk <strong id="certLearnerHeading" class="text-navy-admin-bg">Siti Rahmawati</strong>. Dokumen ini sah dan dapat diunduh, dicetak, atau diverifikasi secara digital.
+            </p>
+          </div>
+
+          <!-- Quick Action Buttons (Simple, Direct, Ready to use) -->
+          <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button id="btnDownloadPDF" onclick="downloadCertificatePDF()" class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer" type="button">
+              <span class="material-symbols-outlined text-lg">download</span>
+              <span>Unduh Sertifikat PDF</span>
+            </button>
+            <button id="btnPrintCert" onclick="printCertificate()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-surface-container text-slate-700 font-bold text-xs sm:text-sm shadow-sm transition-all active:scale-95 cursor-pointer" type="button">
+              <span class="material-symbols-outlined text-lg">print</span>
+              <span>Cetak (A4)</span>
+            </button>
+            <button id="btnCopyLink" onclick="copyCredentialLink()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-surface-container text-slate-700 font-bold text-xs sm:text-sm shadow-sm transition-all active:scale-95 cursor-pointer" type="button">
+              <span class="material-symbols-outlined text-lg">link</span>
+              <span>Salin Tautan</span>
+            </button>
+            <button onclick="openTranscriptModal()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-violet-100 hover:bg-violet-200 text-primary font-bold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer" type="button">
+              <span class="material-symbols-outlined text-lg">fact_check</span>
+              <span>Lihat Transkrip Nilai</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid: Certificate Canvas & Summary Panel -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-8">
+        
+        <!-- Central Digital Certificate Canvas (8 Cols on Desktop) -->
+        <div class="lg:col-span-8 flex flex-col gap-4">
+          <div class="relative w-full bg-white rounded-2xl shadow-lg border border-slate-200/80 p-4 sm:p-8 overflow-hidden transition-all" id="certificateCanvas">
+            
+            <!-- Elegant Double Border Framing Layer -->
+            <div class="relative w-full border-2 border-indigo-900/15 rounded-xl p-6 sm:p-10 bg-gradient-to-b from-slate-50/50 via-white to-slate-50/30 flex flex-col justify-between">
+              
+              <!-- Subtle Guilloche Seal Watermark Background -->
+              <div class="absolute inset-0 pointer-events-none opacity-[0.03] flex items-center justify-center overflow-hidden">
+                <svg class="w-full h-full text-navy-admin-bg" fill="none" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="400" cy="300" r="280" stroke="currentColor" stroke-dasharray="6 6" stroke-width="2"></circle>
+                  <circle cx="400" cy="300" r="240" stroke="currentColor" stroke-width="1.5"></circle>
+                  <circle cx="400" cy="300" r="190" stroke="currentColor" stroke-width="1"></circle>
+                  <path d="M400 20 L400 580 M20 300 L780 300" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1"></path>
+                </svg>
+              </div>
+
+              <!-- Top Certificate Header -->
+              <div class="flex items-center justify-between gap-4 mb-6 relative z-10 border-b border-indigo-100 pb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white shadow-md font-bold text-xl">
+                    <span class="material-symbols-outlined text-2xl">shield</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="font-headline-sm text-lg text-primary font-extrabold tracking-tight">BUSINESS DEV CLUB (BDC)</span>
+                    <span class="text-[11px] uppercase text-slate-500 font-semibold tracking-wider">Community Academy &amp; Student Chapter</span>
+                  </div>
+                </div>
+                <!-- Official Digital Seal Stamp -->
+                <div class="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-full text-xs font-bold">
+                  <span class="material-symbols-outlined text-emerald-600 text-sm">verified</span>
+                  <span>Official Digital Seal</span>
+                </div>
+              </div>
+
+              <!-- Certificate Core Typography -->
+              <div class="flex flex-col items-center text-center my-4 relative z-10">
+                <span class="text-xs uppercase tracking-widest text-primary font-bold mb-1">
+                  Community Academy Credential of Completion
+                </span>
+                <h2 class="font-headline-lg text-2xl sm:text-3xl md:text-4xl text-navy-admin-bg font-extrabold tracking-tight uppercase mb-2">
+                  Sertifikat Kelulusan Resmi
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 italic mb-4">
+                  Dengan ini menerangkan dan mengesahkan secara resmi bahwa:
+                </p>
+
+                <!-- Recipient Display Name -->
+                <div class="py-2 px-6 sm:px-10 rounded-2xl bg-indigo-50/70 border border-indigo-100 mb-4 inline-block">
+                  <h3 id="certRecipientName" class="font-headline-lg text-2xl sm:text-3xl text-primary font-extrabold tracking-tight">
+                    Siti Rahmawati
+                  </h3>
+                  <div class="text-[11px] text-slate-500 mt-1 font-mono tracking-wide">
+                    NIM / ID: <strong class="text-slate-800" id="certLearnerId">255720056</strong> • <span id="certLearnerPeriod">Periode Program: 2026/2027</span> • <span id="certLearnerCohort">COHORT VI NASIONAL</span>
+                  </div>
+                </div>
+
+                <p class="text-xs sm:text-sm text-slate-700 max-w-xl leading-relaxed mb-4">
+                  Telah berhasil menyelesaikan seluruh kurikulum terapan tingkat lanjut, modul pembelajaran, dan evaluasi Capstone Project BDC Hub pada program:
+                </p>
+
+                <!-- Program Title & Predikat Banner -->
+                <div class="w-full max-w-2xl p-4 rounded-xl bg-gradient-to-r from-primary/5 via-primary-container/10 to-primary/5 border border-primary/20 mb-6">
+                  <span class="text-[11px] font-bold text-primary uppercase block tracking-wider mb-0.5">Program Pelatihan Spesialisasi</span>
+                  <span class="font-headline-sm text-base sm:text-lg text-navy-admin-bg font-bold block" id="certProgramTitle">
+                    Cybersecurity Compliance &amp; ISO/IEC 27001 Enterprise Defense
+                  </span>
+                </div>
+              </div>
+
+              <!-- Official Signatures & Verification (KIRI: Kemahasiswaan, TENGAH: Validasi QR, KANAN: PIC Program BDC) -->
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-4 my-4 pt-4 border-t border-slate-200 relative z-10 items-end">
+                <!-- KIRI: Signature 1 (Kemahasiswaan) -->
+                <div class="md:col-span-4 flex flex-col items-center sm:items-start text-center sm:text-left">
+                  <span class="text-[10px] text-slate-500 uppercase tracking-wider font-bold mb-1">
+                    Ditetapkan di Yogyakarta: <strong class="text-slate-900" id="certIssueDateLeft">24 Maret 2026</strong>
+                  </span>
+                  <div class="h-14 flex items-center justify-center sm:justify-start relative w-full mb-1">
+                    <svg class="h-12 w-40 text-primary" fill="none" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M15 45 C30 15, 45 10, 60 30 C75 50, 85 10, 100 25 C115 40, 130 15, 145 35 C155 48, 175 25, 190 30" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+                      <path d="M40 35 C70 30, 120 40, 160 20" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"></path>
+                    </svg>
+                  </div>
+                  <div class="h-0.5 w-36 bg-slate-300 mb-1.5"></div>
+                  <span class="font-bold text-xs sm:text-sm text-navy-admin-bg block" id="certDeanName">Bagas Triaji S.Kom.,M.Kom</span>
+                  <span class="text-[11px] text-slate-500 block">Kemahasiswaan</span>
+                </div>
+
+                <!-- TENGAH: QR Code & Validasi Portal Resmi -->
+                <div class="md:col-span-4 flex flex-col items-center justify-center text-center px-2">
+                  <div class="w-14 h-14 bg-navy-admin-bg p-1.5 rounded-xl flex items-center justify-center text-white shadow-sm ring-1 ring-slate-200">
+                    <svg class="w-full h-full text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h4v4h-4v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2zM5 5h2v2H5V5zm12 0h2v2h-2V5zM5 17h2v2H5v-2z"></path>
+                    </svg>
+                  </div>
+                  <span class="text-[9px] text-slate-600 font-mono font-bold mt-1 uppercase tracking-wide">Scan Validasi Sertifikat Resmi</span>
+                  <span class="font-mono font-bold text-primary text-[11px] mt-0.5 select-all" id="certRegNo">BDC-CERT-2026-99482-SEC</span>
+                  <span class="text-[10px] text-emerald-600 flex items-center gap-1 mt-0.5 font-medium">
+                    <span class="material-symbols-outlined text-xs">verified</span> Tervalidasi Publik di Portal BDC
+                  </span>
+                </div>
+
+                <!-- KANAN: Signature 2 (PIC Program BDC) -->
+                <div class="md:col-span-4 flex flex-col items-center sm:items-end text-center sm:text-right">
+                  <span class="text-[10px] text-emerald-700 uppercase tracking-wider font-bold flex items-center justify-center sm:justify-end gap-1 mb-1">
+                    <span class="material-symbols-outlined text-[13px]">verified</span> Program Leadership &amp; Student Chapter
+                  </span>
+                  <div class="h-14 flex items-center justify-center sm:justify-end relative w-full mb-1">
+                    <svg class="h-12 w-40 text-secondary" fill="none" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M20 30 C35 48, 55 12, 70 28 C85 44, 90 20, 110 32 C130 44, 150 18, 180 35" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+                      <path d="M60 48 L140 18" stroke="currentColor" stroke-linecap="round" stroke-width="1.6"></path>
+                    </svg>
+                  </div>
+                  <div class="h-0.5 w-36 bg-slate-300 mb-1.5"></div>
+                  <span class="font-bold text-xs sm:text-sm text-navy-admin-bg block" id="certInstructorName">Nurul Layli</span>
+                  <span class="text-[11px] text-slate-500 block">PIC Program BDC</span>
+                </div>
+              </div>
+
+              <!-- Bottom Verification Bar -->
+              <div class="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-slate-400 text-[10px] font-mono">
+                <span>Dokumen Akademik Resmi Terdaftar • Standard ISO 216</span>
+                <span>Format A4 Lanskap (297 x 210 mm)</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side Supporting Information (4 Cols on Desktop) -->
+        <div class="no-print lg:col-span-4 flex flex-col gap-5">
+          
+          <!-- Card 1: Ringkasan Status & Detail -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col gap-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-lg">verified</span>
+                </div>
+                <div>
+                  <h3 class="font-bold text-sm text-navy-admin-bg">Detail Kredensial</h3>
+                  <span class="text-[11px] text-slate-400">Informasi Sertifikat Resmi</span>
+                </div>
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
+                Aktif &amp; Sah
+              </span>
+            </div>
+
+            <div class="space-y-2.5 text-xs">
+              <div class="flex justify-between items-center py-1.5 px-3 rounded-lg bg-slate-50">
+                <span class="text-slate-500">Penerima</span>
+                <span class="font-bold text-slate-800" id="sideLearnerName">Siti Rahmawati</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 px-3 rounded-lg bg-slate-50">
+                <span class="text-slate-500">Nomor Registrasi</span>
+                <span class="font-mono font-bold text-primary" id="sideCertReg">BDC-CERT-2026-99482-SEC</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 px-3 rounded-lg bg-slate-50">
+                <span class="text-slate-500">Periode Program</span>
+                <span class="font-bold text-slate-800" id="sideProgramPeriod">2026/2027</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 px-3 rounded-lg bg-slate-50">
+                <span class="text-slate-500">Lokasi Penetapan</span>
+                <span class="font-bold text-slate-800" id="sideLocation">Yogyakarta</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 px-3 rounded-lg bg-slate-50">
+                <span class="text-slate-500">Status Kelulusan</span>
+                <span class="font-bold text-emerald-700" id="sideGradStatus">LULUS (KOMPETEN)</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 px-3 rounded-lg bg-slate-50">
+                <span class="text-slate-500">Jam Pelatihan</span>
+                <span class="font-bold text-slate-800" id="sideTotalHours">64.5 Jam (Learning Hours)</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 px-3 rounded-lg bg-slate-50">
+                <span class="text-slate-500">Rata-rata Nilai</span>
+                <span class="font-bold text-indigo-700" id="sideAvgScore">96.4%</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 px-3 rounded-lg bg-slate-50">
+                <span class="text-slate-500">Tanggal Terbit</span>
+                <span class="font-medium text-slate-800" id="sideIssueDate">24 Maret 2026</span>
+              </div>
+            </div>
+
+            <button onclick="copyCredentialLink()" class="w-full py-2.5 px-4 rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+              <span class="material-symbols-outlined text-sm">share</span>
+              <span>Salin Tautan Verifikasi Publik</span>
+            </button>
+          </div>
+
+          <!-- Card 2: Panduan & Aksi Tambahan -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-violet-100 text-primary flex items-center justify-center font-bold">
+                <span class="material-symbols-outlined text-lg">lightbulb</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-navy-admin-bg">Tips Penggunaan</h3>
+                <span class="text-[11px] text-slate-400">Bagikan pencapaian Anda</span>
+              </div>
+            </div>
+            
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Sertifikat ini diakui secara akademis dan profesional di komunitas BDC. Anda dapat mencantumkan nomor kredensial ini di Curriculum Vitae (CV) atau profil LinkedIn Anda.
+            </p>
+
+            <div class="pt-2 flex flex-col gap-2">
+              <a href="https://www.linkedin.com" target="_blank" class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
+                <svg class="w-4 h-4 fill-current text-[#0A66C2]" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+                <span>Bagikan ke LinkedIn</span>
+              </a>
+              <button onclick="openTranscriptModal()" class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
+                <span class="material-symbols-outlined text-sm text-primary">description</span>
+                <span>Rincian Transkrip Nilai (64.5 Jam Pelatihan)</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: Transkrip Nilai Siswa (Bersih & Mudah Dipahami - Standar BDC Community) -->
+<div id="transcriptModal" class="no-print fixed inset-0 z-50 flex items-center justify-center bg-navy-admin-bg/60 backdrop-blur-sm hidden p-4">
+  <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn">
+    <!-- Modal Header -->
+    <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+          <span class="material-symbols-outlined text-lg">description</span>
+        </div>
+        <div>
+          <h3 class="font-bold text-sm text-navy-admin-bg">Transkrip Prestasi &amp; Jam Pelatihan Komunitas</h3>
+          <span class="text-[11px] text-slate-500">BUSINESS DEV CLUB (BDC) - Community Academy &amp; Student Chapter</span>
+        </div>
+      </div>
+      <button onclick="closeTranscriptModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100" type="button">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+
+    <!-- Modal Body: Table of Modules -->
+    <div class="p-5 overflow-y-auto space-y-4">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs">
+        <div class="p-2.5 rounded-xl bg-slate-50">
+          <span class="text-slate-400 block text-[10px]">Total Pelatihan</span>
+          <span class="font-bold text-slate-900 text-sm">64.5 Jam</span>
+        </div>
+        <div class="p-2.5 rounded-xl bg-slate-50">
+          <span class="text-slate-400 block text-[10px]">Rata-rata Nilai</span>
+          <span class="font-bold text-primary text-sm">96.4%</span>
+        </div>
+        <div class="p-2.5 rounded-xl bg-slate-50">
+          <span class="text-slate-400 block text-[10px]">Nilai Capstone</span>
+          <span class="font-bold text-emerald-600 text-sm">98.0% (A+)</span>
+        </div>
+        <div class="p-2.5 rounded-xl bg-slate-50">
+          <span class="text-slate-400 block text-[10px]">Status Evaluasi</span>
+          <span class="font-bold text-emerald-700 text-sm">LULUS (KOMPETEN)</span>
+        </div>
+      </div>
+
+      <div class="rounded-xl border border-slate-200 overflow-hidden text-xs">
+        <table class="w-full text-left">
+          <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 text-[11px]">
+            <tr>
+              <th class="p-2.5">Kode</th>
+              <th class="p-2.5">Mata Pelatihan &amp; Modul</th>
+              <th class="p-2.5 text-center">Jam Pelatihan</th>
+              <th class="p-2.5 text-center">Nilai (%)</th>
+              <th class="p-2.5 text-center">Grade</th>
+              <th class="p-2.5 text-right">Status Evaluasi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-700">
+            <tr>
+              <td class="p-2.5 font-mono font-bold text-primary">SEC-501</td>
+              <td class="p-2.5 font-medium">Dasar Kriptografi Modern &amp; Enkripsi Kunci Asimetris</td>
+              <td class="p-2.5 text-center font-semibold">10.0 Jam</td>
+              <td class="p-2.5 text-center font-mono font-semibold">96.0</td>
+              <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">A</span></td>
+              <td class="p-2.5 text-right text-slate-600">Tuntas (Kompeten)</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-mono font-bold text-primary">SEC-502</td>
+              <td class="p-2.5 font-medium">Proteksi Endpoint, Web App Sec &amp; Mitigasi XSS</td>
+              <td class="p-2.5 text-center font-semibold">12.0 Jam</td>
+              <td class="p-2.5 text-center font-mono font-semibold">98.0</td>
+              <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">A+</span></td>
+              <td class="p-2.5 text-right text-emerald-700 font-semibold">Unggul (Paripurna)</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-mono font-bold text-primary">SEC-503</td>
+              <td class="p-2.5 font-medium">Audit Regulasi ISO/IEC 27001:2022 &amp; Framework Tata Kelola</td>
+              <td class="p-2.5 text-center font-semibold">12.0 Jam</td>
+              <td class="p-2.5 text-center font-mono font-semibold">94.5</td>
+              <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">A</span></td>
+              <td class="p-2.5 text-right text-slate-600">Tuntas (Kompeten)</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-mono font-bold text-primary">SEC-504</td>
+              <td class="p-2.5 font-medium">Incident Response, Forensik Siber &amp; Cloud SOC Telemetri</td>
+              <td class="p-2.5 text-center font-semibold">14.0 Jam</td>
+              <td class="p-2.5 text-center font-mono font-semibold">97.0</td>
+              <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">A</span></td>
+              <td class="p-2.5 text-right text-slate-600">Tuntas (Kompeten)</td>
+            </tr>
+            <!-- Capstone Project (BDC Hub) Row -->
+            <tr class="bg-indigo-50/40">
+              <td class="p-2.5 font-mono font-bold text-primary">CAP-BDC</td>
+              <td class="p-2.5 font-semibold text-primary">
+                <div>Capstone Project (BDC Hub) - Web Presensi &amp; Pembelajaran Community</div>
+                <div class="text-[10px] text-slate-500 font-normal">Next.js, Supabase, Tailwind CSS, Evaluasi Capstone</div>
+              </td>
+              <td class="p-2.5 text-center font-bold text-primary">16.5 Jam</td>
+              <td class="p-2.5 text-center font-mono font-bold text-primary">98.0</td>
+              <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">A+</span></td>
+              <td class="p-2.5 text-right text-emerald-700 font-bold">Lulus Paripurna</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="bg-slate-100 font-bold border-t border-slate-200">
+              <td class="p-2.5 text-slate-800" colspan="2">TOTAL &amp; EVALUASI AKHIR</td>
+              <td class="p-2.5 text-center text-primary font-mono font-bold">64.5 Jam</td>
+              <td class="p-2.5 text-center text-primary font-mono font-bold">96.4%</td>
+              <td class="p-2.5 text-center text-emerald-700 font-bold">A+</td>
+              <td class="p-2.5 text-right text-emerald-700 font-bold">LULUS (KOMPETEN)</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+      <span class="text-xs text-slate-400">Ditetapkan di Yogyakarta • Terdaftar di BDC Hub Community</span>
+      <button onclick="closeTranscriptModal()" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition-all" type="button">
+        Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Core System Script for Database & Authentication Synchronization -->
+<script src="bdc-core.js"></script>
+<script>
+  function initCertificatePage() {
+    const user = (typeof getAuthUser === 'function') ? getAuthUser() : { name: "Siti Rahmawati", role: "learner" };
+    const isAdmin = (user.role === 'admin' || user.role === 'instructor');
+
+    let currentStudentName = user.name || "Siti Rahmawati";
+    let currentStudentId = "255720056";
+    let currentPeriod = "2026/2027";
+    let currentLocation = "Yogyakarta";
+    let currentCohort = "Cohort VI Nasional";
+    let currentProgram = "Cybersecurity Compliance & ISO/IEC 27001 Enterprise Defense";
+    let currentGradStatus = "LULUS (KOMPETEN)";
+    let currentTotalHours = "64.5 Jam";
+    let currentAvgScore = "96.4";
+    let currentDate = "24 Maret 2026";
+    let currentCertReg = "BDC-CERT-2026-99482-SEC";
+    let currentDean = "Bagas Triaji S.Kom.,M.Kom";
+    let currentInstructor = "Nurul Layli";
+
+    try {
+      const saved = localStorage.getItem('bdc_academic_credential_data');
+      if (saved) {
+        const cred = JSON.parse(saved);
+        if (cred.studentName) currentStudentName = cred.studentName;
+        if (cred.studentId) currentStudentId = cred.studentId;
+        if (cred.period) currentPeriod = cred.period;
+        if (cred.location) currentLocation = cred.location;
+        if (cred.cohort) currentCohort = cred.cohort;
+        if (cred.programTitle) currentProgram = cred.programTitle;
+        if (cred.statusKelulusan) currentGradStatus = cred.statusKelulusan;
+        if (cred.totalHours) currentTotalHours = cred.totalHours;
+        if (cred.avgScore) currentAvgScore = cred.avgScore;
+        if (cred.issueDate) currentDate = cred.issueDate;
+        if (cred.certNo) currentCertReg = cred.certNo;
+        if (!cred.deanName || cred.deanName.includes('Evelyn') || cred.deanName.includes('Vance') || cred.deanName === "Bagas Triaji, S.Kom., M.Kom.") {
+          currentDean = "Bagas Triaji S.Kom.,M.Kom";
+        } else {
+          currentDean = cred.deanName;
+        }
+        if (cred.instructorName) currentInstructor = cred.instructorName;
+      }
+    } catch(e) {}
+
+    // Update Recipient Name on Certificate & Side Info
+    const certRecipientName = document.getElementById('certRecipientName');
+    const certLearnerHeading = document.getElementById('certLearnerHeading');
+    const sideLearnerName = document.getElementById('sideLearnerName');
+    if (certRecipientName) certRecipientName.textContent = currentStudentName;
+    if (certLearnerHeading) certLearnerHeading.textContent = currentStudentName;
+    if (sideLearnerName) sideLearnerName.textContent = currentStudentName;
+
+    // Update Student ID, Period & Cohort
+    const certLearnerId = document.getElementById('certLearnerId');
+    if (certLearnerId) certLearnerId.textContent = currentStudentId;
+
+    const certLearnerPeriod = document.getElementById('certLearnerPeriod');
+    if (certLearnerPeriod) certLearnerPeriod.textContent = "Periode Program: " + currentPeriod;
+
+    const sidePeriod = document.getElementById('sideProgramPeriod');
+    if (sidePeriod) sidePeriod.textContent = currentPeriod;
+
+    const sideLoc = document.getElementById('sideLocation');
+    if (sideLoc) sideLoc.textContent = currentLocation;
+
+    const certLearnerCohort = document.getElementById('certLearnerCohort');
+    if (certLearnerCohort) certLearnerCohort.textContent = currentCohort.toUpperCase();
+
+    // Update Program Title
+    const certProgramTitle = document.getElementById('certProgramTitle');
+    if (certProgramTitle) certProgramTitle.textContent = currentProgram;
+
+    // Update Grad Status, Hours, Score
+    const certGradStatus = document.getElementById('certGradStatus');
+    if (certGradStatus) certGradStatus.textContent = currentGradStatus;
+
+    const sideGradStatus = document.getElementById('sideGradStatus');
+    if (sideGradStatus) sideGradStatus.textContent = currentGradStatus;
+
+    const certTotalHours = document.getElementById('certTotalHours');
+    if (certTotalHours) certTotalHours.textContent = currentTotalHours.includes('Jam') ? currentTotalHours : currentTotalHours + ' Jam (Learning Hours)';
+
+    const sideTotalHours = document.getElementById('sideTotalHours');
+    if (sideTotalHours) sideTotalHours.textContent = currentTotalHours.includes('Jam') ? currentTotalHours : currentTotalHours + ' Jam';
+
+    const certAvgScore = document.getElementById('certAvgScore');
+    if (certAvgScore) certAvgScore.textContent = currentAvgScore.includes('%') ? currentAvgScore : currentAvgScore + '%';
+
+    const sideAvgScore = document.getElementById('sideAvgScore');
+    if (sideAvgScore) sideAvgScore.textContent = currentAvgScore.includes('%') ? currentAvgScore : currentAvgScore + '%';
+
+    // Update Date & Location
+    const certIssueDate = document.getElementById('certIssueDate');
+    if (certIssueDate) certIssueDate.textContent = currentDate;
+
+    const certIssueDateLeft = document.getElementById('certIssueDateLeft');
+    if (certIssueDateLeft) certIssueDateLeft.textContent = currentDate;
+
+    const sideDate = document.getElementById('sideIssueDate');
+    if (sideDate) sideDate.textContent = currentDate;
+
+    // Update Registration Number
+    const certRegNo = document.getElementById('certRegNo');
+    if (certRegNo) certRegNo.textContent = currentCertReg;
+
+    const sideReg = document.getElementById('sideCertReg');
+    if (sideReg) sideReg.textContent = currentCertReg;
+
+    // Update Signatories
+    const certDean = document.getElementById('certDeanName');
+    if (certDean) certDean.textContent = currentDean;
+
+    const certInstructor = document.getElementById('certInstructorName');
+    if (certInstructor) certInstructor.textContent = currentInstructor;
+
+    // Show Admin notice banner if admin is viewing student cert
+    const adminNoticeBanner = document.getElementById('adminNoticeBanner');
+    if (adminNoticeBanner) {
+      if (isAdmin) {
+        adminNoticeBanner.classList.remove('hidden');
+      } else {
+        adminNoticeBanner.classList.add('hidden');
+      }
+    }
+  }
+
+  // Real-time cross-tab auto sync
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'bdc_academic_credential_data') {
+      initCertificatePage();
+    }
+  });
+
+  // Direct PDF Download using html2pdf
+  function downloadCertificatePDF() {
+    const user = (typeof getAuthUser === 'function') ? getAuthUser() : { name: "Siti Rahmawati" };
+    const rawName = (user.name || 'Peserta').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filename = 'Sertifikat_Kelulusan_BDC_' + rawName + '.pdf';
+
+    const canvas = document.getElementById('certificateCanvas');
+    if (!canvas) {
+      window.print();
+      return;
+    }
+
+    showToast("Menyiapkan dokumen PDF sertifikat resolusi tinggi (300 DPI)...");
+
+    if (typeof html2pdf !== 'undefined') {
+      const opt = {
+        margin: [5, 5, 5, 5],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      };
+
+      html2pdf().set(opt).from(canvas).save().then(() => {
+        showToast("Sertifikat PDF berhasil diunduh!");
+      }).catch(err => {
+        console.error("html2pdf failed:", err);
+        window.print();
+      });
+    } else {
+      window.print();
+    }
+  }
+
+  // Print function
+  function printCertificate() {
+    window.print();
+  }
+
+  // Copy Verification Link
+  function copyCredentialLink() {
+    const credUrl = "https://academy.businessdevclub.id/credentials/verify/BDC-CERT-2026-99482-SEC";
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(credUrl).then(() => {
+        showToast("Tautan verifikasi sertifikat berhasil disalin ke clipboard!");
+      }).catch(() => {
+        showToast("Tautan verifikasi: " + credUrl);
+      });
+    } else {
+      showToast("Tautan verifikasi: " + credUrl);
+    }
+  }
+
+  // Modal Controls
+  function openTranscriptModal() {
+    document.getElementById('transcriptModal').classList.remove('hidden');
+  }
+
+  function closeTranscriptModal() {
+    document.getElementById('transcriptModal').classList.add('hidden');
+  }
+
+  // Toast Helper
+  function showToast(msg) {
+    const toast = document.getElementById('toastNotification');
+    const text = document.getElementById('toastMessage');
+    if (text) text.innerText = msg;
+    if (toast) {
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+      }, 3500);
+    }
+  }
+
+  // Mobile sidebar helper
+  function toggleMobileSidebar(show) {
+    const sidebar = document.getElementById('appSidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (!sidebar || !backdrop) return;
+    const isHidden = sidebar.classList.contains('-translate-x-full');
+    const open = (typeof show === 'boolean') ? show : isHidden;
+    if (open) {
+      sidebar.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+    } else {
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initCertificatePage();
+  });
+</script>
+</body>
+</html>
