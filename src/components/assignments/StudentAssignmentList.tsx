@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Assignment, AssignmentSubmission } from "@/lib/types/database";
 import { submitAssignmentAction } from "@/lib/actions/assignments";
+import { BdcDots } from "@/components/ui/BdcDots";
 
 interface StudentAssignmentListProps {
   assignments: Assignment[];
@@ -71,9 +72,9 @@ export function StudentAssignmentList({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Assignments Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {assignments.map((item) => {
           const sub = getSubmission(item.id);
           const isGraded = sub?.status === "graded";
@@ -82,76 +83,76 @@ export function StudentAssignmentList({
           return (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm flex flex-col justify-between"
+              className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] p-6 shadow-retro flex flex-col justify-between hover:shadow-retro-lg transition-all"
             >
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold text-bdc-navy bg-slate-100 px-2 py-0.5 rounded">
+                  <span className="font-mono text-[10px] font-bold text-bdc-midnight bg-[#EFF0F0] px-2.5 py-1 rounded-xl border border-slate-300">
                     {item.course_title.split(":")[0]}
                   </span>
 
                   {isGraded ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                      <CheckCircle2 className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-retro-sm">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                       Dinilai: {sub?.score}/100
                     </span>
                   ) : isPending ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
-                      <Clock className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-[10px] font-mono font-bold bg-amber-100 text-amber-800 border border-amber-300 shadow-retro-sm">
+                      <Clock className="w-3.5 h-3.5 text-amber-600" />
                       Menunggu Penilaian
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-[10px] font-mono font-bold bg-[#EFF0F0] text-slate-600 border border-slate-300">
                       Belum Dikumpulkan
                     </span>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-base font-bold text-bdc-midnight leading-snug">
+                  <h3 className="font-space text-base sm:text-lg font-bold text-bdc-midnight leading-snug">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2">
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed line-clamp-2 font-sans">
                     {item.description}
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-[#d9dfd7]">
                   <span className="flex items-center gap-1.5 font-mono text-[11px]">
                     <Clock className="w-3.5 h-3.5 text-slate-400" />
                     Batas: {item.deadline}
                   </span>
-                  <span className="font-bold text-bdc-navy">Maks: {item.max_score} Pts</span>
+                  <span className="font-mono font-bold text-bdc-blue text-xs">Maks: {item.max_score} Pts</span>
                 </div>
 
                 {/* Feedback Box if Graded */}
                 {isGraded && sub?.feedback && (
-                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
+                  <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 text-xs text-slate-700 shadow-retro-sm">
+                    <span className="font-mono text-[10px] uppercase font-bold text-slate-500 block mb-0.5">
                       Catatan Evaluator:
                     </span>
-                    <p className="italic">{sub.feedback}</p>
+                    <p className="italic font-sans">&quot;{sub.feedback}&quot;</p>
                   </div>
                 )}
               </div>
 
-              {/* Action */}
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              {/* Action Bar */}
+              <div className="mt-5 pt-4 border-t border-[#d9dfd7] flex items-center justify-between gap-2">
                 {sub ? (
                   <div className="flex items-center gap-2">
                     <a
                       href={sub.submission_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-bdc-blue hover:underline"
+                      className="retro-btn inline-flex items-center gap-1.5 text-xs font-mono font-bold text-bdc-blue hover:text-bdc-navy border border-bdc-blue/30 px-2.5 py-1 rounded-xl bg-blue-50/50 shadow-retro-sm"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       <span>Lihat Berkas</span>
                     </a>
                   </div>
                 ) : (
-                  <span className="text-[11px] text-amber-700 font-medium">
-                    Kumpulkan sebelum deadline
+                  <span className="font-mono text-[11px] text-amber-700 font-semibold">
+                    Kumpulkan sebelum tenggat
                   </span>
                 )}
 
@@ -162,7 +163,7 @@ export function StudentAssignmentList({
                     setSubmissionUrl(sub?.submission_url || "");
                     setNotes(sub?.notes || "");
                   }}
-                  className="px-4 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+                  className="retro-btn px-4 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-retro-sm flex items-center gap-1.5"
                 >
                   <UploadCloud className="w-3.5 h-3.5 text-bdc-yellow" />
                   <span>{sub ? "Perbarui Kiriman" : "Kumpulkan Tugas"}</span>
@@ -175,29 +176,29 @@ export function StudentAssignmentList({
 
       {/* Submission Modal */}
       {selectedAssignment && (
-        <div className="fixed inset-0 bg-bdc-midnight/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="fixed inset-0 bg-[#000741]/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#fffefa] rounded-3xl border-2 border-bdc-midnight shadow-retro-lg w-full max-w-lg p-6 sm:p-7 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#d9dfd7]">
               <div>
-                <span className="text-[10px] uppercase font-bold text-bdc-blue tracking-wider block">
-                  Formulir Pengumpulan Tugas
+                <span className="font-mono text-[10px] uppercase font-bold text-bdc-blue tracking-wider block">
+                  [ FORMULIR PENGUMPULAN TUGAS ]
                 </span>
-                <h3 className="text-base font-bold text-bdc-midnight">
+                <h3 className="font-space text-base sm:text-lg font-bold text-bdc-midnight">
                   {selectedAssignment.title}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedAssignment(null)}
-                className="text-slate-400 hover:text-slate-600 font-bold text-sm"
+                className="text-slate-400 hover:text-bdc-midnight font-bold text-sm px-2 py-1 rounded-lg hover:bg-slate-100"
               >
                 Tutup
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs font-sans">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-space font-bold text-slate-800 mb-1">
                   Tautan Repositori GitHub / Dokumen Google Drive
                 </label>
                 <input
@@ -206,59 +207,59 @@ export function StudentAssignmentList({
                   value={submissionUrl}
                   onChange={(e) => setSubmissionUrl(e.target.value)}
                   placeholder="https://github.com/... atau https://drive.google.com/..."
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-bdc-blue font-mono"
+                  className="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm font-mono text-xs bg-white"
                 />
-                <span className="text-[10px] text-slate-500 mt-1 block">
-                  Pastikan tautan Google Drive disetel &quot;Anyone with the link can view&quot; atau repo GitHub bersifat publik.
+                <span className="text-[10px] text-slate-500 mt-1 block font-mono">
+                  Pastikan tautan Google Drive disetel publik atau repo GitHub berstatus public.
                 </span>
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-space font-bold text-slate-800 mb-1">
                   Catatan Teknis &amp; Deskripsi Singkat (Opsional)
                 </label>
                 <textarea
                   rows={3}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Jelaskan ringkasan fitur yang diselesaikan atau petunjuk pengujian..."
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-bdc-blue"
+                  placeholder="Jelaskan ringkasan arsitektur atau fitur yang sudah berhasil diuji..."
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm text-xs bg-white"
                 />
               </div>
 
               {result && (
                 <div
-                  className={`p-3 rounded-xl border text-xs font-bold flex items-center gap-2 ${
+                  className={`p-3.5 rounded-2xl border-2 text-xs font-bold flex items-center gap-2 shadow-retro-sm ${
                     result.success
-                      ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                      : "bg-red-50 border-red-200 text-red-800"
+                      ? "bg-[#fffefa] border-emerald-600 text-emerald-950"
+                      : "bg-[#fffefa] border-rose-600 text-rose-950"
                   }`}
                 >
                   {result.success ? (
-                    <Check className="w-4 h-4 text-emerald-600" />
+                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                   ) : (
-                    <AlertCircle className="w-4 h-4 text-red-600" />
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
                   )}
                   <span>{result.message}</span>
                 </div>
               )}
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+              <div className="flex justify-end gap-2 pt-3 border-t border-[#d9dfd7]">
                 <button
                   type="button"
                   onClick={() => setSelectedAssignment(null)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-all"
+                  className="retro-btn px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold transition-all shadow-retro-sm"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white font-bold transition-all disabled:opacity-50 flex items-center gap-1.5"
+                  className="retro-btn px-5 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white font-bold transition-all disabled:opacity-50 flex items-center gap-1.5 shadow-retro-sm"
                 >
                   {isSubmitting ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <RefreshCw className="w-4 h-4 animate-spin text-bdc-yellow" />
                       <span>Mengirim...</span>
                     </>
                   ) : (

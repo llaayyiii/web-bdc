@@ -20,6 +20,7 @@ import {
   adminCreateMeetSessionAction,
   adminUpdateMeetSessionAction,
 } from "@/lib/actions/sessions";
+import { BdcDots } from "@/components/ui/BdcDots";
 
 interface SessionsManagerProps {
   initialSessions: MeetSession[];
@@ -89,14 +90,17 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Header and Add Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-base font-extrabold text-bdc-midnight">
-            Daftar Sesi Pertemuan &amp; Presensi Barcode
-          </h2>
-          <p className="text-xs text-slate-500">
+          <div className="flex items-center gap-2">
+            <h2 className="font-space text-base sm:text-lg font-bold text-bdc-midnight">
+              Daftar Sesi Kuliah &amp; Presensi Barcode
+            </h2>
+            <BdcDots size="sm" />
+          </div>
+          <p className="text-xs text-slate-500 font-sans mt-0.5">
             Kelola tautan Google Meet dan luncurkan layar proyektor presensi untuk kelas tatap muka
           </p>
         </div>
@@ -104,7 +108,7 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
         <button
           type="button"
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-md"
+          className="retro-btn flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-retro-sm border border-bdc-midnight shrink-0"
         >
           <Plus className="w-4 h-4 text-bdc-yellow" />
           <span>Jadwalkan Sesi Baru</span>
@@ -118,42 +122,40 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
           return (
             <div
               key={sess.id}
-              className={`p-5 rounded-2xl border transition-all ${
-                isLive
-                  ? "bg-white border-bdc-blue shadow-md ring-1 ring-bdc-blue/20"
-                  : "bg-white border-slate-200/80 shadow-sm"
+              className={`p-6 rounded-3xl border transition-all bg-[#fffefa] shadow-retro hover:shadow-retro-lg ${
+                isLive ? "border-bdc-blue shadow-[inset_0_4px_0_#095BAF]" : "border-[#d9dfd7]"
               }`}
             >
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 {/* Session Info */}
-                <div className="space-y-2 flex-1">
+                <div className="space-y-2.5 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     {isLive ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-mono font-bold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-retro-sm">
                         <Radio className="w-3 h-3 text-emerald-600 animate-pulse" />
-                        Sesi Berlangsung (Live)
+                        Live Sesi Berlangsung
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-600">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-[10px] font-mono font-bold uppercase bg-[#EFF0F0] text-slate-600 border border-slate-300">
                         {sess.status === "scheduled" ? "Terjadwal" : "Selesai"}
                       </span>
                     )}
 
-                    <span className="text-[11px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
-                      Token QR: <strong className="text-bdc-navy">{sess.qr_token}</strong>
+                    <span className="font-mono text-xs text-slate-600 bg-[#EFF0F0] px-2.5 py-1 rounded-xl border border-slate-300">
+                      Token QR: <strong className="text-bdc-midnight font-bold">{sess.qr_token}</strong>
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-base font-bold text-bdc-midnight leading-snug">
+                    <h3 className="font-space text-base sm:text-lg font-bold text-bdc-midnight leading-snug">
                       {sess.title}
                     </h3>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-xs text-slate-600 mt-0.5 font-sans">
                       {sess.course_title}
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 pt-1">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 pt-1 font-mono">
                     <span className="flex items-center gap-1.5">
                       <User className="w-3.5 h-3.5 text-slate-400" />
                       <span>{sess.instructor}</span>
@@ -166,7 +168,7 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                 </div>
 
                 {/* Right Action Buttons */}
-                <div className="flex flex-wrap items-center gap-2.5 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+                <div className="flex flex-wrap items-center gap-2.5 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-[#d9dfd7]">
                   {/* Status selector */}
                   <select
                     value={sess.status}
@@ -176,7 +178,7 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                         e.target.value as "scheduled" | "live" | "completed"
                       )
                     }
-                    className="text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-bdc-blue"
+                    className="text-xs font-mono font-bold px-3 py-2 rounded-xl border border-slate-300 bg-[#EFF0F0] focus:outline-none focus:border-bdc-midnight shadow-retro-sm"
                   >
                     <option value="live">Live (Aktif)</option>
                     <option value="scheduled">Terjadwal</option>
@@ -187,7 +189,7 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                   <button
                     type="button"
                     onClick={() => handleCopyLink(sess.meet_url, sess.id)}
-                    className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-bdc-navy hover:bg-slate-50 transition-all text-xs font-medium flex items-center gap-1.5"
+                    className="retro-btn p-2.5 rounded-xl border border-slate-300 text-slate-700 hover:text-bdc-midnight hover:bg-slate-100 transition-all text-xs font-medium flex items-center gap-1.5 shadow-retro-sm bg-white"
                     title="Salin Link Google Meet"
                   >
                     {copiedId === sess.id ? (
@@ -202,17 +204,17 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                     href={sess.meet_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all flex items-center gap-1.5"
+                    className="retro-btn px-3.5 py-2 rounded-xl bg-[#EFF0F0] hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all flex items-center gap-1.5 border border-slate-300 shadow-retro-sm"
                   >
                     <Video className="w-4 h-4 text-bdc-blue" />
                     <span>Meet</span>
-                    <ExternalLink className="w-3 h-3 text-slate-400" />
+                    <ExternalLink className="w-3 h-3 text-slate-500" />
                   </a>
 
                   {/* Open Presenter Screen */}
                   <Link
                     href={`/admin/sessions/${sess.id}/presenter`}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-bdc-navy to-bdc-blue hover:from-bdc-midnight hover:to-blue-700 text-white text-xs font-extrabold transition-all flex items-center gap-2 shadow-sm"
+                    className="retro-btn px-4 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all flex items-center gap-2 shadow-retro-sm border border-bdc-midnight"
                   >
                     <QrCode className="w-4 h-4 text-bdc-yellow" />
                     <span>Layar Proyektor QR</span>
@@ -226,24 +228,29 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
 
       {/* Modal Add Session */}
       {showModal && (
-        <div className="fixed inset-0 bg-bdc-midnight/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-lg p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-base font-bold text-bdc-midnight">
-                Jadwalkan Sesi Tatap Muka Baru
-              </h3>
+        <div className="fixed inset-0 bg-[#000741]/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#fffefa] rounded-3xl border-2 border-bdc-midnight shadow-retro-lg w-full max-w-lg p-6 sm:p-7 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#d9dfd7]">
+              <div>
+                <span className="font-mono text-[10px] uppercase font-bold text-bdc-blue tracking-wider block">
+                  [ KURATOR SESSION BUILDER ]
+                </span>
+                <h3 className="font-space text-base sm:text-lg font-bold text-bdc-midnight">
+                  Jadwalkan Sesi Tatap Muka Baru
+                </h3>
+              </div>
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="text-slate-400 hover:text-slate-600 font-bold text-sm"
+                className="text-slate-400 hover:text-bdc-midnight font-bold text-sm px-2 py-1 rounded-lg hover:bg-slate-100"
               >
                 Tutup
               </button>
             </div>
 
-            <form onSubmit={handleCreateSession} className="space-y-3.5 text-xs">
+            <form onSubmit={handleCreateSession} className="space-y-4 text-xs font-sans">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-space font-bold text-slate-800 mb-1">
                   Judul Sesi Pertemuan
                 </label>
                 <input
@@ -252,12 +259,12 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Contoh: Sesi 4: Praktik Deployment Vercel & Supabase"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-bdc-blue"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm bg-white"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label className="block font-space font-bold text-slate-800 mb-1">
                   Nama Modul / Course
                 </label>
                 <input
@@ -265,13 +272,13 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                   required
                   value={courseTitle}
                   onChange={(e) => setCourseTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-bdc-blue"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm bg-white"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-space font-bold text-slate-800 mb-1">
                     Nama Pemateri / Instruktur
                   </label>
                   <input
@@ -279,17 +286,17 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                     required
                     value={instructor}
                     onChange={(e) => setInstructor(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-bdc-blue"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">
+                  <label className="block font-space font-bold text-slate-800 mb-1">
                     Status Awal Sesi
                   </label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-bdc-blue font-semibold"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm font-semibold bg-white"
                   >
                     <option value="live">Live (Langsung Dibuka)</option>
                     <option value="scheduled">Terjadwal</option>
@@ -298,8 +305,8 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Tautan Google Meet / Zoom Resmi
+                <label className="block font-space font-bold text-slate-800 mb-1">
+                  Tautan Google Meet Kampus Resmi
                 </label>
                 <input
                   type="url"
@@ -307,22 +314,22 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                   value={meetUrl}
                   onChange={(e) => setMeetUrl(e.target.value)}
                   placeholder="https://meet.google.com/..."
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-bdc-blue font-mono"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm font-mono text-xs bg-white"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+              <div className="flex justify-end gap-2 pt-3 border-t border-[#d9dfd7]">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold transition-all"
+                  className="retro-btn px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold transition-all shadow-retro-sm"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white font-bold transition-all disabled:opacity-50"
+                  className="retro-btn px-5 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white font-bold transition-all disabled:opacity-50 shadow-retro-sm border border-bdc-midnight"
                 >
                   {isSubmitting ? "Menyimpan..." : "Simpan & Luncurkan"}
                 </button>

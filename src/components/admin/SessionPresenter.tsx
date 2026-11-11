@@ -19,6 +19,7 @@ import {
 import { MeetSession, AttendanceRecord } from "@/lib/types/database";
 import { adminRotateSessionTokenAction } from "@/lib/actions/sessions";
 import { getSessionAttendees } from "@/lib/actions/attendance";
+import { BdcDots } from "@/components/ui/BdcDots";
 
 interface SessionPresenterProps {
   session: MeetSession;
@@ -105,7 +106,7 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
         <div className="flex items-center gap-4">
           <Link
             href="/admin/sessions"
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white text-xs font-bold transition-all border border-white/10"
+            className="retro-btn flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white text-xs font-bold transition-all border border-white/20 shadow-retro-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Kembali ke Panel Sesi</span>
@@ -114,11 +115,12 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-400">
+              <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400">
                 Mode Proyektor Aktif (Live Presentation)
               </span>
+              <BdcDots size="sm" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight mt-0.5">
+            <h1 className="font-space text-xl sm:text-2xl font-bold text-white tracking-tight mt-0.5">
               {currentSession.title}
             </h1>
           </div>
@@ -129,7 +131,7 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
             href={currentSession.meet_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-blue text-white text-xs font-bold transition-all border border-bdc-blue/40 shadow-lg"
+            className="retro-btn flex items-center gap-2 px-4 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-blue text-white text-xs font-bold transition-all border border-bdc-blue/40 shadow-retro-sm"
           >
             <Video className="w-4 h-4 text-bdc-yellow" />
             <span>Buka Google Meet</span>
@@ -138,7 +140,7 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
 
           <button
             onClick={handleToggleFullscreen}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white transition-all border border-white/10"
+            className="retro-btn p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-all border border-white/20 shadow-retro-sm"
             title="Layar Penuh (F11)"
           >
             <Maximize2 className="w-4 h-4" />
@@ -149,15 +151,15 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
       {/* Main Stage: QR Code Projection & Real-time Attendee Ticker */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-6">
         {/* Left 7 Cols: Massive QR Code Projection Box */}
-        <div className="lg:col-span-7 flex flex-col items-center justify-center p-8 sm:p-12 rounded-3xl bg-gradient-to-b from-bdc-navy/80 to-[#031542] border-2 border-bdc-blue/40 shadow-2xl relative overflow-hidden text-center">
+        <div className="lg:col-span-7 flex flex-col items-center justify-center p-8 sm:p-12 rounded-3xl bg-[#031542] border-2 border-bdc-blue/40 shadow-2xl relative overflow-hidden text-center">
           {/* Subtle Ambient Lighting */}
           <div className="absolute -top-24 -left-24 w-72 h-72 bg-bdc-blue/20 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-bdc-yellow/15 rounded-full blur-3xl pointer-events-none" />
 
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-bdc-yellow/10 border border-bdc-yellow/30 text-bdc-yellow text-xs font-black tracking-wider uppercase mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-bdc-yellow/10 border border-bdc-yellow/30 text-bdc-yellow text-xs font-mono font-bold tracking-wider uppercase mb-6 shadow-retro-sm">
             <QrCode className="w-4 h-4" />
-            <span>Pindai Barcode Presensi Ruang Kuliah</span>
+            <span>PINDAI BARCODE PRESENSI RUANG KULIAH</span>
           </div>
 
           {/* QR Container */}
@@ -180,20 +182,20 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
 
           {/* Dynamic Token Display & Rotation Countdown */}
           <div className="mt-8 space-y-3 w-full max-w-md">
-            <div className="flex items-center justify-between px-5 py-3 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md">
+            <div className="flex items-center justify-between px-5 py-3.5 rounded-2xl bg-black/50 border border-white/15 backdrop-blur-md shadow-retro-sm">
               <div className="text-left">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                <span className="font-mono text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                   Token Alternatif Mahasiswa
                 </span>
-                <span className="font-mono text-lg font-black text-bdc-yellow tracking-wider">
+                <span className="font-mono text-lg font-bold text-bdc-yellow tracking-wider">
                   {currentSession.qr_token}
                 </span>
               </div>
 
               <div className="flex items-center gap-3">
                 <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block font-mono">Rotasi Kode</span>
-                  <span className="text-sm font-black text-emerald-400 font-mono">
+                  <span className="font-mono text-[10px] text-slate-400 block">Rotasi Kode</span>
+                  <span className="font-pixel text-xl text-emerald-400">
                     {countdown}s
                   </span>
                 </div>
@@ -201,7 +203,7 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
                   type="button"
                   onClick={handleRotateToken}
                   disabled={isRotating}
-                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 transition-all border border-white/10"
+                  className="retro-btn p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 transition-all border border-white/20 shadow-retro-sm"
                   title="Putar Token Sekarang"
                 >
                   <RefreshCw className={`w-4 h-4 ${isRotating ? "animate-spin" : ""}`} />
@@ -209,31 +211,31 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
               </div>
             </div>
 
-            <p className="text-xs text-slate-400 font-medium">
-              Buka aplikasi mahasiswa BDC di smartphone / laptop &rarr; Pilih menu{" "}
-              <strong className="text-white">Presensi Barcode</strong>.
+            <p className="text-xs text-slate-300 font-sans">
+              Buka aplikasi mahasiswa BDC &rarr; Menu{" "}
+              <strong className="text-bdc-yellow font-space">Presensi Barcode</strong>.
             </p>
           </div>
         </div>
 
         {/* Right 5 Cols: Live Attendee Stream */}
-        <div className="lg:col-span-5 h-full flex flex-col rounded-3xl bg-bdc-navy/50 border border-white/10 p-6 backdrop-blur-sm">
+        <div className="lg:col-span-5 h-full flex flex-col rounded-3xl bg-[#06184a]/70 border border-white/15 p-6 backdrop-blur-sm shadow-2xl">
           <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-bdc-blue/30 text-bdc-yellow flex items-center justify-center border border-bdc-blue/30">
+              <div className="w-10 h-10 rounded-2xl bg-bdc-blue/30 text-bdc-yellow flex items-center justify-center border border-bdc-blue/40 shadow-retro-sm">
                 <Users className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-base font-extrabold text-white">
+                <h2 className="font-space text-base font-bold text-white">
                   Daftar Kehadiran Realtime
                 </h2>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-400 font-mono">
                   {attendees.length} Mahasiswa Telah Terverifikasi
                 </p>
               </div>
             </div>
 
-            <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            <span className="px-3 py-1 rounded-xl text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-retro-sm">
               {attendees.length} Hadir
             </span>
           </div>
@@ -241,10 +243,10 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
           {/* Attendee List Feed */}
           <div className="flex-1 overflow-y-auto space-y-2.5 max-h-[500px] pr-2">
             {attendees.length === 0 ? (
-              <div className="text-center py-16 text-slate-400">
+              <div className="text-center py-16 text-slate-400 font-mono">
                 <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p className="text-xs font-semibold">Menunggu peserta memindai...</p>
-                <p className="text-[11px] text-slate-500 mt-1">Daftar mahasiswa akan ter-update otomatis.</p>
+                <p className="text-[11px] text-slate-500 mt-1">Daftar kehadiran ter-update otomatis.</p>
               </div>
             ) : (
               attendees.map((att, idx) => {
@@ -256,14 +258,14 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
                 return (
                   <div
                     key={att.id || idx}
-                    className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-between transition-all"
+                    className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-between transition-all"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-bdc-yellow text-bdc-midnight font-black text-xs flex items-center justify-center">
+                      <div className="w-9 h-9 rounded-xl bg-bdc-yellow text-bdc-midnight font-pixel text-xs flex items-center justify-center border border-bdc-midnight shadow-retro-sm">
                         {att.user_name.charAt(0)}
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-white leading-tight">
+                        <p className="font-space text-xs font-bold text-white leading-tight">
                           {att.user_name}
                         </p>
                         <p className="text-[10px] font-mono text-slate-400">
@@ -276,7 +278,7 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
                       <span className="text-[10px] font-mono text-slate-400 block">
                         {scanTime} WIB
                       </span>
-                      <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-1 justify-end">
+                      <span className="text-[10px] font-mono font-bold text-emerald-400 flex items-center gap-1 justify-end">
                         <CheckCircle2 className="w-3 h-3" />
                         +100 XP
                       </span>
@@ -288,12 +290,12 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
           </div>
 
           {/* Footer Info */}
-          <div className="pt-4 border-t border-white/10 mt-4 flex items-center justify-between text-xs text-slate-400">
+          <div className="pt-4 border-t border-white/10 mt-4 flex items-center justify-between text-xs text-slate-400 font-mono">
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Validasi Otentikasi Kampus UTDI</span>
+              <span>Otentikasi UTDI</span>
             </span>
-            <span className="font-mono text-[11px]">Sync: Otomatis (5s)</span>
+            <span className="text-[11px]">Sync: Otomatis (5s)</span>
           </div>
         </div>
       </div>

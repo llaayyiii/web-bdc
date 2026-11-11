@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { bdcStore } from "@/lib/data/store";
+import { BdcDots } from "@/components/ui/BdcDots";
 import {
   Users,
   Award,
@@ -8,7 +9,7 @@ import {
   CheckCircle2,
   Clock,
   ArrowRight,
-  ShieldAlert,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -18,90 +19,132 @@ export default function AdminDashboardPage() {
   const courses = bdcStore.getCourses();
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-        <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">
-            Ringkasan Analitik Akademik
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Dasbor Pusat Kendali Komunitas &amp; Sertifikasi — UTDI Yogyakarta
-          </p>
-        </div>
+    <div className="space-y-8 font-sans">
+      {/* 1. Header (GDGoC dash-intro style) */}
+      <div className="space-y-3 pb-4 border-b border-[#d9dfd7]">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-bdc-blue uppercase tracking-widest">
+                [ 00 // RINGKASAN ANALITIK AKADEMIK ]
+              </span>
+              <BdcDots size="sm" />
+            </div>
 
-        <div className="flex items-center gap-2">
-          <Link
-            href="/admin/certificates"
-            className="px-3.5 py-2 rounded-xl bg-bdc-blue hover:bg-blue-600 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5"
-          >
-            <Award className="w-4 h-4 text-bdc-yellow" />
-            <span>Editor Sertifikat</span>
-          </Link>
+            <h1 className="font-pixel text-4xl sm:text-5xl text-bdc-midnight tracking-tight">
+              Dasbor Kurator &amp; Admin
+            </h1>
+
+            <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
+              Pusat kendali operasional komunitas, audit presensi barcode, penilaian tugas, dan tata kelola sertifikasi — UTDI Yogyakarta.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/admin/certificates"
+              className="retro-btn px-4 py-2.5 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-retro-sm flex items-center gap-2 border border-bdc-midnight"
+            >
+              <Award className="w-4 h-4 text-bdc-yellow" />
+              <span>Editor Sertifikat</span>
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* 4 Stat Cards in Dark Navy */}
+      {/* 2. 4 Metric Stat Cards with Colored Top Inset Shadows (GDGoC dash-stats) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#141d33] p-5 rounded-2xl border border-slate-800 shadow-md flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-bdc-blue flex items-center justify-center shrink-0 border border-blue-500/20">
-            <Users className="w-6 h-6" />
-          </div>
-          <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+        {/* Metric 1: Total Mahasiswa (Blue Inset) */}
+        <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#095BAF] flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Total Mahasiswa
             </span>
-            <span className="text-2xl font-extrabold text-white">760</span>
+            <div className="w-8 h-8 rounded-lg bg-blue-50 text-bdc-blue flex items-center justify-center border border-blue-200">
+              <Users className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="flex items-baseline gap-1">
+              <span className="font-pixel text-3xl sm:text-4xl text-bdc-midnight">760</span>
+              <span className="font-mono text-xs text-slate-500">Mahasiswa</span>
+            </div>
+            <p className="font-mono text-[10px] text-slate-500 mt-1">Cohort 2026/2027 Aktif</p>
           </div>
         </div>
 
-        <div className="bg-[#141d33] p-5 rounded-2xl border border-slate-800 shadow-md flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20">
-            <TrendingUp className="w-6 h-6" />
-          </div>
-          <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+        {/* Metric 2: Tingkat Kelulusan (Green Inset) */}
+        <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#34A853] flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Tingkat Kelulusan
             </span>
-            <span className="text-2xl font-extrabold text-white">94.8%</span>
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="flex items-baseline gap-1">
+              <span className="font-pixel text-3xl sm:text-4xl text-emerald-600">94.8%</span>
+            </div>
+            <p className="font-mono text-[10px] text-slate-500 mt-1">Memenuhi 3 Kriteria Standar</p>
           </div>
         </div>
 
-        <div className="bg-[#141d33] p-5 rounded-2xl border border-slate-800 shadow-md flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center shrink-0 border border-purple-500/20">
-            <BookOpen className="w-6 h-6" />
-          </div>
-          <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+        {/* Metric 3: Modul Aktif (Yellow Inset) */}
+        <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#E9AD17] flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Modul Aktif
             </span>
-            <span className="text-2xl font-extrabold text-white">{courses.length} Modul</span>
+            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200">
+              <BookOpen className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="flex items-baseline gap-1">
+              <span className="font-pixel text-3xl sm:text-4xl text-bdc-midnight">{courses.length}</span>
+              <span className="font-mono text-xs text-slate-500">Modul Belajar</span>
+            </div>
+            <p className="font-mono text-[10px] text-slate-500 mt-1">Tersinkronisasi Silabus</p>
           </div>
         </div>
 
-        <div className="bg-[#141d33] p-5 rounded-2xl border border-slate-800 shadow-md flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-bdc-gold flex items-center justify-center shrink-0 border border-amber-500/20">
-            <Award className="w-6 h-6" />
-          </div>
-          <div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+        {/* Metric 4: Sertifikat Terbit (Red Inset) */}
+        <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#EA4335] flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Sertifikat Terbit
             </span>
-            <span className="text-2xl font-extrabold text-white">340</span>
+            <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200">
+              <Award className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="flex items-baseline gap-1">
+              <span className="font-pixel text-3xl sm:text-4xl text-bdc-midnight">340</span>
+              <span className="font-mono text-xs text-slate-500">Kredensial</span>
+            </div>
+            <p className="font-mono text-[10px] text-slate-500 mt-1">Terverifikasi Digital</p>
           </div>
         </div>
       </div>
 
-      {/* Recent Submissions & Action Table */}
-      <div className="bg-[#141d33] rounded-2xl border border-slate-800 p-6 shadow-md space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+      {/* 3. Students Table (GDGoC dash-table) */}
+      <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-6 space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[#d9dfd7]">
           <div>
-            <h2 className="text-sm font-bold text-white">Daftar Mahasiswa Terdaftar</h2>
-            <p className="text-[11px] text-slate-400">Ringkasan capaian akademik cohort 2026/2027</p>
+            <div className="flex items-center gap-2">
+              <h2 className="font-space text-base sm:text-lg font-bold text-bdc-midnight">
+                Daftar Mahasiswa Terdaftar
+              </h2>
+              <BdcDots size="sm" />
+            </div>
+            <p className="text-xs text-slate-500 font-sans mt-0.5">Ringkasan capaian akademik cohort 2026/2027</p>
           </div>
           <Link
             href="/admin/students"
-            className="text-xs font-bold text-bdc-yellow hover:underline flex items-center gap-1"
+            className="retro-btn text-xs font-mono font-bold text-bdc-blue hover:text-bdc-midnight flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 bg-white shadow-retro-sm"
           >
             <span>Kelola Selengkapnya</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -110,7 +153,7 @@ export default function AdminDashboardPage() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#0f172a] text-slate-400 text-[10px] uppercase font-bold border-b border-slate-800">
+            <thead className="bg-[#f4f3ea] text-slate-600 uppercase text-[10px] font-mono font-bold border-b border-[#d9dfd7]">
               <tr>
                 <th className="px-4 py-3">Nama Mahasiswa</th>
                 <th className="px-4 py-3">NIM Kampus</th>
@@ -119,18 +162,26 @@ export default function AdminDashboardPage() {
                 <th className="px-4 py-3">Status Kredensial</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800 text-slate-300">
+            <tbody className="divide-y divide-[#d9dfd7]">
               {students.map((st) => (
-                <tr key={st.id} className="hover:bg-slate-800/40 transition-colors">
-                  <td className="px-4 py-3 font-bold text-white">{st.full_name}</td>
-                  <td className="px-4 py-3 font-mono text-[11px] text-bdc-yellow">{st.nim_id}</td>
-                  <td className="px-4 py-3 text-slate-400 font-mono text-[11px]">{st.email}</td>
-                  <td className="px-4 py-3 font-extrabold text-emerald-400">
-                    {st.score} <span className="text-[10px] font-normal text-slate-400">/ 100</span>
+                <tr key={st.id} className="hover:bg-[#fff8e6] transition-colors">
+                  <td className="px-4 py-3.5 font-bold text-bdc-midnight">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-bdc-midnight text-bdc-yellow font-pixel text-xs flex items-center justify-center shrink-0 border border-bdc-midnight shadow-retro-sm">
+                        {st.full_name.charAt(0)}
+                      </div>
+                      <span className="font-space text-sm">{st.full_name}</span>
+                    </div>
                   </td>
-                  <td className="px-4 py-3">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                      <CheckCircle2 className="w-3 h-3" />
+                  <td className="px-4 py-3.5 font-mono text-[11px] text-bdc-blue font-bold">{st.nim_id}</td>
+                  <td className="px-4 py-3.5 text-slate-600 font-mono text-[11px]">{st.email}</td>
+                  <td className="px-4 py-3.5 font-bold text-emerald-700">
+                    <span className="font-pixel text-lg">{st.score}</span>{" "}
+                    <span className="font-mono text-[10px] text-slate-400 font-normal">/ 100</span>
+                  </td>
+                  <td className="px-4 py-3.5">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-retro-sm">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                       <span>Kompeten Paripurna</span>
                     </span>
                   </td>

@@ -18,6 +18,7 @@ import {
 import { submitQuizAction, SubmitQuizResult } from "@/lib/actions/quiz";
 import { useToast } from "@/components/ui/Toast";
 import { QuizQuestion } from "@/lib/types/database";
+import { BdcDots } from "@/components/ui/BdcDots";
 
 const QUESTIONS_DATA: QuizQuestion[] = [
   {
@@ -247,45 +248,48 @@ export default function QuizPlayerPage({
   const answeredCount = Object.keys(answers).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Top Bar Navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white rounded-2xl border border-slate-200 p-4 sm:px-6 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#fffefa] rounded-3xl border border-[#d9dfd7] p-5 shadow-retro">
         <div className="flex items-center gap-3">
           <Link
             href="/assessments"
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            className="retro-btn p-2.5 rounded-2xl bg-[#EFF0F0] text-slate-700 hover:text-bdc-midnight hover:bg-slate-200 border border-slate-300 shadow-retro-sm transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-sm font-extrabold text-bdc-midnight">
-              Uji Evaluasi Akhir: Keamanan Siber &amp; Web
-            </h1>
-            <span className="text-[10px] text-slate-500 font-medium">
+            <div className="flex items-center gap-2">
+              <h1 className="font-space text-sm sm:text-base font-bold text-bdc-midnight">
+                Uji Evaluasi Akhir: Keamanan Siber &amp; Web
+              </h1>
+              <BdcDots size="sm" />
+            </div>
+            <span className="font-mono text-[10px] text-slate-500 font-semibold uppercase">
               10 Butir Soal Terstandarisasi BDC UTDI
             </span>
           </div>
         </div>
 
-        {/* Live Timer Clock */}
+        {/* Live Timer Clock & Submit */}
         <div className="flex items-center gap-3 self-end sm:self-auto">
           <div
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-mono font-bold shadow-sm ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-2xl border-2 text-xs font-mono font-bold shadow-retro-sm ${
               timeLeft < 300
-                ? "bg-rose-50 border-rose-300 text-rose-600 animate-pulse"
-                : "bg-bdc-surface border-slate-200 text-bdc-midnight"
+                ? "bg-rose-50 border-rose-400 text-rose-600 animate-pulse"
+                : "bg-[#EFF0F0] border-slate-300 text-bdc-midnight"
             }`}
           >
             <Clock className="w-4 h-4 text-bdc-blue" />
-            <span>{formatTimer(timeLeft)}</span>
+            <span className="font-pixel text-lg">{formatTimer(timeLeft)}</span>
           </div>
 
           <button
             onClick={() => setShowConfirmModal(true)}
             disabled={isSubmitting || !!result}
-            className="px-4 py-2 rounded-xl bg-bdc-blue hover:bg-bdc-navy active:scale-95 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 disabled:opacity-50"
+            className="retro-btn px-4 py-2.5 rounded-2xl bg-bdc-navy hover:bg-bdc-midnight active:scale-95 text-white text-xs font-bold transition-all shadow-retro-sm flex items-center gap-2 disabled:opacity-50 border border-bdc-midnight"
           >
-            <Send className="w-3.5 h-3.5" />
+            <Send className="w-3.5 h-3.5 text-bdc-yellow" />
             <span>Selesai Ujian</span>
           </button>
         </div>
@@ -294,30 +298,30 @@ export default function QuizPlayerPage({
       {/* Main Examination Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left 3 Cols: Question Area */}
-        <div className="lg:col-span-3 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm flex flex-col justify-between min-h-[460px]">
+        <div className="lg:col-span-3 bg-[#fffefa] rounded-3xl border border-[#d9dfd7] p-6 sm:p-8 shadow-retro flex flex-col justify-between min-h-[480px]">
           <div>
             {/* Question Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-              <span className="text-xs font-bold text-bdc-blue uppercase tracking-wider">
-                Soal Nomor {currentIndex + 1} dari {QUESTIONS_DATA.length}
+            <div className="flex items-center justify-between pb-4 border-b border-[#d9dfd7] mb-6">
+              <span className="font-mono text-xs font-bold text-bdc-blue uppercase tracking-wider">
+                [ SOAL {currentIndex + 1} // {QUESTIONS_DATA.length} ]
               </span>
 
               <button
                 type="button"
                 onClick={toggleFlag}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+                className={`retro-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all shadow-retro-sm ${
                   isCurrentFlagged
-                    ? "bg-amber-100 text-amber-800 border border-amber-300"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-amber-100 text-amber-900 border border-amber-400"
+                    : "bg-[#EFF0F0] text-slate-700 hover:bg-slate-200 border border-slate-300"
                 }`}
               >
                 <Flag className={`w-3.5 h-3.5 ${isCurrentFlagged ? "fill-amber-600 text-amber-600" : ""}`} />
-                <span>{isCurrentFlagged ? "Ditandai Ragu-ragu" : "Ragu-ragu"}</span>
+                <span>{isCurrentFlagged ? "Ditandai Ragu" : "Ragu-ragu"}</span>
               </button>
             </div>
 
             {/* Question Text */}
-            <p className="text-sm sm:text-base font-semibold text-bdc-midnight leading-relaxed mb-6">
+            <p className="font-space text-base sm:text-lg font-bold text-bdc-midnight leading-relaxed mb-6">
               {currentQ.question_text}
             </p>
 
@@ -330,22 +334,22 @@ export default function QuizPlayerPage({
                     key={option.id}
                     type="button"
                     onClick={() => handleSelectOption(option.id)}
-                    className={`w-full text-left p-4 rounded-xl border transition-all flex items-start gap-3.5 cursor-pointer ${
+                    className={`w-full text-left p-4 rounded-2xl border transition-all flex items-start gap-3.5 cursor-pointer shadow-retro-sm ${
                       isSelected
-                        ? "bg-blue-50 border-bdc-blue ring-1 ring-bdc-blue text-bdc-midnight shadow-sm"
-                        : "bg-slate-50/50 hover:bg-slate-100 border-slate-200 text-slate-700"
+                        ? "bg-[#fff8e6] border-2 border-bdc-blue shadow-[inset_4px_0_0_#095BAF] text-bdc-midnight"
+                        : "bg-[#fffefa] hover:bg-[#f9f9f5] border-slate-300 text-slate-700"
                     }`}
                   >
                     <span
-                      className={`w-7 h-7 rounded-lg font-bold text-xs flex items-center justify-center shrink-0 transition-colors ${
+                      className={`w-8 h-8 rounded-xl font-pixel text-sm font-bold flex items-center justify-center shrink-0 transition-all border ${
                         isSelected
-                          ? "bg-bdc-blue text-white shadow-sm"
-                          : "bg-white border border-slate-300 text-slate-600"
+                          ? "bg-bdc-blue text-white border-bdc-midnight shadow-retro-sm"
+                          : "bg-white border-slate-300 text-slate-700"
                       }`}
                     >
                       {option.id}
                     </span>
-                    <span className="text-xs sm:text-sm font-medium leading-relaxed pt-0.5">
+                    <span className="text-xs sm:text-sm font-medium leading-relaxed pt-1 font-sans">
                       {option.text}
                     </span>
                   </button>
@@ -355,19 +359,19 @@ export default function QuizPlayerPage({
           </div>
 
           {/* Bottom Step Buttons */}
-          <div className="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between">
+          <div className="mt-8 pt-5 border-t border-[#d9dfd7] flex items-center justify-between">
             <button
               type="button"
               disabled={currentIndex === 0}
               onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
-              className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-40 transition-all flex items-center gap-1.5"
+              className="retro-btn px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40 transition-all flex items-center gap-1.5 shadow-retro-sm"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Sebelumnya</span>
             </button>
 
-            <span className="text-xs text-slate-400 font-medium hidden sm:inline">
-              Terjawab: {answeredCount} dari {QUESTIONS_DATA.length}
+            <span className="font-mono text-xs text-slate-500 font-bold hidden sm:inline">
+              Terjawab: {answeredCount} / {QUESTIONS_DATA.length}
             </span>
 
             <button
@@ -376,7 +380,7 @@ export default function QuizPlayerPage({
               onClick={() =>
                 setCurrentIndex((prev) => Math.min(QUESTIONS_DATA.length - 1, prev + 1))
               }
-              className="px-4 py-2 rounded-xl bg-bdc-midnight hover:bg-bdc-navy text-xs font-bold text-white disabled:opacity-40 transition-all flex items-center gap-1.5"
+              className="retro-btn px-4 py-2 rounded-xl bg-bdc-midnight hover:bg-bdc-navy text-xs font-bold text-white disabled:opacity-40 transition-all flex items-center gap-1.5 shadow-retro-sm"
             >
               <span>Selanjutnya</span>
               <ArrowRight className="w-4 h-4" />
@@ -385,12 +389,12 @@ export default function QuizPlayerPage({
         </div>
 
         {/* Right 1 Col: Question Number Palette */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-5">
+        <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] p-5 shadow-retro space-y-5">
           <div>
-            <h3 className="text-xs font-bold text-bdc-midnight uppercase tracking-wider mb-1">
-              Navigasi Soal
+            <h3 className="font-mono text-xs font-bold text-bdc-midnight uppercase tracking-wider mb-1">
+              [ NAVIGASI SOAL ]
             </h3>
-            <p className="text-[11px] text-slate-500">Klik nomor untuk melompat ke soal</p>
+            <p className="text-[11px] text-slate-500 font-sans">Klik nomor untuk melompat ke soal</p>
           </div>
 
           <div className="grid grid-cols-5 gap-2">
@@ -400,12 +404,12 @@ export default function QuizPlayerPage({
               const isFlag = flagged.includes(qNum);
               const isCurrent = currentIndex === idx;
 
-              let btnStyle = "bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200";
+              let btnStyle = "bg-[#EFF0F0] text-slate-700 hover:bg-slate-200 border-slate-300";
               if (isAnswered) {
-                btnStyle = "bg-bdc-blue text-white border-bdc-blue shadow-sm";
+                btnStyle = "bg-bdc-blue text-white border-bdc-midnight shadow-retro-sm";
               }
               if (isFlag) {
-                btnStyle = "bg-bdc-yellow text-bdc-midnight border-amber-400 font-extrabold";
+                btnStyle = "bg-bdc-yellow text-bdc-midnight border-bdc-midnight font-bold shadow-retro-sm";
               }
               if (isCurrent) {
                 btnStyle += " ring-2 ring-offset-2 ring-bdc-midnight";
@@ -415,7 +419,7 @@ export default function QuizPlayerPage({
                 <button
                   key={q.id}
                   onClick={() => setCurrentIndex(idx)}
-                  className={`h-9 rounded-lg font-bold text-xs border transition-all flex items-center justify-center cursor-pointer ${btnStyle}`}
+                  className={`h-9 rounded-xl font-pixel text-sm border transition-all flex items-center justify-center cursor-pointer ${btnStyle}`}
                 >
                   {qNum}
                 </button>
@@ -424,17 +428,17 @@ export default function QuizPlayerPage({
           </div>
 
           {/* Palette Legend */}
-          <div className="space-y-1.5 pt-3 border-t border-slate-100 text-[10px] text-slate-600">
+          <div className="space-y-2 pt-3 border-t border-[#d9dfd7] text-[10px] font-mono text-slate-600">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded bg-bdc-blue shrink-0" />
+              <span className="w-3.5 h-3.5 rounded bg-bdc-blue border border-bdc-midnight shrink-0 shadow-retro-sm" />
               <span>Sudah Dijawab ({answeredCount})</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded bg-bdc-yellow border border-amber-300 shrink-0" />
+              <span className="w-3.5 h-3.5 rounded bg-bdc-yellow border border-bdc-midnight shrink-0 shadow-retro-sm" />
               <span>Ragu-ragu ({flagged.length})</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded bg-slate-100 border border-slate-300 shrink-0" />
+              <span className="w-3.5 h-3.5 rounded bg-[#EFF0F0] border border-slate-400 shrink-0" />
               <span>Belum Dijawab ({QUESTIONS_DATA.length - answeredCount})</span>
             </div>
           </div>
@@ -443,26 +447,26 @@ export default function QuizPlayerPage({
 
       {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 bg-bdc-midnight/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 flex flex-col animate-in fade-in zoom-in-95">
-            <h3 className="text-base font-bold text-bdc-midnight mb-2">
+        <div className="fixed inset-0 bg-[#000741]/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#fffefa] rounded-3xl border-2 border-bdc-midnight max-w-sm w-full p-6 shadow-retro-lg flex flex-col">
+            <h3 className="font-space text-base font-bold text-bdc-midnight mb-2">
               Konfirmasi Selesai Ujian
             </h3>
-            <p className="text-xs text-slate-600 leading-relaxed mb-4">
-              Anda telah menjawab <strong>{answeredCount}</strong> dari {QUESTIONS_DATA.length} soal.
-              Apakah Anda yakin ingin menyelesaikan dan mengirimkan lembar jawaban ini?
+            <p className="text-xs text-slate-600 leading-relaxed mb-4 font-sans">
+              Anda telah menjawab <strong>{answeredCount}</strong> dari {QUESTIONS_DATA.length} butir soal.
+              Apakah Anda yakin ingin menyelesaikan lembar jawaban ini?
             </p>
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#d9dfd7]">
               <button
                 onClick={() => setShowConfirmModal(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+                className="retro-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 border border-slate-300 shadow-retro-sm"
               >
                 Kembali Periksa
               </button>
               <button
                 onClick={executeSubmission}
                 disabled={isSubmitting}
-                className="px-4 py-2 rounded-xl bg-bdc-blue hover:bg-bdc-navy text-white text-xs font-bold shadow-md"
+                className="retro-btn px-4 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold shadow-retro-sm border border-bdc-midnight"
               >
                 {isSubmitting ? "Mengirimkan..." : "Ya, Kirim Sekarang"}
               </button>
@@ -473,13 +477,13 @@ export default function QuizPlayerPage({
 
       {/* Result Modal / Screen */}
       {result && (
-        <div className="fixed inset-0 bg-bdc-midnight/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 text-center flex flex-col items-center animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 bg-[#000741]/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-[#fffefa] rounded-3xl border-2 border-bdc-midnight max-w-md w-full p-6 sm:p-8 shadow-retro-lg text-center flex flex-col items-center">
             <div
-              className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 ${
+              className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 border-2 shadow-retro-sm ${
                 result.passed
-                  ? "bg-emerald-100 text-emerald-600"
-                  : "bg-amber-100 text-amber-600"
+                  ? "bg-emerald-100 text-emerald-700 border-emerald-400"
+                  : "bg-amber-100 text-amber-700 border-amber-400"
               }`}
             >
               {result.passed ? (
@@ -489,45 +493,45 @@ export default function QuizPlayerPage({
               )}
             </div>
 
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-              Hasil Evaluasi Otomatis
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              [ HASIL EVALUASI OTOMATIS ]
             </span>
-            <h2 className="text-2xl font-extrabold text-bdc-midnight mt-0.5 mb-1">
+            <h2 className="font-space text-2xl font-bold text-bdc-midnight mt-0.5 mb-1">
               {result.passed ? "KOMPETEN (LULUS)" : "PERLU REMEDIAL"}
             </h2>
-            <p className="text-xs text-slate-500 max-w-xs mb-6">
+            <p className="text-xs text-slate-600 max-w-xs mb-6 font-sans">
               {result.passed
                 ? "Selamat! Anda memenuhi standar kriteria kelulusan akademik BDC UTDI."
                 : "Nilai Anda masih berada di bawah batas ambang kelulusan min. 75.00."}
             </p>
 
             {/* Score Big Display */}
-            <div className="w-full p-4 rounded-2xl bg-bdc-surface border border-slate-200 mb-6 flex items-center justify-around">
+            <div className="w-full p-4 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-retro-sm mb-6 flex items-center justify-around">
               <div>
-                <span className="text-[10px] font-semibold text-slate-400 block uppercase">
+                <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
                   Skor Perolehan
                 </span>
-                <span className="text-3xl font-extrabold text-bdc-midnight">
+                <span className="font-pixel text-4xl text-bdc-midnight">
                   {result.score}
                 </span>
               </div>
-              <div className="h-8 w-px bg-slate-200" />
+              <div className="h-10 w-px bg-slate-300" />
               <div>
-                <span className="text-[10px] font-semibold text-slate-400 block uppercase">
+                <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
                   Jawaban Benar
                 </span>
-                <span className="text-xl font-bold text-emerald-600">
+                <span className="font-pixel text-2xl text-emerald-600">
                   {result.correctCount} / {result.totalQuestions}
                 </span>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="w-full space-y-2">
+            <div className="w-full space-y-2.5">
               {result.passed && (
                 <Link
                   href="/certificates"
-                  className="w-full py-3 px-4 rounded-xl bg-bdc-blue hover:bg-bdc-navy text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
+                  className="retro-btn w-full py-3 px-4 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-retro-sm flex items-center justify-center gap-2 border border-bdc-midnight"
                 >
                   <Award className="w-4 h-4 text-bdc-yellow" />
                   <span>Buka Sertifikat &amp; Transkrip Nilai</span>
@@ -535,7 +539,7 @@ export default function QuizPlayerPage({
               )}
               <Link
                 href="/assessments"
-                className="w-full py-2.5 px-4 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all block"
+                className="retro-btn w-full py-2.5 px-4 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-800 text-xs font-bold transition-all block shadow-retro-sm"
               >
                 Kembali ke Halaman Evaluasi
               </Link>

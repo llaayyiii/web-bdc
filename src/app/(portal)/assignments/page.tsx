@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
 import { StudentAssignmentList } from "@/components/assignments/StudentAssignmentList";
+import { BdcDots } from "@/components/ui/BdcDots";
 import {
   FolderGit2,
   CheckCircle2,
@@ -23,69 +24,81 @@ export default async function AssignmentsPage() {
   const pendingCount = userSubmissions.filter((s) => s.status === "pending").length;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
-        <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-bdc-navy text-bdc-yellow mb-1.5">
-            <FolderGit2 className="w-3.5 h-3.5" />
-            <span>Manajemen Penugasan Proyek</span>
+    <div className="space-y-8 font-sans">
+      {/* 1. Header (GDGoC dash-intro style) */}
+      <div className="space-y-3 pb-4 border-b border-[#d9dfd7]">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-bdc-blue uppercase tracking-widest">
+                [ 04 // MANAJEMEN PENUGASAN &amp; STUDI KASUS ]
+              </span>
+              <BdcDots size="sm" />
+            </div>
+
+            <h1 className="font-pixel text-4xl sm:text-5xl text-bdc-midnight tracking-tight">
+              Tugas &amp; Portofolio
+            </h1>
+
+            <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
+              Kumpulkan hasil hands-on coding, audit keamanan siber, dan studi kasus proyek untuk melengkapi syarat penerbitan sertifikat kompetensi.
+            </p>
           </div>
-          <h1 className="text-2xl font-black text-bdc-midnight tracking-tight">
-            Tugas &amp; Portofolio Proyek BDC
-          </h1>
-          <p className="text-xs text-slate-500">
-            Kumpulkan hasil hands-on coding, audit keamanan, dan studi kasus untuk melengkapi kriteria sertifikat
-          </p>
         </div>
       </div>
 
-      {/* Stats Bar */}
+      {/* 2. 3 Stats Cards with Top Inset Colors */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        {/* Total Tasks (Blue Inset) */}
+        <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#095BAF] flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+            <span className="font-mono text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
               Total Tugas Tersedia
             </span>
-            <span className="text-2xl font-black text-bdc-midnight mt-1 block">
-              {assignments.length} <span className="text-xs font-semibold text-slate-400">Tugas Proyek</span>
-            </span>
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className="font-pixel text-3xl text-bdc-midnight">{assignments.length}</span>
+              <span className="font-mono text-xs text-slate-500">Tugas Proyek</span>
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-bdc-blue flex items-center justify-center">
-            <FolderGit2 className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-bdc-blue flex items-center justify-center border border-blue-200 shadow-retro-sm">
+            <FolderGit2 className="w-6 h-6" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        {/* Graded Tasks (Green Inset) */}
+        <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#34A853] flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+            <span className="font-mono text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
               Sudah Dinilai
             </span>
-            <span className="text-2xl font-black text-emerald-600 mt-1 block">
-              {gradedCount} <span className="text-xs font-semibold text-slate-400">Tersertifikasi</span>
-            </span>
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className="font-pixel text-3xl text-emerald-600">{gradedCount}</span>
+              <span className="font-mono text-xs text-slate-500">Tersertifikasi</span>
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <CheckCircle2 className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200 shadow-retro-sm">
+            <CheckCircle2 className="w-6 h-6" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+        {/* Pending Evaluation (Yellow Inset) */}
+        <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#E9AD17] flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+            <span className="font-mono text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
               Menunggu Evaluasi
             </span>
-            <span className="text-2xl font-black text-amber-600 mt-1 block">
-              {pendingCount} <span className="text-xs font-semibold text-slate-400">Dalam Antrean</span>
-            </span>
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className="font-pixel text-3xl text-amber-600">{pendingCount}</span>
+              <span className="font-mono text-xs text-slate-500">Dalam Antrean</span>
+            </div>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-            <Clock className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 shadow-retro-sm">
+            <Clock className="w-6 h-6" />
           </div>
         </div>
       </div>
 
-      {/* Main List */}
+      {/* 3. Main Assignment List */}
       <StudentAssignmentList
         assignments={assignments}
         userSubmissions={userSubmissions}
