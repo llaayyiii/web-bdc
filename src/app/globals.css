@@ -15,6 +15,59 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-space), -apple-system, sans-serif;
+    letter-spacing: -0.04em;
+  }
+}
+
+/* GDGoC-inspired Voxel Dot Grid Pattern */
+.bg-voxel-grid {
+  background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
+/* Tactile Neo-Retro Classes */
+.retro-card {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 3px 3px 0px #000741;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.retro-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000741;
+}
+
+.retro-btn {
+  border: 1px solid #000741;
+  box-shadow: 3px 3px 0px #000741;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.retro-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000741;
+}
+
+.retro-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000741;
+}
+
+/* 4-Color Developer Dots */
+.bdc-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.bdc-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
 }
 
 /* Custom scrollbar for clean UI */

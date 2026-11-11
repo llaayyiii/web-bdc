@@ -17,6 +17,7 @@ import {
   X,
   ExternalLink,
 } from "lucide-react";
+import { BdcDots } from "@/components/ui/BdcDots";
 
 interface PortalSidebarProps {
   userRole?: string;
@@ -121,9 +122,12 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
               <Image src="/logo.svg" alt="BDC Logo" width={24} height={24} className="w-6 h-6 object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-base tracking-tight text-white">Business Dev Club</span>
+              <div className="flex items-center gap-1.5">
+                <span className="font-extrabold text-base tracking-tight text-white">Business Dev Club</span>
+                <BdcDots size="sm" />
+              </div>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] uppercase font-bold text-bdc-midnight bg-bdc-yellow px-1.5 py-0.2 rounded">
+                <span className="text-[10px] uppercase font-bold text-bdc-midnight bg-bdc-yellow px-1.5 py-0.2 rounded font-mono">
                   UTDI
                 </span>
                 <span className="text-[10px] text-slate-400 font-medium">Student Chapter</span>

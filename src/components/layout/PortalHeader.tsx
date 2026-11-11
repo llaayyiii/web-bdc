@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { LogOut, Search, ShieldCheck } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth";
+import { BdcDots } from "@/components/ui/BdcDots";
 
 interface PortalHeaderProps {
   userName?: string;
@@ -13,14 +14,15 @@ interface PortalHeaderProps {
 
 export function PortalHeader({ userName, userRole, userEmail }: PortalHeaderProps) {
   return (
-    <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-3.5 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-300 px-6 py-3.5 flex items-center justify-between gap-4">
       {/* Left: Campus Badge & Context */}
       <div className="flex items-center gap-3">
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-bdc-surface border border-slate-200 text-xs font-semibold text-bdc-midnight">
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-bdc-surface border border-slate-300 text-xs font-semibold text-bdc-midnight shadow-retro-sm">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Portal Akademik BDC UTDI</span>
-          <span className="text-slate-400">|</span>
-          <span className="text-bdc-blue font-bold">2026/2027</span>
+          <span className="font-space font-bold">Portal Akademik BDC UTDI</span>
+          <BdcDots size="sm" />
+          <span className="text-slate-400 font-mono">|</span>
+          <span className="text-bdc-blue font-bold font-mono">2026/2027</span>
         </div>
       </div>
 

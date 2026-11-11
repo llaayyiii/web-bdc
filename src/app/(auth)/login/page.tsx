@@ -2,10 +2,12 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, Lock, ArrowRight, ShieldCheck, AlertCircle, Sparkles } from "lucide-react";
+import { User, Lock, ArrowRight, ShieldCheck, AlertCircle, Sparkles, ArrowLeft } from "lucide-react";
 import { loginAction, demoLoginAction } from "@/lib/actions/auth";
 import { useToast } from "@/components/ui/Toast";
+import { BdcDots } from "@/components/ui/BdcDots";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -66,29 +68,41 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bdc-surface flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-bdc-surface bg-voxel-grid flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Back to Home Link */}
+      <div className="absolute top-6 left-6 z-20">
+        <Link
+          href="/"
+          className="retro-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white text-xs font-bold text-bdc-midnight shadow-retro-sm transition-all"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Kembali ke Beranda</span>
+        </Link>
+      </div>
+
       {/* Subtle Background Geometry */}
       <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-bdc-blue/10 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-bdc-navy/10 blur-3xl pointer-events-none" />
 
       {/* Brand Header */}
       <div className="mb-6 flex flex-col items-center text-center z-10">
-        <div className="w-14 h-14 rounded-2xl bg-bdc-midnight p-3 flex items-center justify-center shadow-xl shadow-bdc-midnight/20 mb-3 border border-bdc-navy">
+        <div className="w-14 h-14 rounded-2xl bg-bdc-midnight p-3 flex items-center justify-center shadow-retro mb-3 border-2 border-bdc-midnight">
           <Image src="/logo.svg" alt="BDC Logo" width={32} height={32} className="w-8 h-8 object-contain" />
         </div>
         <div className="flex items-center gap-2 mb-1">
-          <h1 className="text-2xl font-extrabold text-bdc-midnight tracking-tight">Business Dev Club</h1>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-bdc-yellow text-bdc-midnight tracking-wide uppercase">
+          <h1 className="text-2xl font-black font-space text-bdc-midnight tracking-tight">Business Dev Club</h1>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-bdc-yellow text-bdc-midnight tracking-wide uppercase font-mono">
             UTDI
           </span>
+          <BdcDots size="sm" />
         </div>
-        <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">
+        <p className="text-xs font-mono font-semibold text-slate-500 uppercase tracking-widest">
           Academic College Community &amp; Certification
         </p>
       </div>
 
       {/* Main Login Card */}
-      <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-[0_12px_40px_rgba(0,7,65,0.08)] border border-slate-200/80 p-8 z-10">
+      <div className="w-full max-w-[420px] bg-white rounded-3xl shadow-retro-lg border-2 border-bdc-midnight p-8 z-10">
         <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-100">
           <div>
             <h2 className="text-lg font-bold text-bdc-midnight">Akses Portal Masuk</h2>
