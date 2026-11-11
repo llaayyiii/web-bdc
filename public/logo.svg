@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40" fill="none">
+  <defs>
+    <linearGradient id="bdc_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a14b4"/>
+      <stop offset="50%" stop-color="#4338ca"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="40" height="40" rx="10" fill="url(#bdc_grad)"/>
+  <!-- Academic Mortarboard & Enterprise Crest -->
+  <path d="M20 8L6 15L20 22L34 15L20 8Z" fill="#ffffff" fill-opacity="0.3" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M11 18V25.5C11 25.5 14.5 29 20 29C25.5 29 29 25.5 29 25.5V18" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M34 15V24" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="34" cy="25" r="1.5" fill="#ffffff"/>
+</svg>
