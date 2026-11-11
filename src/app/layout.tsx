@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${plusJakarta.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-bdc-surface text-bdc-midnight antialiased flex flex-col">
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );
