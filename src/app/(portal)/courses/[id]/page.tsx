@@ -2,16 +2,13 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
-import { SyllabusChecklist } from "@/components/courses/SyllabusChecklist";
+import { CourseTabs } from "@/components/courses/CourseTabs";
 import {
   ArrowLeft,
   Clock,
   Star,
   Users,
   ShieldCheck,
-  CheckCircle2,
-  Share2,
-  Award,
 } from "lucide-react";
 
 export default async function CourseDetailPage({
@@ -29,6 +26,19 @@ export default async function CourseDetailPage({
 
   const enrollment = user ? bdcStore.getEnrollment(user.id, course.id) : null;
   const initialCompletedTopics = enrollment?.completed_topics || [];
+
+  // Filter sessions and assignments related to this course
+  const allSessions = bdcStore.getSessions();
+  const courseSessions = allSessions.filter(
+    (s) => s.course_id === course.id || s.course_title.toLowerCase().includes(course.title.toLowerCase())
+  );
+
+  const allAssignments = bdcStore.getAssignments();
+  const courseAssignments = allAssignments.filter(
+    (a) => a.course_id === course.id || a.course_title.toLowerCase().includes(course.title.toLowerCase())
+  );
+
+  const userSubmissions = user ? bdcStore.getSubmissionsByUser(user.id) : [];
 
   return (
     <div className="space-y-6">
@@ -103,11 +113,13 @@ export default async function CourseDetailPage({
         </div>
       </div>
 
-      {/* Interactive Syllabus Checklist */}
-      <SyllabusChecklist
-        courseId={course.id}
-        syllabus={course.syllabus}
+      {/* 4 Interactive Course Tabs (Silabus, Presensi, Tugas, Link Meet) */}
+      <CourseTabs
+        course={course}
         initialCompletedTopics={initialCompletedTopics}
+        courseSessions={courseSessions}
+        courseAssignments={courseAssignments}
+        userSubmissions={userSubmissions}
       />
     </div>
   );

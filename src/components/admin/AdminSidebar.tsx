@@ -13,6 +13,8 @@ import {
   Menu,
   X,
   Shield,
+  QrCode,
+  FolderGit2,
 } from "lucide-react";
 
 export function AdminSidebar() {
@@ -24,6 +26,16 @@ export function AdminSidebar() {
       name: "Ringkasan Analitik",
       href: "/admin",
       icon: LayoutDashboard,
+    },
+    {
+      name: "Sesi Pertemuan & QR",
+      href: "/admin/sessions",
+      icon: QrCode,
+    },
+    {
+      name: "Penilaian Tugas",
+      href: "/admin/assignments",
+      icon: FolderGit2,
     },
     {
       name: "Manajemen Mahasiswa",

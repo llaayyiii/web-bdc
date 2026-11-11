@@ -7,6 +7,9 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   BookOpen,
+  QrCode,
+  Trophy,
+  FolderGit2,
   FileQuestion,
   Award,
   Settings,
@@ -37,6 +40,24 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
       href: "/courses",
       icon: BookOpen,
       description: "5 Modul Komunitas BDC",
+    },
+    {
+      name: "Presensi Barcode",
+      href: "/attendance",
+      icon: QrCode,
+      description: "Scan QR & Kehadiran Sesi",
+    },
+    {
+      name: "Papan Peringkat",
+      href: "/leaderboard",
+      icon: Trophy,
+      description: "Rank Kehadiran & Kontribusi",
+    },
+    {
+      name: "Tugas & Proyek",
+      href: "/assignments",
+      icon: FolderGit2,
+      description: "Pengumpulan Proyek & Kasus",
     },
     {
       name: "Ujian & Kuis",

@@ -14,6 +14,10 @@ export interface Profile {
   score: number;
   completed_modules: number;
   total_hours: number;
+  points: number; // XP Leaderboard
+  attendance_rate: number; // Persentase Kehadiran (0-100)
+  total_attendances: number;
+  total_sessions: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -57,7 +61,7 @@ export interface QuizQuestion {
   quiz_id: string;
   question_text: string;
   options: QuizOption[];
-  correct_option?: string; // Optional on client side for security
+  correct_option?: string;
   explanation?: string | null;
   weight: number;
   order_index: number;
@@ -131,4 +135,58 @@ export interface Certificate {
 
   created_at?: string;
   updated_at?: string;
+}
+
+// 1. MEET SESSION (Live Google Meet / Zoom Links)
+export interface MeetSession {
+  id: string;
+  course_id: string;
+  course_title: string;
+  title: string;
+  instructor: string;
+  meet_url: string;
+  qr_token: string; // Token kode QR aktif
+  scheduled_at: string;
+  expires_at: string;
+  status: "scheduled" | "live" | "completed";
+}
+
+// 2. ATTENDANCE RECORD (Catatan Presensi Barcode)
+export interface AttendanceRecord {
+  id: string;
+  session_id: string;
+  session_title: string;
+  user_id: string;
+  user_name: string;
+  nim_id: string;
+  scanned_at: string;
+  method: "qr_scanner" | "token_code";
+  points_earned: number;
+}
+
+// 3. ASSIGNMENT (Tugas Proyek & Studi Kasus)
+export interface Assignment {
+  id: string;
+  course_id: string;
+  course_title: string;
+  title: string;
+  description: string;
+  deadline: string;
+  max_score: number;
+  submission_format: "github_or_drive" | "url" | "document";
+}
+
+// 4. ASSIGNMENT SUBMISSION (Pengumpulan & Penilaian Tugas)
+export interface AssignmentSubmission {
+  id: string;
+  assignment_id: string;
+  user_id: string;
+  user_name: string;
+  nim_id: string;
+  submission_url: string;
+  notes: string;
+  submitted_at: string;
+  score: number | null;
+  feedback: string | null;
+  status: "pending" | "graded" | "late";
 }

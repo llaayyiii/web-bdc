@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { LiveMeetBanner } from "@/components/layout/LiveMeetBanner";
 import {
   Clock,
   BookCheck,
@@ -13,6 +14,9 @@ import {
   FileText,
   Star,
   Users,
+  QrCode,
+  Trophy,
+  FolderGit2,
 } from "lucide-react";
 
 export default async function DashboardPage() {
@@ -20,11 +24,15 @@ export default async function DashboardPage() {
   const courses = bdcStore.getCourses();
   const certificate = user ? bdcStore.getCertificateByUserId(user.id) : null;
   const enrollments = user ? bdcStore.getEnrollments(user.id) : [];
+  const liveSession = bdcStore.getLiveSession();
 
   const completedCount = enrollments.filter((e) => e.is_completed).length;
 
   return (
     <div className="space-y-6">
+      {/* Live Meet Island Banner (Feature 6) */}
+      <LiveMeetBanner session={liveSession} />
+
       {/* Welcome Banner */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-bdc-midnight via-bdc-navy to-bdc-blue text-white p-6 sm:p-8 shadow-xl border border-bdc-navy">
         <div className="absolute -right-10 -bottom-10 w-60 h-60 rounded-full bg-white/5 blur-2xl pointer-events-none" />
@@ -123,6 +131,87 @@ export default async function DashboardPage() {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* 3 Quick Navigation Panels for the 6 Core Features */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Presensi Barcode Card */}
+        <Link
+          href="/attendance"
+          className="p-5 rounded-2xl bg-white border border-slate-200/80 hover:border-bdc-blue shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between">
+            <div className="w-10 h-10 rounded-xl bg-bdc-navy text-bdc-yellow flex items-center justify-center">
+              <QrCode className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+              {user?.attendance_rate || 0}% Presensi
+            </span>
+          </div>
+          <div className="mt-3">
+            <h3 className="text-sm font-bold text-bdc-midnight group-hover:text-bdc-blue transition-colors">
+              Presensi Barcode Kuliah
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Scan barcode proyektor kelas atau masukkan token untuk menambah poin keaktifan.
+            </p>
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-bdc-blue">
+            <span>Buka Pemindai &rarr;</span>
+          </div>
+        </Link>
+
+        {/* Peringkat Kehadiran Card */}
+        <Link
+          href="/leaderboard"
+          className="p-5 rounded-2xl bg-white border border-slate-200/80 hover:border-bdc-gold shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-bdc-gold flex items-center justify-center border border-amber-200">
+              <Trophy className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-mono font-bold text-bdc-navy bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+              {user?.points || 0} XP
+            </span>
+          </div>
+          <div className="mt-3">
+            <h3 className="text-sm font-bold text-bdc-midnight group-hover:text-bdc-gold transition-colors">
+              Papan Peringkat Mahasiswa
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Lihat posisi podium juara berdasarkan tingkat kehadiran dan kontribusi komunitas.
+            </p>
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-700">
+            <span>Lihat Klasemen &rarr;</span>
+          </div>
+        </Link>
+
+        {/* Tugas Proyek Card */}
+        <Link
+          href="/assignments"
+          className="p-5 rounded-2xl bg-white border border-slate-200/80 hover:border-bdc-navy shadow-sm hover:shadow-md transition-all group flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between">
+            <div className="w-10 h-10 rounded-xl bg-blue-50 text-bdc-blue flex items-center justify-center border border-blue-200">
+              <FolderGit2 className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-mono font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
+              Studi Kasus
+            </span>
+          </div>
+          <div className="mt-3">
+            <h3 className="text-sm font-bold text-bdc-midnight group-hover:text-bdc-navy transition-colors">
+              Penugasan &amp; Portofolio Proyek
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Kirim tautan GitHub &amp; Drive untuk dievaluasi oleh kurator akademik BDC.
+            </p>
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-bdc-navy">
+            <span>Kelola Tugas &rarr;</span>
+          </div>
+        </Link>
       </div>
 
       {/* Grid: Capstone Project & Modul Berjalan */}

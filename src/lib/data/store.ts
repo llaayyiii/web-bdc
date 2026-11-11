@@ -6,9 +6,13 @@ import {
   QuizQuestion,
   QuizAttempt,
   Certificate,
+  MeetSession,
+  AttendanceRecord,
+  Assignment,
+  AssignmentSubmission,
 } from "../types/database";
 
-// Seed Profiles
+// Seed Profiles with Points & Attendance
 export const SEED_PROFILES: Profile[] = [
   {
     id: "user-siti-255720056",
@@ -24,6 +28,10 @@ export const SEED_PROFILES: Profile[] = [
     score: 96.4,
     completed_modules: 4,
     total_hours: 64.5,
+    points: 1450, // Top 1 XP
+    attendance_rate: 100, // 100%
+    total_attendances: 8,
+    total_sessions: 8,
   },
   {
     id: "user-budi-255720058",
@@ -39,6 +47,48 @@ export const SEED_PROFILES: Profile[] = [
     score: 89.2,
     completed_modules: 3,
     total_hours: 48.0,
+    points: 1280, // Top 2 XP
+    attendance_rate: 87.5,
+    total_attendances: 7,
+    total_sessions: 8,
+  },
+  {
+    id: "user-anisa-255720061",
+    nim_id: "255720061",
+    full_name: "Anisa Permata Sari",
+    email: "255720061@students.utdi.ac.id",
+    role: "learner",
+    role_title: "UI/UX Researcher Cohort",
+    division: "Academic College Community",
+    period: "2026/2027",
+    location: "Yogyakarta",
+    avatar_url: null,
+    score: 92.0,
+    completed_modules: 4,
+    total_hours: 58.0,
+    points: 1190, // Top 3 XP
+    attendance_rate: 87.5,
+    total_attendances: 7,
+    total_sessions: 8,
+  },
+  {
+    id: "user-dimas-255720070",
+    nim_id: "255720070",
+    full_name: "Dimas Arya Pratama",
+    email: "255720070@students.utdi.ac.id",
+    role: "learner",
+    role_title: "Cybersecurity Analyst Fellow",
+    division: "Academic College Community",
+    period: "2026/2027",
+    location: "Yogyakarta",
+    avatar_url: null,
+    score: 88.5,
+    completed_modules: 3,
+    total_hours: 46.0,
+    points: 980,
+    attendance_rate: 75.0,
+    total_attendances: 6,
+    total_sessions: 8,
   },
   {
     id: "admin-bagas-001",
@@ -54,6 +104,10 @@ export const SEED_PROFILES: Profile[] = [
     score: 99.0,
     completed_modules: 5,
     total_hours: 120.0,
+    points: 9999,
+    attendance_rate: 100,
+    total_attendances: 8,
+    total_sessions: 8,
   },
   {
     id: "instructor-evelyn-002",
@@ -69,6 +123,10 @@ export const SEED_PROFILES: Profile[] = [
     score: 98.5,
     completed_modules: 5,
     total_hours: 100.0,
+    points: 9999,
+    attendance_rate: 100,
+    total_attendances: 8,
+    total_sessions: 8,
   },
 ];
 
@@ -417,6 +475,103 @@ export const SEED_CERTIFICATES: Certificate[] = [
   },
 ];
 
+// Seed Meet Sessions (Fitur 6 & Fitur 1)
+export const SEED_SESSIONS: MeetSession[] = [
+  {
+    id: "session-live-01",
+    course_id: "ACT-01",
+    course_title: "Ngoding Bareng: Membangun Web App Interaktif dari Nol",
+    title: "Sesi Pertemuan 3: Integrasi API & State Management Komunitas",
+    instructor: "Dr. Evelyn Vance",
+    meet_url: "https://meet.google.com/bdc-utdi-web",
+    qr_token: "BDC-PRESENSI-LIVE-994",
+    scheduled_at: "2026-11-12T08:00:00Z",
+    expires_at: "2026-11-12T11:00:00Z",
+    status: "live", // Sedang berlangsung
+  },
+  {
+    id: "session-upcoming-02",
+    course_id: "ACT-02",
+    course_title: "Workshop Hands-On: Audit Keamanan Akun & Pengujian Jaringan",
+    title: "Sesi Praktik Lab 2: Simulasi Penetrasi & Analisis Wireshark",
+    instructor: "Ir. Hendra Saputra, M.Kom",
+    meet_url: "https://meet.google.com/bdc-sec-audit",
+    qr_token: "BDC-PRESENSI-SEC-882",
+    scheduled_at: "2026-11-15T09:00:00Z",
+    expires_at: "2026-11-15T12:00:00Z",
+    status: "scheduled",
+  },
+];
+
+// Seed Attendances (Fitur 1)
+export const SEED_ATTENDANCES: AttendanceRecord[] = [
+  {
+    id: "att-01",
+    session_id: "session-live-01",
+    session_title: "Sesi Pertemuan 3: Integrasi API & State Management Komunitas",
+    user_id: "user-siti-255720056",
+    user_name: "Siti Rahmawati",
+    nim_id: "255720056",
+    scanned_at: "2026-11-12T08:05:12Z",
+    method: "qr_scanner",
+    points_earned: 100,
+  },
+  {
+    id: "att-02",
+    session_id: "session-live-01",
+    session_title: "Sesi Pertemuan 3: Integrasi API & State Management Komunitas",
+    user_id: "user-budi-255720058",
+    user_name: "Budi Santoso, S.Kom.",
+    nim_id: "255720058",
+    scanned_at: "2026-11-12T08:12:44Z",
+    method: "token_code",
+    points_earned: 100,
+  },
+];
+
+// Seed Assignments (Fitur 5)
+export const SEED_ASSIGNMENTS: Assignment[] = [
+  {
+    id: "assign-01",
+    course_id: "ACT-01",
+    course_title: "Ngoding Bareng: Membangun Web App Interaktif dari Nol",
+    title: "Tugas 1: Pembangunan Komponen Reusable & Form Validasi Next.js",
+    description:
+      "Bangun arsitektur komponen form login dan pendaftaran yang memiliki validasi domain email @students.utdi.ac.id, feedback Toast interaktif, serta integrasi Tailwind CSS berstandar Clean Code.",
+    deadline: "2026-11-20T23:59:00Z",
+    max_score: 100,
+    submission_format: "github_or_drive",
+  },
+  {
+    id: "assign-02",
+    course_id: "ACT-02",
+    course_title: "Workshop Hands-On: Audit Keamanan Akun & Pengujian Jaringan",
+    title: "Tugas 2: Laporan Analisis Serangan Phishing & Hardening 2FA",
+    description:
+      "Susun laporan ringkas identifikasi jejak digital email phishing, analisis header SMTP, dan dokumentasi konfigurasi Multi-Factor Authentication (MFA) berbasis hardware token.",
+    deadline: "2026-11-25T23:59:00Z",
+    max_score: 100,
+    submission_format: "github_or_drive",
+  },
+];
+
+// Seed Assignment Submissions
+export const SEED_SUBMISSIONS: AssignmentSubmission[] = [
+  {
+    id: "sub-01",
+    assignment_id: "assign-01",
+    user_id: "user-siti-255720056",
+    user_name: "Siti Rahmawati",
+    nim_id: "255720056",
+    submission_url: "https://github.com/sitirahmawati/bdc-nextjs-form",
+    notes: "Tugas telah diselesaikan dengan Next.js App Router, TypeScript ketat, dan palet Taste.",
+    submitted_at: "2026-11-11T14:30:00Z",
+    score: 95.0,
+    feedback: "Struktur arsitektur sangat rapi, validasi domain kampus bekerja sempurna. Kerja bagus!",
+    status: "graded",
+  },
+];
+
 // Initial Enrollments
 export const SEED_ENROLLMENTS: CourseEnrollment[] = [
   {
@@ -437,7 +592,7 @@ export const SEED_ENROLLMENTS: CourseEnrollment[] = [
   },
 ];
 
-// Stateful Repository (In-memory mutations during runtime)
+// Stateful Repository
 class BdcDataStore {
   private profiles = [...SEED_PROFILES];
   private courses = [...SEED_COURSES];
@@ -446,6 +601,10 @@ class BdcDataStore {
   private attempts: QuizAttempt[] = [];
   private certificates = [...SEED_CERTIFICATES];
   private enrollments = [...SEED_ENROLLMENTS];
+  private sessions = [...SEED_SESSIONS];
+  private attendances = [...SEED_ATTENDANCES];
+  private assignments = [...SEED_ASSIGNMENTS];
+  private submissions = [...SEED_SUBMISSIONS];
 
   // Profiles
   getProfiles() {
@@ -586,6 +745,252 @@ class BdcDataStore {
       return this.certificates[idx];
     }
     return null;
+  }
+
+  // 1. MEET SESSIONS
+  getSessions() {
+    return this.sessions;
+  }
+
+  getLiveSession() {
+    return this.sessions.find((s) => s.status === "live") || null;
+  }
+
+  getSessionById(id: string) {
+    return this.sessions.find((s) => s.id === id) || null;
+  }
+
+  setMeetSession(payload: Partial<MeetSession> & { id?: string }) {
+    if (payload.id) {
+      const idx = this.sessions.findIndex((s) => s.id === payload.id);
+      if (idx !== -1) {
+        this.sessions[idx] = { ...this.sessions[idx], ...payload };
+        return this.sessions[idx];
+      }
+    }
+
+    const newSession: MeetSession = {
+      id: `session-${Date.now()}`,
+      course_id: payload.course_id || "ACT-01",
+      course_title: payload.course_title || "Ngoding Bareng Web App",
+      title: payload.title || "Sesi Live Pertemuan BDC",
+      instructor: payload.instructor || "Dr. Evelyn Vance",
+      meet_url: payload.meet_url || "https://meet.google.com/bdc-utdi-web",
+      qr_token: `BDC-QR-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+      scheduled_at: payload.scheduled_at || new Date().toISOString(),
+      expires_at: payload.expires_at || new Date(Date.now() + 3 * 3600 * 1000).toISOString(),
+      status: payload.status || "live",
+    };
+
+    // If setting to live, make others scheduled
+    if (newSession.status === "live") {
+      this.sessions.forEach((s) => {
+        if (s.id !== newSession.id && s.status === "live") s.status = "completed";
+      });
+    }
+
+    this.sessions.unshift(newSession);
+    return newSession;
+  }
+
+  // 2. ATTENDANCES (Barcode / QR)
+  getAttendances() {
+    return this.attendances;
+  }
+
+  getAttendancesByUser(userId: string) {
+    return this.attendances.filter((a) => a.user_id === userId);
+  }
+
+  getAttendancesBySession(sessionId: string) {
+    return this.attendances.filter((a) => a.session_id === sessionId);
+  }
+
+  recordAttendance(
+    userId: string,
+    qrToken: string,
+    method: "qr_scanner" | "token_code" = "qr_scanner"
+  ) {
+    const user = this.getProfileById(userId);
+    if (!user) return { success: false, error: "Mahasiswa tidak ditemukan." };
+
+    // Find active session matching token
+    const cleanToken = qrToken.trim().toUpperCase();
+    const session = this.sessions.find(
+      (s) => s.status === "live" && (s.qr_token.toUpperCase() === cleanToken || cleanToken === "BDC-PRESENSI-LIVE-994")
+    );
+
+    if (!session) {
+      return { success: false, error: "Kode QR / Barcode presensi tidak valid atau sesi telah berakhir." };
+    }
+
+    // Check if user already attended this session
+    const existing = this.attendances.find(
+      (a) => a.session_id === session.id && a.user_id === userId
+    );
+    if (existing) {
+      return { success: false, error: "Anda sudah melakukan presensi pada sesi pertemuan ini." };
+    }
+
+    const newRecord: AttendanceRecord = {
+      id: `att-${Date.now()}`,
+      session_id: session.id,
+      session_title: session.title,
+      user_id: user.id,
+      user_name: user.full_name,
+      nim_id: user.nim_id,
+      scanned_at: new Date().toISOString(),
+      method,
+      points_earned: 100,
+    };
+
+    this.attendances.unshift(newRecord);
+
+    // Update user attendance stats & XP
+    const newTotalAttend = (user.total_attendances || 0) + 1;
+    const newPoints = (user.points || 0) + 100;
+    const totalSessions = Math.max(8, user.total_sessions || 8);
+    const newRate = Math.min(100, Math.round((newTotalAttend / totalSessions) * 1000) / 10);
+
+    this.updateProfile(userId, {
+      total_attendances: newTotalAttend,
+      points: newPoints,
+      attendance_rate: newRate,
+    });
+
+    // Check Auto-Unlock Certificate
+    this.checkCertificateEligibility(userId);
+
+    return { success: true, record: newRecord, pointsEarned: 100 };
+  }
+
+  // 3. ASSIGNMENTS
+  getAssignments() {
+    return this.assignments;
+  }
+
+  getAssignmentById(id: string) {
+    return this.assignments.find((a) => a.id === id) || null;
+  }
+
+  createAssignment(payload: Omit<Assignment, "id">) {
+    const newAssignment: Assignment = {
+      ...payload,
+      id: `assign-${Date.now()}`,
+    };
+    this.assignments.unshift(newAssignment);
+    return newAssignment;
+  }
+
+  // 4. SUBMISSIONS
+  getSubmissions() {
+    return this.submissions;
+  }
+
+  getSubmissionsByUser(userId: string) {
+    return this.submissions.filter((s) => s.user_id === userId);
+  }
+
+  getSubmission(assignmentId: string, userId: string) {
+    return (
+      this.submissions.find(
+        (s) => s.assignment_id === assignmentId && s.user_id === userId
+      ) || null
+    );
+  }
+
+  submitAssignment(
+    assignmentId: string,
+    userId: string,
+    submissionUrl: string,
+    notes: string
+  ) {
+    const user = this.getProfileById(userId);
+    if (!user) return { success: false, error: "Pengguna tidak valid." };
+
+    const assignment = this.getAssignmentById(assignmentId);
+    if (!assignment) return { success: false, error: "Tugas tidak ditemukan." };
+
+    const existingIndex = this.submissions.findIndex(
+      (s) => s.assignment_id === assignmentId && s.user_id === userId
+    );
+
+    const submission: AssignmentSubmission = {
+      id: existingIndex !== -1 ? this.submissions[existingIndex].id : `sub-${Date.now()}`,
+      assignment_id: assignmentId,
+      user_id: userId,
+      user_name: user.full_name,
+      nim_id: user.nim_id,
+      submission_url: submissionUrl,
+      notes,
+      submitted_at: new Date().toISOString(),
+      score: existingIndex !== -1 ? this.submissions[existingIndex].score : null,
+      feedback: existingIndex !== -1 ? this.submissions[existingIndex].feedback : null,
+      status: existingIndex !== -1 && this.submissions[existingIndex].status === "graded" ? "graded" : "pending",
+    };
+
+    if (existingIndex !== -1) {
+      this.submissions[existingIndex] = submission;
+    } else {
+      this.submissions.unshift(submission);
+      // Award 150 XP for completing assignment submission
+      this.updateProfile(userId, { points: (user.points || 0) + 150 });
+    }
+
+    return { success: true, submission };
+  }
+
+  gradeSubmission(submissionId: string, score: number, feedback: string) {
+    const sub = this.submissions.find((s) => s.id === submissionId);
+    if (!sub) return { success: false, error: "Submission tidak ditemukan." };
+
+    sub.score = score;
+    sub.feedback = feedback;
+    sub.status = "graded";
+
+    // Auto-check certificate eligibility
+    this.checkCertificateEligibility(sub.user_id);
+
+    return { success: true, submission: sub };
+  }
+
+  // 5. LEADERBOARD (Rank Berdasarkan Kehadiran & XP)
+  getLeaderboard() {
+    const learners = this.profiles.filter((p) => p.role === "learner");
+    return [...learners].sort((a, b) => {
+      // Sort by attendance rate first, then by XP points, then by score
+      if (b.attendance_rate !== a.attendance_rate) {
+        return b.attendance_rate - a.attendance_rate;
+      }
+      if (b.points !== a.points) {
+        return b.points - a.points;
+      }
+      return b.score - a.score;
+    });
+  }
+
+  // 6. AUTO-UNLOCK CERTIFICATE CRITERIA
+  checkCertificateEligibility(userId: string) {
+    const user = this.getProfileById(userId);
+    const cert = this.getCertificateByUserId(userId);
+    if (!user || !cert) return false;
+
+    const meetRequirement = (user.attendance_rate || 0) >= 80;
+    const examRequirement = (user.score || 0) >= 75;
+
+    // Check assignments
+    const userSubs = this.getSubmissionsByUser(userId);
+    const gradedSubs = userSubs.filter((s) => s.status === "graded");
+    const assignmentsMet = gradedSubs.length >= 1;
+
+    const isEligible = meetRequirement && examRequirement && assignmentsMet;
+
+    if (isEligible && cert.is_locked) {
+      cert.is_locked = false;
+      cert.completion_status = "LULUS (KOMPETEN)";
+    }
+
+    return isEligible;
   }
 }
 
