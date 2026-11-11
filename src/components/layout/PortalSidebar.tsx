@@ -37,10 +37,10 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
       description: "Ringkasan Akademik & Capstone",
     },
     {
-      name: "Materi & Silabus",
-      href: "/courses",
-      icon: BookOpen,
-      description: "5 Modul Komunitas BDC",
+      name: "Papan Skor & Rank",
+      href: "/leaderboard",
+      icon: Trophy,
+      description: "Rank Kehadiran & Kontribusi",
     },
     {
       name: "Presensi Barcode",
@@ -49,10 +49,10 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
       description: "Scan QR & Kehadiran Sesi",
     },
     {
-      name: "Papan Peringkat",
-      href: "/leaderboard",
-      icon: Trophy,
-      description: "Rank Kehadiran & Kontribusi",
+      name: "Materi & Silabus",
+      href: "/courses",
+      icon: BookOpen,
+      description: "5 Modul Komunitas BDC",
     },
     {
       name: "Tugas & Proyek",
@@ -83,19 +83,26 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
   return (
     <>
       {/* Mobile Topbar Toggle */}
-      <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-bdc-midnight text-white border-b border-bdc-navy sticky top-0 z-40">
+      <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-[#f4f3ea] text-bdc-midnight border-b border-slate-300 sticky top-0 z-40 shadow-sm">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-bdc-navy flex items-center justify-center p-1.5 border border-slate-700">
+          <div className="w-8 h-8 rounded-lg bg-bdc-midnight flex items-center justify-center p-1.5 border border-slate-800 shadow-retro-sm">
             <Image src="/logo.svg" alt="BDC Logo" width={20} height={20} className="w-5 h-5 object-contain" />
           </div>
           <div>
-            <span className="font-extrabold text-sm tracking-tight text-white">BDC Portal</span>
-            <span className="text-[10px] text-bdc-yellow block leading-none font-medium">UTDI Yogyakarta</span>
+            <div className="flex items-center gap-1.5">
+              <span className="font-space font-extrabold text-sm tracking-tight text-bdc-midnight">
+                BDC Portal
+              </span>
+              <BdcDots size="sm" />
+            </div>
+            <span className="font-mono text-[10px] text-slate-500 block leading-none font-medium">
+              UTDI Yogyakarta
+            </span>
           </div>
         </div>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="p-2 rounded-lg bg-bdc-navy text-slate-200 hover:text-white"
+          className="p-2 rounded-xl bg-white text-bdc-midnight border border-slate-300 hover:bg-slate-100 shadow-retro-sm"
         >
           {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
@@ -105,45 +112,47 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-bdc-midnight/70 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-bdc-midnight/60 backdrop-blur-sm z-40 lg:hidden"
         />
       )}
 
-      {/* Main Sidebar Shell */}
+      {/* Main Sidebar Shell (Styled like GDGoC IPB dash-sidebar) */}
       <aside
-        className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-64 bg-bdc-midnight text-slate-300 flex flex-col border-r border-bdc-navy shadow-xl transition-transform duration-200 ease-in-out ${
+        className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-68 bg-[#f4f3ea] text-bdc-midnight flex flex-col border-r border-[#d9dfd7] shadow-sm transition-transform duration-200 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
         {/* Brand Area */}
-        <div className="p-5 border-b border-bdc-navy/80">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-bdc-navy flex items-center justify-center p-2 border border-slate-700 shadow-inner">
+        <div className="p-5 border-b border-[#d9dfd7] bg-[#f4f3ea]">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-bdc-midnight flex items-center justify-center p-2 border border-slate-700 shadow-retro-sm group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
               <Image src="/logo.svg" alt="BDC Logo" width={24} height={24} className="w-6 h-6 object-contain" />
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base tracking-tight text-white">Business Dev Club</span>
+                <span className="font-space font-extrabold text-sm tracking-tight text-bdc-midnight">
+                  Business Dev Club
+                </span>
                 <BdcDots size="sm" />
               </div>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] uppercase font-bold text-bdc-midnight bg-bdc-yellow px-1.5 py-0.2 rounded font-mono">
+                <span className="text-[10px] uppercase font-bold text-bdc-midnight bg-bdc-yellow px-1.5 py-0.2 rounded font-mono border border-slate-800">
                   UTDI
                 </span>
-                <span className="text-[10px] text-slate-400 font-medium">Student Chapter</span>
+                <span className="text-[10px] text-slate-500 font-mono font-medium">Student Chapter</span>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Navigation Items */}
         <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-          <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="px-3 py-2 text-[10px] font-mono font-bold uppercase tracking-widest text-[#6b7880]">
             Menu Pembelajaran
           </div>
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(`${item.href}/`));
             return (
               <Link
                 key={item.href}
@@ -151,18 +160,22 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
                 onClick={() => setIsOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group ${
                   isActive
-                    ? "bg-bdc-navy text-white font-bold shadow-md shadow-bdc-navy/40 border border-bdc-blue/40"
-                    : "text-slate-300 hover:bg-bdc-navy/50 hover:text-white"
+                    ? "bg-bdc-blue text-white font-bold shadow-retro border border-bdc-midnight"
+                    : "text-slate-700 hover:bg-[#eae9dc] hover:text-bdc-midnight"
                 }`}
               >
                 <Icon
-                  className={`w-5 h-5 shrink-0 transition-colors ${
-                    isActive ? "text-bdc-yellow" : "text-slate-400 group-hover:text-bdc-blue"
+                  className={`w-4 h-4 shrink-0 transition-colors ${
+                    isActive ? "text-bdc-yellow" : "text-slate-500 group-hover:text-bdc-blue"
                   }`}
                 />
                 <div className="flex flex-col min-w-0">
                   <span className="text-xs truncate">{item.name}</span>
-                  <span className="text-[10px] font-normal text-slate-400 truncate">
+                  <span
+                    className={`text-[10px] font-normal truncate ${
+                      isActive ? "text-blue-100" : "text-slate-500"
+                    }`}
+                  >
                     {item.description}
                   </span>
                 </div>
@@ -172,30 +185,37 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
 
           {/* Admin shortcut if user is instructor or admin */}
           {(userRole === "admin" || userRole === "instructor") && (
-            <div className="pt-4 mt-3 border-t border-bdc-navy">
-              <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-bdc-yellow">
+            <div className="pt-4 mt-3 border-t border-[#d9dfd7]">
+              <div className="px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-[#6b7880]">
                 Panel Pengelola
               </div>
               <Link
                 href="/admin"
-                className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-bdc-blue/20 hover:bg-bdc-blue/30 text-bdc-yellow border border-bdc-blue/30 text-xs font-bold transition-all"
+                className="flex items-center justify-between px-3 py-2 rounded-xl bg-white hover:bg-slate-50 text-bdc-midnight border border-slate-300 text-xs font-bold transition-all shadow-retro-sm"
               >
-                <span>Buka Dasbor Admin</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <span className="font-space">Dasbor Kurator Admin</span>
+                <ExternalLink className="w-3.5 h-3.5 text-bdc-blue" />
               </Link>
             </div>
           )}
         </nav>
 
-        {/* User Mini Card on Bottom */}
-        <div className="p-3 border-t border-bdc-navy/80 bg-bdc-midnight/50">
-          <div className="p-2.5 rounded-xl bg-bdc-navy/60 border border-slate-700/60 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-bdc-blue text-white font-bold text-xs flex items-center justify-center shrink-0">
+        {/* User Mini Card on Bottom (Styled like GDGoC IPB dash-account) */}
+        <div className="p-3 border-t border-[#d9dfd7] bg-[#f4f3ea]">
+          <div className="p-2.5 rounded-xl bg-white border border-[#d5dcd0] flex items-center gap-3 shadow-sm">
+            <div className="w-9 h-9 font-pixel bg-[#e6eddc] border border-[#c9d7bc] text-bdc-midnight font-bold text-sm flex items-center justify-center shrink-0 shadow-retro-sm">
               {userName ? userName.charAt(0).toUpperCase() : "S"}
             </div>
             <div className="flex flex-col min-w-0 flex-1">
-              <span className="text-xs font-bold text-white truncate">{userName || "Siti Rahmawati"}</span>
-              <span className="text-[10px] text-bdc-yellow truncate font-mono">NIM: {userNim || "255720056"}</span>
+              <span className="text-xs font-bold text-bdc-midnight truncate leading-tight">
+                {userName || "Siti Rahmawati"}
+              </span>
+              <span className="text-[10px] text-slate-500 truncate font-mono">
+                NIM: {userNim || "255720056"}
+              </span>
+              <span className="inline-block mt-0.5 text-[9px] font-mono font-bold text-bdc-blue bg-blue-50 border border-blue-200 px-1 rounded w-fit">
+                {userRole === "admin" ? "Curator Admin" : "Active Learner"}
+              </span>
             </div>
           </div>
         </div>
