@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
 import { BdcDots } from "@/components/ui/BdcDots";
+import { UtdiCampusInteractiveScene } from "@/components/hero/UtdiCampusInteractiveScene";
 import {
   ArrowRight,
   QrCode,
@@ -141,42 +142,16 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* 3. HERO SECTION (Identical structure and 3D voxel campus environment background to GDGoC IPB) */}
+      {/* 3. HERO SECTION (Interactive 3D Voxel Campus Environment with Circling Birds & Blinking Dino) */}
       <section
         className="relative overflow-hidden isolate bg-[#EFF0F0] border-b border-slate-300 min-h-[720px] md:min-h-[800px] lg:min-h-[860px] flex flex-col justify-between"
         id="hero"
         aria-labelledby="hero-heading"
       >
-        {/* Layer 1: 3D Voxel Campus Environment Art Background */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-          <Image
-            src="/environments/utdi-campus-lego.webp"
-            alt="Environment 3D Kampus UTDI Yogyakarta Bergaya Lego Voxel"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-bottom md:object-right-bottom opacity-90 transition-opacity duration-700"
-          />
+        {/* Interactive 3D Lego Campus Scene: Circling Birds, Blinking Dino, Mouse Parallax & Floating Clouds */}
+        <UtdiCampusInteractiveScene />
 
-          {/* Floating Pixel Clouds */}
-          <div className="absolute top-12 left-10 md:left-24 opacity-80 animate-float-cloud pointer-events-none">
-            <Image src="/cards/cloud.svg" alt="Pixel Cloud" width={80} height={20} className="w-16 md:w-24 h-auto pixelated" />
-          </div>
-          <div className="absolute top-28 right-12 md:right-40 opacity-70 animate-float-cloud-delayed pointer-events-none">
-            <Image src="/cards/cloud.svg" alt="Pixel Cloud" width={90} height={22} className="w-20 md:w-28 h-auto pixelated" />
-          </div>
-
-          {/* Subtle Dot Matrix Layer */}
-          <div className="absolute inset-0 bg-voxel-grid opacity-35" />
-        </div>
-
-        {/* Layer 2: Top Gradient Wash (Soft fade into paper canvas) */}
-        <div className="absolute inset-x-0 top-0 h-44 hero-wash z-[1] pointer-events-none" />
-
-        {/* Layer 3: Bottom Gradient Wash (Soft blend to next section) */}
-        <div className="absolute inset-x-0 bottom-0 h-28 hero-bottom-wash z-[1] pointer-events-none" />
-
-        {/* Layer 4: Hero Content Container (Clean copy showcasing 3D voxel background) */}
+        {/* Hero Content Container (Clean copy showcasing 3D voxel background) */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-16 pb-20 w-full my-auto">
           <div className="max-w-2xl xl:max-w-3xl space-y-6">
             {/* Eyebrow Pill */}
