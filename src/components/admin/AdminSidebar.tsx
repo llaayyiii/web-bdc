@@ -16,20 +16,41 @@ import {
   FolderGit2,
   Eye,
   EyeOff,
+  PanelLeftClose,
+  PanelLeftOpen,
+  LogOut,
 } from "lucide-react";
+import { logoutAction } from "@/lib/actions/auth";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [showEmail, setShowEmail] = useState(true);
+  const [isHidden, setIsHidden] = useState(false);
 
   // Pulihkan preferensi tampil/sembunyi email (disimpan di browser)
   useEffect(() => {
     if (localStorage.getItem("bdc_admin_hide_email") === "1") {
       setShowEmail(false);
     }
+    if (localStorage.getItem("bdc_admin_sidebar_hide") === "1") {
+      setIsHidden(true);
+    }
   }, []);
+
+  const toggleHidden = () => {
+    setIsHidden((prev) => {
+      const next = !prev;
+      localStorage.setItem("bdc_admin_sidebar_hide", next ? "1" : "0");
+      return next;
+    });
+  };
+
+  const showSidebar = () => {
+    setIsHidden(false);
+    localStorage.setItem("bdc_admin_sidebar_hide", "0");
+  };
 
   const toggleEmail = () => {
     setShowEmail((prev) => {
@@ -90,7 +111,10 @@ export function AdminSidebar() {
           <BdcDots size="sm" />
         </div>
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            if (isHidden) showSidebar();
+            setIsOpen(!isOpen);
+          }}
           className="retro-btn p-1.5 rounded-xl bg-white border border-[#d9dfd7] text-bdc-midnight shadow-retro-sm"
         >
           {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -99,8 +123,10 @@ export function AdminSidebar() {
 
       {/* Main Sidebar */}
       <aside
-        className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-64 bg-[#f4f3ea] text-slate-700 flex flex-col border-r border-[#d9dfd7] transition-transform duration-200 font-sans ${
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        className={`top-0 left-0 z-50 h-screen w-64 bg-[#f4f3ea] text-slate-700 flex flex-col border-r border-[#d9dfd7] transition-transform duration-200 font-sans ${
+          isHidden
+            ? "fixed -translate-x-full"
+            : `fixed lg:sticky ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`
         }`}
       >
         {/* Brand */}
@@ -129,7 +155,18 @@ export function AdminSidebar() {
             <span className="font-mono text-[10px] text-bdc-blue font-bold tracking-wider">
               [ ADMIN CONSOLE ]
             </span>
-            <BdcDots size="sm" />
+            <div className="flex items-center gap-1.5">
+              <BdcDots size="sm" />
+              <button
+                type="button"
+                onClick={toggleHidden}
+                aria-label="Sembunyikan menu navigasi"
+                title="Sembunyikan menu"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-bdc-midnight hover:bg-[#eae9dc] border border-transparent hover:border-[#d9dfd7] transition-colors"
+              >
+                <PanelLeftClose className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -197,9 +234,32 @@ export function AdminSidebar() {
             >
               {showEmail ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
             </button>
+            <form action={logoutAction}>
+              <button
+                type="submit"
+                title="Keluar dari Akun"
+                aria-label="Keluar dari Akun"
+                className="retro-btn p-1.5 rounded-lg bg-[#EFF0F0] hover:bg-rose-50 border border-[#d9dfd7] text-slate-400 hover:text-rose-600 shadow-retro-sm shrink-0"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </form>
           </div>
         </div>
       </aside>
+
+      {/* Tombol tampilkan menu saat sidebar disembunyikan */}
+      {isHidden && (
+        <button
+          type="button"
+          onClick={toggleHidden}
+          aria-label="Tampilkan menu navigasi"
+          title="Tampilkan menu"
+          className="retro-btn fixed left-0 top-1/2 -translate-y-1/2 z-50 p-2.5 rounded-r-xl bg-bdc-midnight text-bdc-yellow border border-bdc-midnight shadow-retro hover:bg-bdc-blue transition-colors"
+        >
+          <PanelLeftOpen className="w-4 h-4" />
+        </button>
+      )}
     </>
   );
 }
