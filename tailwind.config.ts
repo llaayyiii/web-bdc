@@ -33,7 +33,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-plus-jakarta)", "-apple-system", "sans-serif"],
         space: ["var(--font-space)", "sans-serif"],
-        pixel: ["var(--font-pixel)", "monospace"],
+        pixel: ["var(--font-space)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
         heading: ["var(--font-space)", "sans-serif"],
       },

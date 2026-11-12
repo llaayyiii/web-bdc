@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { LogOut, PanelTop } from "lucide-react";
+import React from "react";
+import { LogOut } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth";
 import { BdcDots } from "@/components/ui/BdcDots";
 
@@ -12,38 +12,6 @@ interface PortalHeaderProps {
 }
 
 export function PortalHeader({ userName, userRole, userEmail }: PortalHeaderProps) {
-  const [isHidden, setIsHidden] = useState(false);
-
-  // Pulihkan preferensi sembunyikan header (disimpan di browser)
-  useEffect(() => {
-    if (localStorage.getItem("bdc_portal_header_hide") === "1") {
-      setIsHidden(true);
-    }
-  }, []);
-
-  const toggleHidden = () => {
-    setIsHidden((prev) => {
-      const next = !prev;
-      localStorage.setItem("bdc_portal_header_hide", next ? "1" : "0");
-      return next;
-    });
-  };
-
-  if (isHidden) {
-    return (
-      <button
-        type="button"
-        onClick={toggleHidden}
-        aria-label="Tampilkan header"
-        title="Tampilkan header"
-        className="fixed top-2 right-3 z-40 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-bdc-midnight text-bdc-yellow border border-bdc-midnight text-[10px] font-mono font-bold shadow-retro hover:bg-bdc-blue transition-colors"
-      >
-        <PanelTop className="w-3.5 h-3.5" />
-        <span>Header</span>
-      </button>
-    );
-  }
-
   return (
     <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-300 px-6 py-3.5 flex items-center justify-between gap-4">
       {/* Left: Campus Badge & Context */}
@@ -59,17 +27,6 @@ export function PortalHeader({ userName, userRole, userEmail }: PortalHeaderProp
 
       {/* Right: Quick Actions */}
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={toggleHidden}
-          aria-label="Sembunyikan header"
-          title="Sembunyikan header"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-bdc-midnight hover:bg-slate-100 border border-slate-200 hover:border-slate-300 transition-all cursor-pointer"
-        >
-          <PanelTop className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Sembunyikan</span>
-        </button>
-
         {/* Logout Action */}
         <form action={logoutAction}>
           <button

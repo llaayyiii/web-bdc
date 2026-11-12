@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Space_Grotesk, Pixelify_Sans, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
@@ -15,13 +15,6 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space",
   display: "swap",
   weight: ["400", "500", "600", "700"],
-});
-
-const pixelify = Pixelify_Sans({
-  subsets: ["latin"],
-  variable: "--font-pixel",
-  display: "swap",
-  weight: ["400", "600", "700"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -48,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${plusJakarta.variable} ${spaceGrotesk.variable} ${pixelify.variable} ${jetbrainsMono.variable}`}
+      className={`${plusJakarta.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-bdc-surface text-bdc-midnight antialiased flex flex-col font-sans selection:bg-bdc-yellow selection:text-bdc-midnight">
         <ToastProvider>{children}</ToastProvider>

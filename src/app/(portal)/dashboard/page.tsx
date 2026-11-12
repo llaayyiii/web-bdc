@@ -20,6 +20,7 @@ import {
   FolderGit2,
   Medal,
   Zap,
+  MessageCircle,
 } from "lucide-react";
 
 export default async function DashboardPage() {
@@ -93,6 +94,38 @@ export default async function DashboardPage() {
 
       {/* 2. LIVE MEET BANNER */}
       <LiveMeetBanner session={liveSession} />
+
+      {/* 2B. LINK GRUP WHATSAPP */}
+      <a
+        href="https://chat.whatsapp.com/IEpfpE7rY5v86iRXK83JIY?s=cl&p=a&iam=2"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block bg-[#fffefa] rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#34A853] p-5 flex flex-wrap items-center justify-between gap-4 hover:shadow-retro-sm transition-all group"
+      >
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0">
+            <MessageCircle className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-emerald-600">
+                Komunitas BDC
+              </span>
+              <BdcDots size="sm" />
+            </div>
+            <h2 className="font-space font-bold text-sm sm:text-base text-bdc-midnight mt-0.5">
+              Grup WhatsApp Business Dev Club
+            </h2>
+            <p className="text-xs text-slate-600 mt-0.5">
+              Info sesi, materi, dan koordinasi tugas BDC UTDI — bergabung sekarang.
+            </p>
+          </div>
+        </div>
+        <span className="retro-btn px-4 py-2 rounded-xl bg-bdc-green hover:bg-emerald-500 text-white text-xs font-bold transition-all flex items-center gap-2 shadow-retro-sm shrink-0">
+          <span>Gabung Grup</span>
+          <ArrowRight className="w-4 h-4" />
+        </span>
+      </a>
 
       {/* 3. FOUR METRIC STATS CARDS WITH COLORED INSET TOP BARS (Exact GDGoC IPB dash-stats design) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

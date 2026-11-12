@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -16,8 +16,6 @@ import {
   X,
   ExternalLink,
   LogOut,
-  PanelLeftClose,
-  PanelLeftOpen,
 } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth";
 import { BdcDots } from "@/components/ui/BdcDots";
@@ -31,27 +29,6 @@ interface PortalSidebarProps {
 export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
-
-  // Pulihkan preferensi sembunyikan sidebar (disimpan di browser)
-  useEffect(() => {
-    if (localStorage.getItem("bdc_portal_sidebar_hide") === "1") {
-      setIsHidden(true);
-    }
-  }, []);
-
-  const toggleHidden = () => {
-    setIsHidden((prev) => {
-      const next = !prev;
-      localStorage.setItem("bdc_portal_sidebar_hide", next ? "1" : "0");
-      return next;
-    });
-  };
-
-  const showSidebar = () => {
-    setIsHidden(false);
-    localStorage.setItem("bdc_portal_sidebar_hide", "0");
-  };
 
   const navItems = [
     {
@@ -123,10 +100,7 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
           </div>
         </div>
         <button
-          onClick={() => {
-            if (isHidden) showSidebar();
-            setIsOpen(!isOpen);
-          }}
+          onClick={() => setIsOpen(!isOpen)}
           className="p-2 rounded-xl bg-white text-bdc-midnight border border-slate-300 hover:bg-slate-100 shadow-retro-sm"
         >
           {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -143,14 +117,12 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
 
       {/* Main Sidebar Shell (Styled like GDGoC IPB dash-sidebar) */}
       <aside
-        className={`top-0 left-0 z-50 h-screen w-68 bg-[#f4f3ea] text-bdc-midnight flex flex-col border-r border-[#d9dfd7] shadow-sm transition-transform duration-200 ease-in-out ${
-          isHidden
-            ? "fixed -translate-x-full"
-            : `fixed lg:sticky ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`
+        className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-68 bg-[#f4f3ea] text-bdc-midnight flex flex-col border-r border-[#d9dfd7] shadow-sm transition-transform duration-200 ease-in-out ${
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
         {/* Brand Area */}
-        <div className="p-5 border-b border-[#d9dfd7] bg-[#f4f3ea] flex items-start justify-between gap-2">
+        <div className="p-5 border-b border-[#d9dfd7] bg-[#f4f3ea]">
           <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="/logo.svg"
@@ -174,15 +146,6 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
               </div>
             </div>
           </Link>
-          <button
-            type="button"
-            onClick={toggleHidden}
-            aria-label="Sembunyikan menu navigasi"
-            title="Sembunyikan menu"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-bdc-midnight hover:bg-[#eae9dc] border border-transparent hover:border-[#d9dfd7] transition-colors shrink-0"
-          >
-            <PanelLeftClose className="w-4 h-4" />
-          </button>
         </div>
 
         {/* Navigation Items */}
@@ -269,19 +232,6 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
           </div>
         </div>
       </aside>
-
-      {/* Tombol tampilkan menu saat sidebar disembunyikan */}
-      {isHidden && (
-        <button
-          type="button"
-          onClick={toggleHidden}
-          aria-label="Tampilkan menu navigasi"
-          title="Tampilkan menu"
-          className="fixed left-0 top-1/2 -translate-y-1/2 z-50 p-2.5 rounded-r-xl bg-bdc-midnight text-bdc-yellow border border-bdc-midnight shadow-retro hover:bg-bdc-blue transition-colors"
-        >
-          <PanelLeftOpen className="w-4 h-4" />
-        </button>
-      )}
     </>
   );
 }
