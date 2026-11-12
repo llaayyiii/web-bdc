@@ -167,6 +167,15 @@ export async function adminGradeAssignmentAction(
           })
           .eq("id", cert.id);
       }
+
+      // Skor profil = nilai tugas tertinggi (pengganti skor ujian)
+      const gradedProfile = bdcStore.getProfileById(sub.user_id);
+      if (gradedProfile) {
+        await supabaseAdmin
+          .from("profiles")
+          .update({ score: gradedProfile.score, updated_at: new Date().toISOString() })
+          .eq("id", sub.user_id);
+      }
     } catch (err) {
       console.warn("Sinkronisasi penilaian tugas ke Supabase:", err);
     }
@@ -198,7 +207,24 @@ export async function adminCreateAssignmentAction(
   }
 
   await hydrateFromDb();
-  const newAssignment = bdcStore.createAssignment(assignmentData);
+
+  // Validasi tautan materi/soal (opsional, bila diisi harus URL valid)
+  const cleanMaterial = (assignmentData.material_url || "").trim();
+  if (cleanMaterial) {
+    try {
+      new URL(cleanMaterial);
+    } catch {
+      return {
+        success: false,
+        message: "Format tautan materi/soal tidak valid. Gunakan URL lengkap (https://...).",
+      };
+    }
+  }
+
+  const newAssignment = bdcStore.createAssignment({
+    ...assignmentData,
+    material_url: cleanMaterial || null,
+  });
 
   // Simpan tugas baru ke tabel assignments
   const supabaseAdmin = createAdminClient();
@@ -213,6 +239,7 @@ export async function adminCreateAssignmentAction(
         deadline: newAssignment.deadline,
         max_score: newAssignment.max_score,
         submission_format: newAssignment.submission_format,
+        material_url: newAssignment.material_url || null,
       });
     } catch (err) {
       console.warn("Sinkronisasi tugas baru ke Supabase:", err);
@@ -228,4 +255,43 @@ export async function adminCreateAssignmentAction(
     message: "Penugasan proyek baru berhasil diterbitkan.",
     assignment: newAssignment,
   };
+}
+
+/**
+ * Server action untuk Admin/Instruktur menghapus tugas
+ */
+export async function adminDeleteAssignmentAction(
+  assignmentId: string
+): Promise<{ success: boolean; message: string }> {
+  const currentUser = await getCurrentUser();
+  if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "instructor")) {
+    return {
+      success: false,
+      message: "Akses ditolak: Hanya pengelola yang dapat menghapus tugas.",
+    };
+  }
+
+  await hydrateFromDb();
+  const existing = bdcStore.getAssignmentById(assignmentId);
+  if (!existing) {
+    return { success: false, message: "Tugas tidak ditemukan." };
+  }
+
+  bdcStore.deleteAssignment(assignmentId);
+
+  const supabaseAdmin = createAdminClient();
+  if (supabaseAdmin) {
+    try {
+      await supabaseAdmin.from("assignment_submissions").delete().eq("assignment_id", assignmentId);
+      await supabaseAdmin.from("assignments").delete().eq("id", assignmentId);
+    } catch (err) {
+      console.warn("Sinkronisasi hapus tugas ke Supabase:", err);
+    }
+  }
+
+  revalidatePath("/admin/assignments");
+  revalidatePath("/assignments");
+  revalidatePath("/courses");
+
+  return { success: true, message: `Tugas "${existing.title}" berhasil dihapus.` };
 }

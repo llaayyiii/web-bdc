@@ -714,6 +714,14 @@ class BdcDataStore {
     return newAssignment;
   }
 
+  deleteAssignment(id: string) {
+    const index = this.assignments.findIndex((a) => a.id === id);
+    if (index === -1) return false;
+    this.assignments.splice(index, 1);
+    this.submissions = this.submissions.filter((s) => s.assignment_id !== id);
+    return true;
+  }
+
   // 4. SUBMISSIONS
   getSubmissions() {
     return this.submissions;
@@ -779,6 +787,12 @@ class BdcDataStore {
     sub.score = score;
     sub.feedback = feedback;
     sub.status = "graded";
+
+    // Nilai tugas tertinggi menjadi skor profil (pengganti skor ujian)
+    const best = this.submissions
+      .filter((s) => s.user_id === sub.user_id && s.status === "graded")
+      .reduce((max, s) => Math.max(max, s.score || 0), 0);
+    this.updateProfile(sub.user_id, { score: best });
 
     // Auto-check certificate eligibility
     this.checkCertificateEligibility(sub.user_id);

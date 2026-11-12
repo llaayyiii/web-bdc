@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
 import { hydrateFromDb } from "@/lib/data/db";
 import { AdminGradingManager } from "@/components/admin/AdminGradingManager";
+import { AdminAssignmentManager } from "@/components/admin/AdminAssignmentManager";
 import { BdcDots } from "@/components/ui/BdcDots";
 import { FolderGit2, Shield } from "lucide-react";
 
@@ -14,6 +15,7 @@ export default async function AdminAssignmentsPage() {
   }
 
   const submissions = bdcStore.getSubmissions();
+  const assignments = bdcStore.getAssignments();
 
   return (
     <div className="space-y-8 font-sans">
@@ -29,15 +31,21 @@ export default async function AdminAssignmentsPage() {
             </div>
 
             <h1 className="font-pixel text-4xl sm:text-5xl text-bdc-midnight tracking-tight">
-              Penilaian Tugas &amp; Portofolio
+              Tugas, Essay &amp; Penilaian
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
-              Periksa tautan repositori GitHub dan Google Drive mahasiswa, berikan evaluasi nilai, dan verifikasi kriteria pembukaan kunci sertifikat.
+              Terbitkan tugas &amp; essay beserta tautan soal Google Drive, periksa tautan kiriman
+              mahasiswa, berikan nilai, dan verifikasi kriteria pembukaan kunci sertifikat.
             </p>
           </div>
         </div>
       </div>
+
+      <AdminAssignmentManager
+        initialAssignments={assignments}
+        initialSubmissions={submissions}
+      />
 
       <AdminGradingManager initialSubmissions={submissions} />
     </div>

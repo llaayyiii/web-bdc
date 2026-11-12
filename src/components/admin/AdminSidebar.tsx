@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   Users,
   Award,
-  FileQuestion,
   ArrowLeft,
   Menu,
   X,
@@ -54,7 +53,7 @@ export function AdminSidebar() {
       code: "02",
     },
     {
-      name: "Penilaian Tugas",
+      name: "Tugas & Essay",
       href: "/admin/assignments",
       icon: FolderGit2,
       code: "03",
@@ -72,16 +71,10 @@ export function AdminSidebar() {
       code: "05",
     },
     {
-      name: "Bank Soal Evaluasi",
-      href: "/admin/assessments",
-      icon: FileQuestion,
-      code: "06",
-    },
-    {
       name: "Manajemen Pengguna",
       href: "/admin/users",
       icon: Shield,
-      code: "07",
+      code: "06",
     },
   ];
 

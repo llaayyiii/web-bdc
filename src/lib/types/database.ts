@@ -176,6 +176,8 @@ export interface Assignment {
   deadline: string;
   max_score: number;
   submission_format: "github_or_drive" | "url" | "document";
+  /** Tautan Google Drive materi/soal essay dari admin (opsional) */
+  material_url?: string | null;
 }
 
 // 4. ASSIGNMENT SUBMISSION (Pengumpulan & Penilaian Tugas)

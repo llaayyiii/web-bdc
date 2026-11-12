@@ -114,11 +114,11 @@ export default async function CertificatesPage() {
             )}
           </div>
 
-          {/* Requirement 2: Exam */}
+          {/* Requirement 2: Score */}
           <div className="p-4 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-[inset_0_3px_0_#34A853] flex items-center justify-between">
             <div className="space-y-0.5">
               <span className="font-mono text-[10px] uppercase font-bold text-slate-500 block">
-                2. Ujian Mandiri
+                2. Nilai Tugas &amp; Essay
               </span>
               <div className="flex items-baseline gap-1.5">
                 <span className="font-pixel text-2xl text-bdc-midnight">{examScore} Pts</span>

@@ -10,7 +10,6 @@ import {
   QrCode,
   Trophy,
   FolderGit2,
-  FileQuestion,
   Award,
   Settings,
   Menu,
@@ -57,16 +56,10 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
       description: "Modul Praktik Komunitas BDC",
     },
     {
-      name: "Tugas & Proyek",
+      name: "Tugas & Essay",
       href: "/assignments",
       icon: FolderGit2,
-      description: "Pengumpulan Proyek & Kasus",
-    },
-    {
-      name: "Ujian & Kuis",
-      href: "/assessments",
-      icon: FileQuestion,
-      description: "Evaluasi Kompetensi Mandiri",
+      description: "Soal Essay, Proyek & Pengumpulan",
     },
     {
       name: "Sertifikat & Transkrip",

@@ -268,6 +268,18 @@ export function CourseTabs({
 
                     <p className="text-xs text-slate-600 font-sans leading-relaxed">{assign.description}</p>
 
+                    {assign.material_url && (
+                      <a
+                        href={assign.material_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="retro-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#EFF0F0] hover:bg-[#e4e6e6] border border-slate-300 text-bdc-midnight text-xs font-bold transition-all shadow-retro-sm"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5 text-bdc-blue" />
+                        <span>Buka Soal / Materi (Google Drive)</span>
+                      </a>
+                    )}
+
                     <div className="flex items-center justify-between pt-3 border-t border-[#d9dfd7] text-xs">
                       <span className="font-mono text-slate-500 text-[11px]">Maksimal: {assign.max_score} Poin</span>
                       <Link

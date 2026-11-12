@@ -73,6 +73,20 @@ export function StudentAssignmentList({
 
   return (
     <div className="space-y-6 font-sans">
+      {/* Empty State */}
+      {assignments.length === 0 && (
+        <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] p-10 sm:p-12 shadow-retro text-center space-y-3">
+          <FileCode2 className="w-10 h-10 mx-auto text-slate-300" />
+          <h3 className="font-space text-base font-bold text-bdc-midnight">
+            Belum Ada Tugas &amp; Essay
+          </h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+            Tugas, soal essay, dan proyek yang diterbitkan pengelola akan muncul di sini. Silakan
+            periksa kembali nanti.
+          </p>
+        </div>
+      )}
+
       {/* Assignments Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {assignments.map((item) => {
@@ -124,6 +138,19 @@ export function StudentAssignmentList({
                   </span>
                   <span className="font-mono font-bold text-bdc-blue text-xs">Maks: {item.max_score} Pts</span>
                 </div>
+
+                {/* Tautan Soal / Materi dari Admin */}
+                {item.material_url && (
+                  <a
+                    href={item.material_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="retro-btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#EFF0F0] hover:bg-[#e4e6e6] border border-slate-300 text-bdc-midnight text-xs font-bold transition-all shadow-retro-sm"
+                  >
+                    <ExternalLink className="w-4 h-4 text-bdc-blue" />
+                    <span>Buka Soal / Materi (Google Drive)</span>
+                  </a>
+                )}
 
                 {/* Feedback Box if Graded */}
                 {isGraded && sub?.feedback && (
