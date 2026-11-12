@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
   FileQuestion,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 
 export default async function AssessmentsPage() {
+  await hydrateFromDb();
   const user = await getCurrentUser();
   const quiz = bdcStore.getQuiz("quiz-bdc-eval-2026");
   const attempts = user ? bdcStore.getAttempts(user.id) : [];

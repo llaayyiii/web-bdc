@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/actions/auth";
-import { bdcStore } from "@/lib/data/store";
+import { adminGetAllProfilesAction } from "@/lib/actions/admin";
 import { AdminUsersManager } from "@/components/admin/AdminUsersManager";
 import { BdcDots } from "@/components/ui/BdcDots";
 
@@ -10,7 +10,7 @@ export default async function AdminUsersPage() {
     redirect("/dashboard");
   }
 
-  const profiles = bdcStore.getProfiles();
+  const profiles = await adminGetAllProfilesAction();
 
   return (
     <div className="space-y-8 font-sans">

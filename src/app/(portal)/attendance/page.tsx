@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { AttendanceScanner } from "@/components/attendance/AttendanceScanner";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 
 export default async function AttendancePage() {
+  await hydrateFromDb();
   const user = await getCurrentUser();
   if (!user) {
     redirect("/login");

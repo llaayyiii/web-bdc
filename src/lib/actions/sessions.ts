@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "./auth";
 import { bdcStore } from "../data/store";
+import { hydrateFromDb } from "../data/db";
 import { MeetSession } from "../types/database";
 import { createAdminClient } from "../supabase/admin";
 
@@ -10,6 +11,7 @@ import { createAdminClient } from "../supabase/admin";
  * Mengambil sesi Google Meet / Zoom yang sedang aktif (live)
  */
 export async function getLiveMeetSessionAction(): Promise<MeetSession | null> {
+  await hydrateFromDb();
   return bdcStore.getLiveSession();
 }
 
@@ -17,6 +19,7 @@ export async function getLiveMeetSessionAction(): Promise<MeetSession | null> {
  * Mengambil seluruh sesi pertemuan (untuk kalender / tab course)
  */
 export async function getAllMeetSessionsAction(): Promise<MeetSession[]> {
+  await hydrateFromDb();
   return bdcStore.getSessions();
 }
 
@@ -34,6 +37,8 @@ export async function adminUpdateMeetSessionAction(
       message: "Akses ditolak: Hanya pengelola yang dapat mengatur sesi pertemuan.",
     };
   }
+
+  await hydrateFromDb();
 
   const session = bdcStore.getSessionById(sessionId);
   if (!session) {
@@ -78,6 +83,8 @@ export async function adminCreateMeetSessionAction(
     };
   }
 
+  await hydrateFromDb();
+
   const newSession = bdcStore.setMeetSession(sessionData);
 
   // Sinkronisasi ke Supabase
@@ -116,6 +123,8 @@ export async function adminDeleteMeetSessionAction(
       message: "Akses ditolak: Hanya pengelola yang dapat menghapus sesi pertemuan.",
     };
   }
+
+  await hydrateFromDb();
 
   const session = bdcStore.getSessionById(sessionId);
   if (!session) {
@@ -162,6 +171,8 @@ export async function adminRotateSessionTokenAction(
       message: "Akses ditolak.",
     };
   }
+
+  await hydrateFromDb();
 
   const session = bdcStore.getSessionById(sessionId);
   if (!session) {

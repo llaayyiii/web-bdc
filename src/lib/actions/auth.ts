@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { bdcStore } from "../data/store";
+import { hydrateFromDb } from "../data/db";
 import { Profile } from "../types/database";
 import { createAdminClient } from "../supabase/admin";
 
@@ -99,6 +100,7 @@ export async function loginAction(formData: FormData): Promise<{ success: boolea
 
   // 2. Fallback ke bdcStore in-memory jika belum/tidak ditemukan di Supabase
   if (!user) {
+    await hydrateFromDb();
     const localUser = bdcStore.getProfileByNimOrEmail(identifier);
     if (localUser) {
       user = localUser;
@@ -164,12 +166,12 @@ export async function getCurrentUser(): Promise<Profile | null> {
 
   try {
     const session: SessionData = JSON.parse(sessionCookie.value);
-    let profile = bdcStore.getProfileById(session.userId);
+    let profile: Profile | null = null;
 
-    // Jika tidak ditemukan di store memori (misal server restart / serverless spin-up), tarik dari Supabase
-    if (!profile) {
-      const supabaseAdmin = createAdminClient();
-      if (supabaseAdmin) {
+    // Sumber data utama: Supabase (selalu segar dari database)
+    const supabaseAdmin = createAdminClient();
+    if (supabaseAdmin) {
+      try {
         const { data: dbUser } = await supabaseAdmin
           .from("profiles")
           .select("*")
@@ -178,9 +180,15 @@ export async function getCurrentUser(): Promise<Profile | null> {
 
         if (dbUser) {
           profile = dbUser as Profile;
-          bdcStore.registerProfile(profile);
         }
+      } catch (err) {
+        console.warn("Gagal mengambil profil dari Supabase:", err);
       }
+    }
+
+    // Fallback ke cache lokal jika Supabase tidak terjangkau
+    if (!profile) {
+      profile = bdcStore.getProfileById(session.userId);
     }
 
     return profile;
@@ -236,10 +244,27 @@ export async function registerAction(
     return { success: false, error: "Konfirmasi kata sandi tidak cocok. Harap periksa kembali." };
   }
 
-  // Cek apakah akun dengan NIM atau Email sudah terdaftar
-  const existingUser =
+  // Cek apakah akun dengan NIM atau Email sudah terdaftar (DB & cache lokal)
+  await hydrateFromDb();
+  let existingUser =
     bdcStore.getProfileByNimOrEmail(email) || bdcStore.getProfileByNimOrEmail(nimId);
-  if (existingUser) {
+
+  const supabaseCheck = createAdminClient();
+  let dbDuplicate = false;
+  if (supabaseCheck && !existingUser) {
+    try {
+      const { data: dup } = await supabaseCheck
+        .from("profiles")
+        .select("id")
+        .or(`email.eq.${email},nim_id.eq.${nimId}`)
+        .maybeSingle();
+      dbDuplicate = !!dup;
+    } catch (err) {
+      console.warn("Gagal cek duplikat akun di Supabase:", err);
+    }
+  }
+
+  if (existingUser || dbDuplicate) {
     return {
       success: false,
       error: `Akun dengan NIM "${nimId}" atau Email "${email}" telah terdaftar pada sistem. Silakan langsung login.`,

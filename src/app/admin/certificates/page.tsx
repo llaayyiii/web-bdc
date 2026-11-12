@@ -1,39 +1,49 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Award, Save, ShieldCheck, CheckCircle2 } from "lucide-react";
-import { SEED_CERTIFICATES } from "@/lib/data/store";
-import { adminUpdateSignatoriesAction } from "@/lib/actions/admin";
+import { adminUpdateSignatoriesAction, getAllCertificatesAction } from "@/lib/actions/certificates";
+import { Certificate } from "@/lib/types/database";
 import { useToast } from "@/components/ui/Toast";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 export default function AdminCertificatesPage() {
   const { showToast } = useToast();
-  const cert = SEED_CERTIFICATES[0] || null;
+  const [cert, setCert] = useState<Certificate | null>(null);
 
-  const [sig1Name, setSig1Name] = useState(cert?.signatory_1_name || "Bagas Triaji, S.Kom., M.Kom.");
-  const [sig1Role, setSig1Role] = useState(cert?.signatory_1_role || "Biro Kemahasiswaan UTDI");
-  const [sig2Name, setSig2Name] = useState(cert?.signatory_2_name || "Nurul Layli");
-  const [sig2Role, setSig2Role] = useState(cert?.signatory_2_role || "PIC Program BDC");
-  const [period, setPeriod] = useState(cert?.period || "2026/2027");
-  const [location, setLocation] = useState(cert?.location || "Yogyakarta");
-  const [issueDate, setIssueDate] = useState(cert?.issue_date || "2026-03-24");
+  const [sig1Name, setSig1Name] = useState("Bagas Triaji, S.Kom., M.Kom.");
+  const [sig1Role, setSig1Role] = useState("Biro Kemahasiswaan UTDI");
+  const [sig2Name, setSig2Name] = useState("Nurul Layli");
+  const [sig2Role, setSig2Role] = useState("PIC Program BDC");
+  const [period, setPeriod] = useState("2026/2027");
+  const [location, setLocation] = useState("Yogyakarta");
+  const [issueDate, setIssueDate] = useState("2026-03-24");
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    async function loadCert() {
+      const allCerts = await getAllCertificatesAction();
+      if (allCerts.length > 0) {
+        const c = allCerts[0];
+        setCert(c);
+        setSig1Name(c.signatory_1_name || "Bagas Triaji, S.Kom., M.Kom.");
+        setSig1Role(c.signatory_1_role || "Biro Kemahasiswaan UTDI");
+        setSig2Name(c.signatory_2_name || "Nurul Layli");
+        setSig2Role(c.signatory_2_role || "PIC Program BDC");
+        setPeriod(c.period || "2026/2027");
+        setLocation(c.location || "Yogyakarta");
+        setIssueDate(c.issue_date || "2026-03-24");
+      }
+    }
+    loadCert();
+  }, []);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
-    if (!cert) {
-      setTimeout(() => {
-        setSaving(false);
-        showToast("Konfigurasi penandatangan tersimpan untuk penerbitan sertifikat mendatang.", "success");
-      }, 400);
-      return;
-    }
-
     try {
-      const res = await adminUpdateSignatoriesAction(cert.id, {
+      const res = await adminUpdateSignatoriesAction(cert?.id || "", {
         signatory_1_name: sig1Name,
         signatory_1_role: sig1Role,
         signatory_2_name: sig2Name,
@@ -44,7 +54,7 @@ export default function AdminCertificatesPage() {
       });
 
       if (res.success) {
-        showToast("Perubahan data sertifikat dan penandatangan berhasil disimpan!", "success");
+        showToast("Perubahan data sertifikat dan penandatangan berhasil disimpan ke database!", "success");
       } else {
         showToast(res.error || "Gagal menyimpan perubahan.", "error");
       }

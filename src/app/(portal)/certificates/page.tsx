@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/actions/auth";
+import { getCertificateByUserIdAction } from "@/lib/actions/certificates";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
   Award,
@@ -17,8 +19,9 @@ import {
 } from "lucide-react";
 
 export default async function CertificatesPage() {
+  await hydrateFromDb();
   const user = await getCurrentUser();
-  const cert = user ? bdcStore.getCertificateByUserId(user.id) : null;
+  const cert = user ? await getCertificateByUserIdAction(user.id) : null;
   const userSubmissions = user ? bdcStore.getSubmissionsByUser(user.id) : [];
 
   // Criteria calculations

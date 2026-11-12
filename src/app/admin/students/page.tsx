@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Users,
   Search,
@@ -10,21 +10,36 @@ import {
   AlertCircle,
   ExternalLink,
 } from "lucide-react";
-import { SEED_PROFILES, SEED_CERTIFICATES } from "@/lib/data/store";
+import {
+  adminGetAllProfilesAction,
+} from "@/lib/actions/admin";
 import {
   adminToggleCertificateLockAction,
   adminUpdateStudentStatusAction,
-} from "@/lib/actions/admin";
+} from "@/lib/actions/certificates";
+import { getAllCertificatesAction } from "@/lib/actions/certificates";
+import { Profile, Certificate } from "@/lib/types/database";
 import { useToast } from "@/components/ui/Toast";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 export default function AdminStudentsPage() {
   const { showToast } = useToast();
   const [search, setSearch] = useState("");
-  const [students, setStudents] = useState(
-    SEED_PROFILES.filter((p) => p.role === "learner")
-  );
+  const [students, setStudents] = useState<Profile[]>([]);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [certLockState, setCertLockState] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    async function loadData() {
+      const [allUsers, allCerts] = await Promise.all([
+        adminGetAllProfilesAction(),
+        getAllCertificatesAction(),
+      ]);
+      setStudents(allUsers.filter((p) => p.role === "learner"));
+      setCertificates(allCerts);
+    }
+    loadData();
+  }, []);
 
   const filtered = students.filter(
     (s) =>
@@ -104,7 +119,7 @@ export default function AdminStudentsPage() {
             </thead>
             <tbody className="divide-y divide-[#d9dfd7]">
               {filtered.map((st) => {
-                const cert = SEED_CERTIFICATES.find((c) => c.user_id === st.id);
+                const cert = certificates.find((c) => c.user_id === st.id);
                 const isLocked = cert ? certLockState[cert.id] ?? cert.is_locked : true;
 
                 return (

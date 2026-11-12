@@ -1,11 +1,13 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { SessionsManager } from "@/components/admin/SessionsManager";
 import { BdcDots } from "@/components/ui/BdcDots";
 import { Video, Shield } from "lucide-react";
 
 export default async function AdminSessionsPage() {
+  await hydrateFromDb();
   const user = await getCurrentUser();
   if (!user || (user.role !== "admin" && user.role !== "instructor")) {
     redirect("/dashboard");

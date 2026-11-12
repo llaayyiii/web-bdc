@@ -17,7 +17,7 @@ import {
   FileCheck2,
 } from "lucide-react";
 import { Certificate } from "@/lib/types/database";
-import { SEED_CERTIFICATES } from "@/lib/data/store";
+import { verifyCertificateAction } from "@/lib/actions/certificates";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 function VerifyContent() {
@@ -28,17 +28,12 @@ function VerifyContent() {
   const [searched, setSearched] = useState(false);
   const [result, setResult] = useState<Certificate | null>(null);
 
-  const handleSearch = (searchVal: string) => {
+  const handleSearch = async (searchVal: string) => {
     const clean = searchVal.trim().toUpperCase();
     if (!clean) return;
 
     setSearched(true);
-    const found = SEED_CERTIFICATES.find(
-      (c) =>
-        c.certificate_number.toUpperCase() === clean ||
-        c.nim_id.toUpperCase() === clean ||
-        c.transcript_number.toUpperCase() === clean
-    );
+    const found = await verifyCertificateAction(clean);
     setResult(found || null);
   };
 

@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { CertificatePageOne } from "@/components/certificate/CertificatePageOne";
 import { TranscriptPageTwo } from "@/components/certificate/TranscriptPageTwo";
-import { SEED_CERTIFICATES } from "@/lib/data/store";
+import { getCertificateByIdAction } from "@/lib/actions/certificates";
+import { Certificate } from "@/lib/types/database";
 import { Printer, ArrowLeft, Layers, FileText, Award } from "lucide-react";
 
 export default function CertificatePrintPage({
@@ -14,8 +15,58 @@ export default function CertificatePrintPage({
 }) {
   const { id } = use(params);
   const [printMode, setPrintMode] = useState<"bundle" | "page1" | "page2">("bundle");
+  const [cert, setCert] = useState<Certificate | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const cert = SEED_CERTIFICATES.find((c) => c.id === id) || SEED_CERTIFICATES[0];
+  useEffect(() => {
+    let active = true;
+    async function loadCert() {
+      try {
+        const data = await getCertificateByIdAction(id);
+        if (active) setCert(data);
+      } catch {
+        if (active) setCert(null);
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    }
+    loadCert();
+    return () => {
+      active = false;
+    };
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <Award className="w-10 h-10 text-slate-400 mx-auto animate-pulse" />
+          <p className="text-xs text-slate-500">
+            Menyiapkan dokumen cetak dari pangkalan data...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!cert) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Award className="w-10 h-10 text-slate-400 mx-auto" />
+          <p className="text-xs text-slate-500">Sertifikat tidak ditemukan.</p>
+          <Link
+            href="/certificates"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-bdc-navy text-white text-xs font-bold border border-bdc-midnight"
+          >
+            <ArrowLeft className="w-4 h-4 text-bdc-yellow" />
+            <span>Kembali ke Sertifikat</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const verifyUrl = `/verify?cert=${encodeURIComponent(cert.certificate_number)}`;
 
   const handlePrint = () => {

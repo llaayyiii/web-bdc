@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "./auth";
 import { bdcStore } from "../data/store";
+import { hydrateFromDb } from "../data/db";
 import { QuizOption, QuizQuestion } from "../types/database";
 import { createAdminClient } from "../supabase/admin";
 
@@ -11,6 +12,7 @@ async function requireAdmin() {
   if (!user || (user.role !== "admin" && user.role !== "instructor")) {
     throw new Error("Akses ditolak: Hanya admin atau instruktur yang diizinkan mengelola bank soal.");
   }
+  await hydrateFromDb();
   return user;
 }
 
@@ -36,6 +38,7 @@ export async function submitQuizAction(
     return { success: false, error: "Harap login terlebih dahulu untuk menyimpan nilai." };
   }
 
+  await hydrateFromDb();
   const quiz = bdcStore.getQuiz(quizId);
   const questions = bdcStore.getQuizQuestions(quizId);
 
@@ -67,9 +70,37 @@ export async function submitQuizAction(
     completed_at: new Date().toISOString(),
   });
 
+  const improvedScore = score > (user.score || 0);
+
   // Jika nilai lebih baik, perbarui nilai profil siswa
-  if (score > (user.score || 0)) {
+  if (improvedScore) {
     bdcStore.updateProfile(user.id, { score });
+  }
+
+  // Simpan riwayat pengerjaan & skor ke Supabase
+  const supabaseAdmin = createAdminClient();
+  if (supabaseAdmin) {
+    try {
+      // Kolom id bertipe uuid (default gen_random_uuid) — jangan kirim id teks store
+      await supabaseAdmin.from("quiz_attempts").insert({
+        quiz_id: attempt.quiz_id,
+        user_id: attempt.user_id,
+        score: attempt.score,
+        passed: attempt.passed,
+        answers_json: attempt.answers_json,
+        started_at: attempt.started_at,
+        completed_at: attempt.completed_at,
+      });
+
+      if (improvedScore) {
+        await supabaseAdmin
+          .from("profiles")
+          .update({ score, updated_at: new Date().toISOString() })
+          .eq("id", user.id);
+      }
+    } catch (err) {
+      console.warn("Sinkronisasi hasil ujian ke Supabase:", err);
+    }
   }
 
   revalidatePath("/assessments");
@@ -91,7 +122,21 @@ export async function submitQuizAction(
  */
 export async function adminGetQuizQuestionsAction(): Promise<QuizQuestion[]> {
   await requireAdmin();
+  await hydrateFromDb();
   return bdcStore.getAllQuestions();
+}
+
+/**
+ * Publik: mengambil butir soal untuk halaman pengerjaan ujian mahasiswa
+ * (kunci jawaban tidak ikut dikirim ke klien)
+ */
+export async function getQuizQuestionsAction(quizId: string): Promise<QuizQuestion[]> {
+  await hydrateFromDb();
+  return bdcStore.getQuizQuestions(quizId).map((q) => ({
+    ...q,
+    correct_option: undefined,
+    explanation: null,
+  }));
 }
 
 /**
@@ -105,6 +150,7 @@ export async function adminCreateQuizQuestionAction(payload: {
   explanation?: string;
 }): Promise<{ success: boolean; question?: QuizQuestion; error?: string }> {
   await requireAdmin();
+  await hydrateFromDb();
 
   if (!payload.question_text || !payload.question_text.trim()) {
     return { success: false, error: "Teks pertanyaan wajib diisi." };
@@ -132,8 +178,8 @@ export async function adminCreateQuizQuestionAction(payload: {
   const supabaseAdmin = createAdminClient();
   if (supabaseAdmin) {
     try {
-      await supabaseAdmin.from("quiz_questions").upsert({
-        id: newQuestion.id,
+      // Kolom id bertipe uuid (default gen_random_uuid) — jangan kirim id teks store
+      await supabaseAdmin.from("quiz_questions").insert({
         quiz_id: newQuestion.quiz_id,
         order_index: newQuestion.order_index,
         question_text: newQuestion.question_text,
@@ -164,6 +210,7 @@ export async function adminDeleteQuizQuestionAction(
   questionId: string
 ): Promise<{ success: boolean; error?: string }> {
   await requireAdmin();
+  await hydrateFromDb();
 
   // Sinkronisasi hapus ke Supabase jika terhubung
   const supabaseAdmin = createAdminClient();

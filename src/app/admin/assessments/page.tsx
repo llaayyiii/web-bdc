@@ -2,10 +2,12 @@ import React from "react";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { AdminAssessmentsManager } from "@/components/admin/AdminAssessmentsManager";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 export default async function AdminAssessmentsPage() {
+  await hydrateFromDb();
   const user = await getCurrentUser();
   if (!user || (user.role !== "admin" && user.role !== "instructor")) {
     redirect("/dashboard");

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { CourseTabs } from "@/components/courses/CourseTabs";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
@@ -18,6 +19,7 @@ export default async function CourseDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await hydrateFromDb();
   const { id } = await params;
   const user = await getCurrentUser();
   const course = bdcStore.getCourseById(id);

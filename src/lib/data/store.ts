@@ -238,6 +238,46 @@ export const SEED_ENROLLMENTS: CourseEnrollment[] = [];
 
 // Stateful Repository
 class BdcDataStore {
+  /**
+   * Mengganti isi cache in-memory dengan data segar dari Supabase.
+   * Dipanggil hydrateFromDb() di setiap render server / server action.
+   */
+  hydrate(data: Partial<{
+    profiles: Profile[];
+    courses: Course[];
+    quizzes: Quiz[];
+    questions: QuizQuestion[];
+    attempts: QuizAttempt[];
+    certificates: Certificate[];
+    enrollments: CourseEnrollment[];
+    sessions: MeetSession[];
+    attendances: AttendanceRecord[];
+    assignments: Assignment[];
+    submissions: AssignmentSubmission[];
+  }>) {
+    if (data.profiles) {
+      // Pertahankan field password lokal yang tidak tersimpan di kolom DB
+      this.profiles = data.profiles.map((p) => {
+        const existing = this.profiles.find((e) => e.id === p.id);
+        return {
+          ...p,
+          password: p.password ?? existing?.password,
+          password_hash: p.password_hash ?? existing?.password_hash,
+        };
+      });
+    }
+    if (data.courses) this.courses = data.courses;
+    if (data.quizzes) this.quizzes = data.quizzes;
+    if (data.questions) this.questions = data.questions;
+    if (data.attempts) this.attempts = data.attempts;
+    if (data.certificates) this.certificates = data.certificates;
+    if (data.enrollments) this.enrollments = data.enrollments;
+    if (data.sessions) this.sessions = data.sessions;
+    if (data.attendances) this.attendances = data.attendances;
+    if (data.assignments) this.assignments = data.assignments;
+    if (data.submissions) this.submissions = data.submissions;
+  }
+
   private profiles = [...SEED_PROFILES];
   private courses = [...SEED_COURSES];
   private quizzes: Quiz[] = [...SEED_QUIZZES];

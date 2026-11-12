@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { CertificatePageOne } from "@/components/certificate/CertificatePageOne";
 import { TranscriptPageTwo } from "@/components/certificate/TranscriptPageTwo";
-import { SEED_CERTIFICATES } from "@/lib/data/store";
+import { getCertificateByIdAction } from "@/lib/actions/certificates";
+import { Certificate } from "@/lib/types/database";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
   ArrowLeft,
@@ -21,8 +22,56 @@ export default function CertificatePreviewPage({
 }) {
   const { id } = use(params);
   const [activeTab, setActiveTab] = useState<"page1" | "page2">("page1");
+  const [cert, setCert] = useState<Certificate | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const cert = SEED_CERTIFICATES.find((c) => c.id === id) || SEED_CERTIFICATES[0];
+  useEffect(() => {
+    let active = true;
+    async function loadCert() {
+      try {
+        const data = await getCertificateByIdAction(id);
+        if (active) setCert(data);
+      } catch {
+        if (active) setCert(null);
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    }
+    loadCert();
+    return () => {
+      active = false;
+    };
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-12 text-center">
+        <Award className="w-10 h-10 text-slate-400 mx-auto mb-3 animate-pulse" />
+        <p className="text-xs text-slate-500 font-sans">
+          Memuat dokumen sertifikat dari pangkalan data...
+        </p>
+      </div>
+    );
+  }
+
+  if (!cert) {
+    return (
+      <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-12 text-center space-y-4">
+        <Award className="w-10 h-10 text-slate-400 mx-auto" />
+        <p className="text-xs text-slate-500 font-sans">
+          Sertifikat tidak ditemukan di pangkalan data.
+        </p>
+        <Link
+          href="/certificates"
+          className="retro-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-bdc-navy text-white text-xs font-bold border border-bdc-midnight shadow-retro-sm"
+        >
+          <ArrowLeft className="w-4 h-4 text-bdc-yellow" />
+          <span>Kembali ke Sertifikat</span>
+        </Link>
+      </div>
+    );
+  }
+
   const verifyUrl = `/verify?cert=${encodeURIComponent(cert.certificate_number)}`;
 
   return (

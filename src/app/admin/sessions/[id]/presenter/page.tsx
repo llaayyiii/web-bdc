@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { SessionPresenter } from "@/components/admin/SessionPresenter";
 
 interface PresenterPageProps {
@@ -8,6 +9,7 @@ interface PresenterPageProps {
 }
 
 export default async function PresenterPage({ params }: PresenterPageProps) {
+  await hydrateFromDb();
   const user = await getCurrentUser();
   if (!user || (user.role !== "admin" && user.role !== "instructor")) {
     redirect("/dashboard");

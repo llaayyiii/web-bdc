@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "./auth";
 import { bdcStore } from "../data/store";
+import { hydrateFromDb } from "../data/db";
 import { AttendanceRecord } from "../types/database";
 import { createAdminClient } from "../supabase/admin";
 
@@ -36,6 +37,9 @@ export async function scanAttendanceAction(
       message: "Token presensi tidak boleh kosong.",
     };
   }
+
+  // Pastikan sesi & data presensi terbaru dari database dimuat
+  await hydrateFromDb();
 
   const result = bdcStore.recordAttendance(currentUser.id, cleanToken, method);
 
@@ -102,6 +106,7 @@ export async function getStudentAttendanceHistory(): Promise<AttendanceRecord[]>
   const currentUser = await getCurrentUser();
   if (!currentUser) return [];
 
+  await hydrateFromDb();
   return bdcStore.getAttendancesByUser(currentUser.id);
 }
 
@@ -109,5 +114,6 @@ export async function getStudentAttendanceHistory(): Promise<AttendanceRecord[]>
  * Mengambil daftar hadir untuk sesi tertentu (khusus Admin / Presenter)
  */
 export async function getSessionAttendees(sessionId: string): Promise<AttendanceRecord[]> {
+  await hydrateFromDb();
   return bdcStore.getAttendancesBySession(sessionId);
 }

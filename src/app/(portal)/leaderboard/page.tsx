@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
   Trophy,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 
 export default async function LeaderboardPage() {
+  await hydrateFromDb();
   const user = await getCurrentUser();
   if (!user) {
     redirect("/login");

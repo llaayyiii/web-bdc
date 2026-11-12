@@ -1,11 +1,13 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { AdminGradingManager } from "@/components/admin/AdminGradingManager";
 import { BdcDots } from "@/components/ui/BdcDots";
 import { FolderGit2, Shield } from "lucide-react";
 
 export default async function AdminAssignmentsPage() {
+  await hydrateFromDb();
   const user = await getCurrentUser();
   if (!user || (user.role !== "admin" && user.role !== "instructor")) {
     redirect("/dashboard");

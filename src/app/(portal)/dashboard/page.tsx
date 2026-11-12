@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { LiveMeetBanner } from "@/components/layout/LiveMeetBanner";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
@@ -22,6 +23,7 @@ import {
 } from "lucide-react";
 
 export default async function DashboardPage() {
+  await hydrateFromDb();
   const user = await getCurrentUser();
   const courses = bdcStore.getCourses();
   const certificate = user ? bdcStore.getCertificateByUserId(user.id) : null;

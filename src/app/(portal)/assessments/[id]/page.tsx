@@ -15,12 +15,14 @@ import {
   Send,
   HelpCircle,
 } from "lucide-react";
-import { submitQuizAction, SubmitQuizResult } from "@/lib/actions/quiz";
+import {
+  submitQuizAction,
+  getQuizQuestionsAction,
+  SubmitQuizResult,
+} from "@/lib/actions/quiz";
 import { useToast } from "@/components/ui/Toast";
 import { QuizQuestion } from "@/lib/types/database";
 import { BdcDots } from "@/components/ui/BdcDots";
-
-const QUESTIONS_DATA: QuizQuestion[] = [];
 
 export default function QuizPlayerPage({
   params,
@@ -38,6 +40,27 @@ export default function QuizPlayerPage({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [result, setResult] = useState<SubmitQuizResult | null>(null);
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Muat butir soal langsung dari database
+  useEffect(() => {
+    let active = true;
+    async function loadQuestions() {
+      try {
+        const data = await getQuizQuestionsAction(quizId);
+        if (active) setQuestions(data);
+      } catch {
+        if (active) setQuestions([]);
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    }
+    loadQuestions();
+    return () => {
+      active = false;
+    };
+  }, [quizId]);
 
   // Timer countdown
   useEffect(() => {
@@ -101,7 +124,25 @@ export default function QuizPlayerPage({
     }
   };
 
-  if (QUESTIONS_DATA.length === 0) {
+  if (isLoading) {
+    return (
+      <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-8 sm:p-12 text-center space-y-4">
+        <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EFF0F0] border border-slate-300 flex items-center justify-center text-slate-400 shadow-retro-sm">
+          <HelpCircle className="w-7 h-7 animate-pulse" />
+        </div>
+        <div className="space-y-1">
+          <h2 className="font-space text-lg sm:text-xl font-bold text-bdc-midnight">
+            Menyiapkan Lembar Ujian...
+          </h2>
+          <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed font-sans">
+            Mengambil butir soal evaluasi dari pangkalan data BDC UTDI.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
     return (
       <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-8 sm:p-12 text-center space-y-4">
         <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EFF0F0] border border-slate-300 flex items-center justify-center text-slate-400 shadow-retro-sm">
@@ -128,7 +169,7 @@ export default function QuizPlayerPage({
     );
   }
 
-  const currentQ = QUESTIONS_DATA[currentIndex];
+  const currentQ = questions[currentIndex];
   const selectedAnswer = answers[currentIndex + 1];
   const isCurrentFlagged = flagged.includes(currentIndex + 1);
   const answeredCount = Object.keys(answers).length;
@@ -189,7 +230,7 @@ export default function QuizPlayerPage({
             {/* Question Header */}
             <div className="flex items-center justify-between pb-4 border-b border-[#d9dfd7] mb-6">
               <span className="font-mono text-xs font-bold text-bdc-blue uppercase tracking-wider">
-                [ SOAL {currentIndex + 1} // {QUESTIONS_DATA.length} ]
+                [ SOAL {currentIndex + 1} // {questions.length} ]
               </span>
 
               <button
@@ -257,14 +298,14 @@ export default function QuizPlayerPage({
             </button>
 
             <span className="font-mono text-xs text-slate-500 font-bold hidden sm:inline">
-              Terjawab: {answeredCount} / {QUESTIONS_DATA.length}
+              Terjawab: {answeredCount} / {questions.length}
             </span>
 
             <button
               type="button"
-              disabled={currentIndex === QUESTIONS_DATA.length - 1}
+              disabled={currentIndex === questions.length - 1}
               onClick={() =>
-                setCurrentIndex((prev) => Math.min(QUESTIONS_DATA.length - 1, prev + 1))
+                setCurrentIndex((prev) => Math.min(questions.length - 1, prev + 1))
               }
               className="retro-btn px-4 py-2 rounded-xl bg-bdc-midnight hover:bg-bdc-navy text-xs font-bold text-white disabled:opacity-40 transition-all flex items-center gap-1.5 shadow-retro-sm"
             >
@@ -284,7 +325,7 @@ export default function QuizPlayerPage({
           </div>
 
           <div className="grid grid-cols-5 gap-2">
-            {QUESTIONS_DATA.map((q, idx) => {
+            {questions.map((q, idx) => {
               const qNum = idx + 1;
               const isAnswered = !!answers[qNum];
               const isFlag = flagged.includes(qNum);
@@ -325,7 +366,7 @@ export default function QuizPlayerPage({
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3.5 h-3.5 rounded bg-[#EFF0F0] border border-slate-400 shrink-0" />
-              <span>Belum Dijawab ({QUESTIONS_DATA.length - answeredCount})</span>
+              <span>Belum Dijawab ({questions.length - answeredCount})</span>
             </div>
           </div>
         </div>
@@ -339,7 +380,7 @@ export default function QuizPlayerPage({
               Konfirmasi Selesai Ujian
             </h3>
             <p className="text-xs text-slate-600 leading-relaxed mb-4 font-sans">
-              Anda telah menjawab <strong>{answeredCount}</strong> dari {QUESTIONS_DATA.length} butir soal.
+              Anda telah menjawab <strong>{answeredCount}</strong> dari {questions.length} butir soal.
               Apakah Anda yakin ingin menyelesaikan lembar jawaban ini?
             </p>
             <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#d9dfd7]">

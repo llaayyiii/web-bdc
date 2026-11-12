@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
   Users,
@@ -12,7 +13,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  await hydrateFromDb();
   const profiles = bdcStore.getProfiles();
   const students = profiles.filter((p) => p.role === "learner");
   const certificates = bdcStore.getCertificates();

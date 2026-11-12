@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
+import { hydrateFromDb } from "@/lib/data/db";
 import {
   ArrowRight,
   ShieldCheck,
@@ -25,6 +26,7 @@ import {
 } from "lucide-react";
 
 export default async function HomePage() {
+  await hydrateFromDb();
   const user = await getCurrentUser();
   const liveSession = bdcStore.getLiveSession();
   const topLearners = bdcStore.getLeaderboard().slice(0, 3);

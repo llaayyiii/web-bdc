@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Search,
@@ -13,120 +13,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { Course } from "@/lib/types/database";
+import { getAllCoursesAction } from "@/lib/actions/courses";
 import { BdcDots } from "@/components/ui/BdcDots";
-
-const COURSES_DATA: Course[] = [
-  {
-    id: "ACT-01",
-    title: "Ngoding Bareng: Membangun Web App Interaktif dari Nol",
-    category: "Sesi Minggu Ini",
-    session_type: "Live Session",
-    instructor: "Dr. Evelyn Vance & Tim Web Dev",
-    instructor_role: "Inisiator / Pemateri Komunitas",
-    duration: "Live Session (2 Jam)",
-    level: "Pemula (Beginner)",
-    learners_count: 340,
-    rating: 4.9,
-    icon: "Code",
-    badge_color: "bg-rose-100 text-rose-700",
-    description:
-      "Sesi interaktif mingguan membedah struktur HTML5, styling Tailwind, dan logika JavaScript interaktif langsung dengan live coding bersama anggota.",
-    syllabus: [
-      "Struktur Dasar Web Modern & Best Practice HTML5",
-      "Live Coding: Styling Responsive dengan Tailwind CSS",
-      "Interaktivitas & DOM Manipulation JavaScript",
-      "Tanya Jawab & Bedah Kode Bareng Anggota Komunitas",
-    ],
-  },
-  {
-    id: "ACT-02",
-    title: "Workshop Hands-On: Audit Keamanan Akun & Pengujian Jaringan",
-    category: "Workshop & Hands-On",
-    session_type: "Workshop Lab",
-    instructor: "Ir. Hendra Saputra, M.Kom",
-    instructor_role: "Inisiator / Pemateri Komunitas",
-    duration: "Workshop Lab (3 Jam)",
-    level: "Semua Tingkat (All Levels)",
-    learners_count: 420,
-    rating: 4.9,
-    icon: "Terminal",
-    badge_color: "bg-emerald-100 text-emerald-700",
-    description:
-      "Praktik langsung simulasi mendeteksi tautan phishing, analisis lalu lintas Wi-Fi rentan, serta konfigurasi 2FA hardware key.",
-    syllabus: [
-      "Simulasi Uji Coba Serangan Social Engineering & Phishing",
-      "Inspeksi Jaringan Wi-Fi Publik dengan Wireshark Dasar",
-      "Langkah Proteksi Password Manager & Multi-Factor Auth",
-      "Checklist Keamanan Siber Mandiri untuk Laptop & Ponsel",
-    ],
-  },
-  {
-    id: "ACT-03",
-    title: "Proyek Kolaborasi: UI/UX Open Source Design System Komunitas",
-    category: "Proyek Bersama",
-    session_type: "Project File",
-    instructor: "Maya Kartika, S.Ds",
-    instructor_role: "Inisiator / Pemateri Komunitas",
-    duration: "Project File",
-    level: "Pemula (Beginner)",
-    learners_count: 280,
-    rating: 4.8,
-    icon: "FolderArchive",
-    badge_color: "bg-purple-100 text-purple-700",
-    description:
-      "Repositori aset desain, komponen Figma terbuka, dan panduan kontribusi bareng untuk membangun UI kit resmi komunitas kampus.",
-    syllabus: [
-      "Panduan Kontribusi & Tata Kelola Figma Team Workspace",
-      "Penyusunan Desain Token: Palet Warna & Tipografi",
-      "Pembuatan Komponen Tombol, Input & Dialog Reusable",
-      "Review Bersama & Penggabungan Aset Kontributor",
-    ],
-  },
-  {
-    id: "ACT-04",
-    title: "Rekaman Sharing: Memulai Startup Digital & Pitching ke Inkubator",
-    category: "Arsip Recording",
-    session_type: "Rekaman Web",
-    instructor: "Rian Danuarta, MBA",
-    instructor_role: "Inisiator / Pemateri Komunitas",
-    duration: "Rekaman Web (1.5 Jam)",
-    level: "Pemula (Beginner)",
-    learners_count: 510,
-    rating: 4.9,
-    icon: "PlayCircle",
-    badge_color: "bg-blue-100 text-blue-700",
-    description:
-      "Arsip video sharing alumni mengenai langkah validasi ide produk teknologi, menyusun Business Model Canvas, dan kiat lolos seleksi pendanaan inkubator.",
-    syllabus: [
-      "Rekaman Bagian 1: Validasi Masalah & Customer Interview",
-      "Rekaman Bagian 2: Menyusun Pitch Deck 10 Slide Efektif",
-      "Template Dokumen Pitching & Lembar Evaluasi Bisnis",
-      "Sesi Q&A Diskusi Pengalaman Founder Startup Mahasiswa",
-    ],
-  },
-  {
-    id: "ACT-05",
-    title: "Deploy Bareng: Hosting Web & Domain Gratis Menggunakan Cloud VPS",
-    category: "Workshop & Hands-On",
-    session_type: "Workshop Lab",
-    instructor: "Arya Pratama, S.Kom",
-    instructor_role: "Inisiator / Pemateri Komunitas",
-    duration: "Workshop Lab (2.5 Jam)",
-    level: "Menengah (Intermediate)",
-    learners_count: 390,
-    rating: 4.8,
-    icon: "Cloud",
-    badge_color: "bg-amber-100 text-amber-700",
-    description:
-      "Panduan langkah demi langkah mem-publish aplikasi web ke server cloud Linux, konfigurasi DNS domain gratis, dan sertifikat SSL Let's Encrypt.",
-    syllabus: [
-      "Pengenalan Terminal Linux & SSH Key Authentication",
-      "Instalasi Nginx Web Server & Konfigurasi Virtual Host",
-      "Pemasangan Gratis SSL/TLS HTTPS dengan Certbot",
-      "Otomasi Deploy Git Webhook Sederhana",
-    ],
-  },
-];
 
 const CATEGORIES = [
   "Semua Modul",
@@ -139,8 +27,24 @@ const CATEGORIES = [
 export default function CoursesPage() {
   const [selectedCategory, setSelectedCategory] = useState("Semua Modul");
   const [searchQuery, setSearchQuery] = useState("");
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredCourses = COURSES_DATA.filter((c) => {
+  useEffect(() => {
+    async function loadCourses() {
+      try {
+        const data = await getAllCoursesAction();
+        setCourses(data);
+      } catch {
+        setCourses([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadCourses();
+  }, []);
+
+  const filteredCourses = courses.filter((c) => {
     const matchCategory =
       selectedCategory === "Semua Modul" || c.category === selectedCategory;
     const matchSearch =
@@ -274,7 +178,17 @@ export default function CoursesPage() {
         ))}
       </div>
 
-      {filteredCourses.length === 0 && (
+      {loading && (
+        <div className="bg-[#fffefa] rounded-2xl border border-slate-300 p-12 text-center shadow-retro-sm">
+          <BookOpen className="w-10 h-10 text-slate-400 mx-auto mb-3 animate-pulse" />
+          <h3 className="font-space text-base font-bold text-bdc-midnight">Memuat modul dari database...</h3>
+          <p className="text-xs text-slate-500 mt-1 font-sans">
+            Menarik kurikulum terbaru BDC UTDI.
+          </p>
+        </div>
+      )}
+
+      {!loading && filteredCourses.length === 0 && (
         <div className="bg-[#fffefa] rounded-2xl border border-slate-300 p-12 text-center shadow-retro-sm">
           <BookOpen className="w-10 h-10 text-slate-400 mx-auto mb-3" />
           <h3 className="font-space text-base font-bold text-bdc-midnight">Tidak ada modul yang cocok</h3>
