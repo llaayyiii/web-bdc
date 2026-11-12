@@ -267,30 +267,49 @@ export default async function HomePage() {
           </div>
 
           {/* Visi Besar Bento Box (Gaya GDGoC IPB) */}
-          <div className="retro-card p-8 sm:p-10 rounded-3xl bg-[#FAF9F2] border-2 border-slate-300 space-y-6">
-            <div className="flex items-center justify-between">
-              <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-bdc-yellow text-bdc-midnight border border-bdc-midnight shadow-retro-sm">
-                VISI KOMUNITAS 2026/2027
-              </span>
-              <span className="font-mono text-xs text-slate-500 font-bold">
-                EST. YOGYAKARTA
-              </span>
-            </div>
-            <p className="text-xl sm:text-2xl md:text-3xl font-space font-extrabold text-bdc-midnight leading-snug">
-              Menjadi ekosistem pertumbuhan teknologi yang inklusif, tempat mahasiswa dari kampus UTDI dan Yogyakarta belajar, berkarya, berkompetisi, berkolaborasi, dan memimpin.
-            </p>
-            <div className="pt-4 border-t border-slate-300 flex flex-wrap items-center gap-6 text-xs font-mono text-slate-600">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <span>Inklusif &amp; Terbuka</span>
+          <div className="retro-card p-8 sm:p-10 rounded-3xl bg-[#FAF9F2] border-2 border-slate-300">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-6">
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-bdc-yellow text-bdc-midnight border border-bdc-midnight shadow-retro-sm">
+                    VISI KOMUNITAS 2026/2027
+                  </span>
+                  <span className="font-mono text-xs text-slate-500 font-bold">
+                    EST. YOGYAKARTA
+                  </span>
+                </div>
+                <p className="text-xl sm:text-2xl md:text-3xl font-space font-extrabold text-bdc-midnight leading-snug">
+                  Menjadi ekosistem pertumbuhan teknologi yang inklusif, tempat mahasiswa dari kampus UTDI dan Yogyakarta belajar, berkarya, berkompetisi, berkolaborasi, dan memimpin.
+                </p>
+                <div className="pt-4 border-t border-slate-300 flex flex-wrap items-center gap-6 text-xs font-mono text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span>Inklusif &amp; Terbuka</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-bdc-blue" />
+                    <span>Hands-on Project First</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-bdc-gold" />
+                    <span>Verifikasi Kompetensi Resmi</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-bdc-blue" />
-                <span>Hands-on Project First</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-bdc-gold" />
-                <span>Verifikasi Kompetensi Resmi</span>
+
+              <div className="lg:col-span-5 flex justify-center">
+                <div className="w-full max-w-sm rounded-2xl p-4 bg-white border border-slate-300 shadow-retro-sm">
+                  <Image
+                    src="/landing/jembatan-kolaborasi.svg"
+                    alt="Kolaborasi Mahasiswa BDC UTDI"
+                    width={400}
+                    height={260}
+                    className="w-full h-auto object-contain pixelated"
+                  />
+                  <div className="text-center mt-2 font-mono text-[11px] font-bold text-slate-500">
+                    Kolaborasi Lintas Peminatan &amp; Jurusan
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -378,6 +397,15 @@ export default async function HomePage() {
                 <h3 className="font-space font-extrabold text-2xl text-bdc-midnight">
                   Structured Learning
                 </h3>
+                <div className="my-3 py-2 bg-[#FAF9F2] rounded-2xl border border-slate-200 p-2 flex items-center justify-center">
+                  <Image
+                    src="/landing/meja-ngoding.svg"
+                    alt="Structured Learning Meja Belajar Coding"
+                    width={320}
+                    height={180}
+                    className="w-full h-36 object-contain pixelated drop-shadow-sm"
+                  />
+                </div>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                   Jalur belajar yang jelas di bidang <strong>Full-stack Web, Cybersecurity, UI/UX Design, dan Applied AI</strong>, didukung silabus kurikulum modular, modul hands-on, dan bimbingan mentor.
                 </p>
@@ -397,13 +425,22 @@ export default async function HomePage() {
                 <h3 className="font-space font-extrabold text-2xl text-bdc-midnight">
                   Applied Growth
                 </h3>
+                <div className="my-3 py-2 bg-[#FAF9F2] rounded-2xl border border-slate-200 p-2 flex items-center justify-center">
+                  <Image
+                    src="/landing/podium-pencapaian.svg"
+                    alt="Applied Growth Podium Pencapaian & Proyek"
+                    width={320}
+                    height={180}
+                    className="w-full h-36 object-contain pixelated drop-shadow-sm"
+                  />
+                </div>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                   Bukan sekadar mendengarkan materi kuliah. Mahasiswa diajak terjun langsung membangun <strong>Capstone Project nyata</strong>, mengelola repositori Git, dan melakukan code review bertahap.
                 </p>
               </div>
               <div className="pt-4 border-t border-slate-200 font-mono text-xs text-slate-500 flex items-center justify-between">
                 <span>Hands-on Code</span>
-                <span className="text-bdc-red font-bold">64+ Jam Lab &rarr;</span>
+                <span className="text-red-600 font-bold">64+ Jam Lab &rarr;</span>
               </div>
             </div>
 
@@ -416,6 +453,15 @@ export default async function HomePage() {
                 <h3 className="font-space font-extrabold text-2xl text-bdc-midnight">
                   Connected Ecosystem
                 </h3>
+                <div className="my-3 py-2 bg-[#FAF9F2] rounded-2xl border border-slate-200 p-2 flex items-center justify-center">
+                  <Image
+                    src="/landing/jembatan-kolaborasi.svg"
+                    alt="Connected Ecosystem Jembatan Komunitas"
+                    width={320}
+                    height={180}
+                    className="w-full h-36 object-contain pixelated drop-shadow-sm"
+                  />
+                </div>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                   Ekosistem presensi barcode digital proyektor, leaderboard peringkat keaktifan XP, repositori tugas terintegrasi, dan penerbitan <strong>sertifikat resmi digital standar A4</strong>.
                 </p>
@@ -464,6 +510,15 @@ export default async function HomePage() {
                 <h3 className="font-space font-black text-2xl text-bdc-midnight">
                   BDC Catalyst
                 </h3>
+                <div className="my-2 p-2 bg-white rounded-2xl border border-slate-200 flex items-center justify-center">
+                  <Image
+                    src="/landing/meja-proyek-tim.svg"
+                    alt="BDC Catalyst Meja Proyek Tim"
+                    width={340}
+                    height={180}
+                    className="w-full h-36 object-contain pixelated drop-shadow-sm"
+                  />
+                </div>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
                   Sesi workshop intensif mingguan bersama pemateri dan mentor. Dilengkapi sistem pemindai barcode presensi proyektor, kuis penilaian, dan modul hands-on terarah.
                 </p>
@@ -506,6 +561,15 @@ export default async function HomePage() {
                 <h3 className="font-space font-black text-2xl text-bdc-midnight">
                   Tech League &amp; XP
                 </h3>
+                <div className="my-2 p-2 bg-white rounded-2xl border border-slate-200 flex items-center justify-center">
+                  <Image
+                    src="/landing/arena-kompetisi.svg"
+                    alt="Tech League Arena Kompetisi"
+                    width={340}
+                    height={180}
+                    className="w-full h-36 object-contain pixelated drop-shadow-sm"
+                  />
+                </div>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
                   Liga kompetisi teknologi antarmahasiswa. Kumpulkan poin XP keaktifan dan buktikan keunggulan portofoliomu di papan klasemen podium utama.
                 </p>
@@ -548,6 +612,15 @@ export default async function HomePage() {
                 <h3 className="font-space font-black text-2xl text-bdc-midnight">
                   Tech Support &amp; Cert
                 </h3>
+                <div className="my-2 p-2 bg-white rounded-2xl border border-slate-200 flex items-center justify-center">
+                  <Image
+                    src="/landing/sesi-review-mentor.svg"
+                    alt="Tech Support Sesi Review Mentor"
+                    width={340}
+                    height={180}
+                    className="w-full h-36 object-contain pixelated drop-shadow-sm"
+                  />
+                </div>
                 <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
                   Pusat evaluasi penugasan capstone, bimbingan kode, dan penerbitan sertifikat kompetensi resmi A4 yang dapat diverifikasi keasliannya oleh industri.
                 </p>
@@ -599,6 +672,22 @@ export default async function HomePage() {
             <p className="text-xs sm:text-sm text-slate-600">
               Jadwal dan tahapan kegiatan cohort 2026/2027, dari orientasi pendaftaran sampai final demo day dan awarding.
             </p>
+          </div>
+
+          {/* Kalender Milestone Artwork */}
+          <div className="flex justify-center -mb-4">
+            <div className="p-4 sm:p-5 bg-white rounded-3xl border-2 border-slate-300 shadow-retro flex flex-col items-center max-w-sm w-full">
+              <Image
+                src="/landing/kalender-hitung-mundur.svg"
+                alt="Kalender Perjalanan Cohort BDC UTDI"
+                width={380}
+                height={200}
+                className="w-full h-auto object-contain pixelated drop-shadow-sm"
+              />
+              <div className="text-center mt-3 font-mono text-[11px] font-bold text-slate-600 bg-[#FAF9F2] px-3.5 py-1 rounded-full border border-slate-200 shadow-retro-sm">
+                Roadmap Pembelajaran Cohort 2026/2027
+              </div>
+            </div>
           </div>
 
           {/* Stepper Timeline Bento (Gaya GDGoC IPB) */}
@@ -765,6 +854,74 @@ export default async function HomePage() {
               <span className="text-xs font-mono uppercase tracking-wider text-slate-600 font-bold block">
                 Akreditasi Sertifikat
               </span>
+            </div>
+          </div>
+
+          {/* Skyline Landmark Yogyakarta & Kampus UTDI (Inspired by GDGoC IPB Skyline) */}
+          <div className="retro-card p-6 sm:p-10 rounded-3xl bg-[#FAF9F2] border-2 border-slate-300 overflow-hidden relative space-y-6">
+            <div className="text-center max-w-lg mx-auto space-y-1">
+              <span className="font-mono text-[11px] font-bold text-bdc-blue uppercase tracking-widest block">
+                LANDMARK LINGKUNGAN KAMPUS
+              </span>
+              <h3 className="font-space font-extrabold text-2xl text-bdc-midnight">
+                Yogyakarta Digital Heritage Skyline
+              </h3>
+              <p className="text-xs text-slate-600 font-sans">
+                Dari Jl. Raya Janti Kampus UTDI melintasi ikon bersejarah Yogyakarta hingga panggung ekosistem digital nasional.
+              </p>
+            </div>
+
+            {/* Clouds over skyline */}
+            <div className="flex justify-between px-6 opacity-60 pointer-events-none">
+              <Image src="/cards/cloud.svg" alt="Awan Voxel" width={80} height={20} className="w-16 h-auto pixelated animate-float-cloud" />
+              <Image src="/cards/cloud.svg" alt="Awan Voxel" width={100} height={24} className="w-20 h-auto pixelated animate-float-cloud-delayed" />
+              <Image src="/cards/cloud.svg" alt="Awan Voxel" width={90} height={22} className="w-18 h-auto pixelated animate-float-cloud" />
+            </div>
+
+            {/* Horizontal Skyline Showcase */}
+            <div className="overflow-x-auto pb-4 scrollbar-thin">
+              <div className="min-w-[700px] flex items-end justify-around px-6 border-b-4 border-slate-700 pb-2 bg-slate-100/50 rounded-xl pt-6">
+                {/* 1. Gedung UTDI */}
+                <figure className="flex flex-col items-center group transition-transform hover:-translate-y-1">
+                  <Image src="/landing/gedung-utdi.svg" alt="Gedung Kampus UTDI Yogyakarta" width={130} height={90} className="h-24 w-auto object-contain pixelated" />
+                  <figcaption className="text-[11px] font-mono font-bold text-slate-700 mt-2 bg-white px-2.5 py-0.5 rounded border border-slate-300 shadow-retro-sm">
+                    Gedung UTDI
+                  </figcaption>
+                </figure>
+
+                {/* Tree */}
+                <Image src="/cards/tree.svg" alt="Pohon Voxel" width={26} height={36} className="h-10 w-auto object-contain pixelated mb-1" />
+
+                {/* 2. Tugu Pal Putih Jogja */}
+                <figure className="flex flex-col items-center group transition-transform hover:-translate-y-1">
+                  <Image src="/landing/tugu-jogja.svg" alt="Tugu Pal Putih Yogyakarta" width={72} height={140} className="h-32 w-auto object-contain pixelated" />
+                  <figcaption className="text-[11px] font-mono font-bold text-slate-700 mt-2 bg-white px-2.5 py-0.5 rounded border border-slate-300 shadow-retro-sm">
+                    Tugu Jogja
+                  </figcaption>
+                </figure>
+
+                {/* Tree */}
+                <Image src="/cards/tree.svg" alt="Pohon Voxel" width={26} height={36} className="h-10 w-auto object-contain pixelated mb-1" />
+
+                {/* 3. Titik Nol Malioboro */}
+                <figure className="flex flex-col items-center group transition-transform hover:-translate-y-1">
+                  <Image src="/landing/titik-nol-jogja.svg" alt="Titik Nol Kilometer Malioboro" width={110} height={95} className="h-24 w-auto object-contain pixelated" />
+                  <figcaption className="text-[11px] font-mono font-bold text-slate-700 mt-2 bg-white px-2.5 py-0.5 rounded border border-slate-300 shadow-retro-sm">
+                    Titik Nol Km
+                  </figcaption>
+                </figure>
+
+                {/* Tree */}
+                <Image src="/cards/tree.svg" alt="Pohon Voxel" width={26} height={36} className="h-10 w-auto object-contain pixelated mb-1" />
+
+                {/* 4. Candi Prambanan */}
+                <figure className="flex flex-col items-center group transition-transform hover:-translate-y-1">
+                  <Image src="/landing/candi-prambanan.svg" alt="Candi Prambanan Voxel" width={96} height={110} className="h-28 w-auto object-contain pixelated" />
+                  <figcaption className="text-[11px] font-mono font-bold text-slate-700 mt-2 bg-white px-2.5 py-0.5 rounded border border-slate-300 shadow-retro-sm">
+                    Candi Prambanan
+                  </figcaption>
+                </figure>
+              </div>
             </div>
           </div>
         </div>

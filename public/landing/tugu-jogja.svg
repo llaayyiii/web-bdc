@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="140" fill="none" shape-rendering="crispEdges" viewBox="0 0 72 140">
+  <!-- Base Ground & Stairs -->
+  <rect x="8" y="132" width="56" height="6" fill="#334155" />
+  <rect x="12" y="126" width="48" height="6" fill="#64748b" />
+  <rect x="16" y="120" width="40" height="6" fill="#94a3b8" />
+  
+  <!-- Base Pedestal (Square) -->
+  <rect x="20" y="96" width="32" height="24" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2" />
+  <rect x="26" y="102" width="20" height="12" fill="#F1F5F9" />
+  <!-- Gold Inscription / Ornament on Pedestal -->
+  <rect x="28" y="106" width="16" height="4" fill="#E9AD17" />
+  
+  <!-- Column Base Collar -->
+  <rect x="22" y="90" width="28" height="6" fill="#E9AD17" />
+  
+  <!-- Main Cylindrical Shaft (White Column) -->
+  <rect x="26" y="42" width="20" height="48" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2" />
+  <rect x="30" y="44" width="12" height="44" fill="#F8FAFC" />
+  <!-- Vertical fluting accents -->
+  <rect x="34" y="46" width="4" height="40" fill="#E2E8F0" />
+  
+  <!-- Capital / Top Collar (Gold Accents) -->
+  <rect x="22" y="36" width="28" height="6" fill="#E9AD17" />
+  <rect x="24" y="30" width="24" height="6" fill="#FFFFFF" />
+  <rect x="26" y="24" width="20" height="6" fill="#E9AD17" />
+  
+  <!-- Pointed Golden Spire (Manunggal Nyawiji) -->
+  <rect x="30" y="18" width="12" height="6" fill="#E9AD17" />
+  <rect x="32" y="12" width="8" height="6" fill="#E9AD17" />
+  <rect x="34" y="6" width="4" height="6" fill="#EEDD55" />
+  <rect x="35" y="2" width="2" height="4" fill="#EEDD55" />
+  <!-- Gleam spark -->
+  <rect x="32" y="2" width="2" height="2" fill="#FFFFFF" />
+</svg>
