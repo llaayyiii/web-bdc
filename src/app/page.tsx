@@ -79,9 +79,9 @@ export default async function HomePage() {
             <a href="#kampus" className="hover:text-bdc-blue transition-colors">
               Dari UTDI
             </a>
-            <Link href="/verify" className="hover:text-bdc-blue transition-colors flex items-center gap-1 text-slate-700">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Verifikasi Ijazah</span>
+            <Link href="/leaderboard" className="hover:text-bdc-blue transition-colors flex items-center gap-1.5 text-slate-700">
+              <Trophy className="w-3.5 h-3.5 text-bdc-gold" />
+              <span>Leaderboard</span>
             </Link>
           </nav>
 
@@ -421,8 +421,8 @@ export default async function HomePage() {
                 </p>
               </div>
               <div className="pt-4 border-t border-slate-200 font-mono text-xs text-slate-500 flex items-center justify-between">
-                <span>Verifikasi Ijazah</span>
-                <span className="text-emerald-600 font-bold">100% Teruji &rarr;</span>
+                <span>Peringkat Mahasiswa</span>
+                <span className="text-emerald-600 font-bold">Leaderboard XP &rarr;</span>
               </div>
             </div>
           </div>
@@ -569,10 +569,11 @@ export default async function HomePage() {
 
               <div className="pt-4 border-t border-slate-300">
                 <Link
-                  href="/verify"
+                  href="/leaderboard"
                   className="retro-btn w-full py-2.5 rounded-xl bg-white text-bdc-midnight text-xs font-bold flex items-center justify-center gap-2 shadow-retro-sm"
                 >
-                  <span>Portal Verifikasi Ijazah</span>
+                  <Trophy className="w-3.5 h-3.5 text-bdc-gold" />
+                  <span>Lihat Leaderboard</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
