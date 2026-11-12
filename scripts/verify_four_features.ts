@@ -123,7 +123,7 @@ export async function runTestCycle(cycleNumber: number) {
     qr_token: liveSess2Token,
     status: "live",
   });
-  const urlScan = `https://web-bdc.vercel.app/attendance?token=${liveSess2.qr_token}`;
+  const urlScan = `https://bdcutdi.vercel.app/attendance?token=${liveSess2.qr_token}`;
   const scanResult2 = bdcStore.recordAttendance(student2.id, urlScan, "qr_scanner");
   if (!scanResult2.success) {
     console.error("DEBUG scanResult2 error:", scanResult2.error);
