@@ -1,131 +1,160 @@
-# Business Dev Club (BDC) — Portal Akademik & Sertifikasi Mahasiswa
+<div align="center">
 
-Portal resmi pembelajaran, evaluasi kompetensi, penerbitan sertifikat digital, dan verifikasi kredensial mahasiswa **Business Dev Club (BDC)** — Universitas Teknologi Digital Indonesia (UTDI), Yogyakarta.
+# 🎓 Business Dev Club — BDC Portal
 
-Aplikasi ini telah dimigrasikan dari berkas statis HTML ke **Next.js App Router (TypeScript, Tailwind CSS)** dengan integrasi data nyata **Supabase PostgreSQL & Supabase Auth**, dilengkapi proteksi domain email kampus **`@students.utdi.ac.id`**.
+**Portal Akademik · Presensi Barcode · Sertifikasi Digital**
 
----
+Universitas Teknologi Digital Indonesia (UTDI) — Yogyakarta
 
-## 🎨 Palet Warna & Desain (Taste Skill)
+[![Live](https://img.shields.io/badge/live-bdcutdi.vercel.app-062A78?style=for-the-badge&logo=vercel&logoColor=white)](https://bdcutdi.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-087EA8?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
+[![Copyright](https://img.shields.io/badge/copyright-2026%20BDC%20UTDI-000741?style=for-the-badge)](#-lisensi--hak-cipta)
 
-Antarmuka dirancang presisi dengan token palet warna kustom:
-- **Surface Neutral**: `#EFF0F0` (`bg-bdc-surface`)
-- **Highlight Badge**: `#EEDD55` (`bg-bdc-yellow`)
-- **Accent Gold**: `#E9AD17` (`text-bdc-gold`, bintang rating, seal)
-- **Primary Interactive Blue**: `#095BAF` (`bg-bdc-blue`, tombol aksi & navigasi)
-- **Deep Navy**: `#062A78` (`bg-bdc-navy`, kartu & header)
-- **Dark Midnight**: `#000741` (`bg-bdc-midnight`, sidebar & teks kontras tinggi)
-
----
-
-## 🚀 Fitur Utama
-
-1. **Autentikasi & Pembatasan Domain Kampus**:
-   - Mendukung login dengan **NIM Mahasiswa** (cth: `255720056`) atau **Email Resmi**.
-   - Validasi ketat domain email: hanya menerima **`@students.utdi.ac.id`** untuk mahasiswa.
-   - Sesi aman berbasis HTTP-only Cookie via `@supabase/ssr` dan Next.js Middleware.
-
-2. **Dasbor Mahasiswa & Capstone Project**:
-   - Metrik riil: Total Jam Belajar (64.5 Jam), Modul Selesai (4/5), Skor Rata-rata (96.40 / A+), dan Kredensial Resmi.
-   - Capstone Project *"BDC Hub (Web Presensi & Pembelajaran Community)"*.
-
-3. **Katalog Modul Pembelajaran & Silabus Interaktif**:
-   - 5 Modul Riil: *Live Coding Web App*, *Audit Keamanan Siber & Jaringan*, *UI/UX Design System*, *Startup Pitching*, dan *Cloud VPS Deployment*.
-   - Filter kategori dan pencarian live.
-   - Checklist silabus topik interaktif yang langsung menyimpan progres siswa (0-100%) ke database.
-
-4. **Ujian & Kuis Interaktif dengan Penilaian Server**:
-   - Countdown timer 30 menit dengan auto-submit saat waktu habis.
-   - Palet nomor soal interaktif (Terjawab, Ragu-ragu, Belum).
-   - Penilaian otomatis di sisi server (anti-cheat di sisi klien) dan feedback kelulusan instan.
-
-5. **Sertifikat & Transkrip Akademik 2 Halaman (A4 Bebas Overflow)**:
-   - **Halaman 1**: Piagam Sertifikat Kelulusan Resmi dengan ornamen klasik, nomor unik (`BDC-CERT-2026-99482-SEC`), dan penandatangan resmi:
-     - **Bagas Triaji, S.Kom., M.Kom.** (Kemahasiswaan UTDI, Yogyakarta)
-     - **Nurul Layli** (PIC Program BDC)
-   - **Halaman 2**: Transkrip Akademik Rinci (rincian modul SEC-501 s.d SEC-504, jam, nilai, dan Capstone Project).
-   - Mode Cetak A4 presisi (`window.print()`) dan QR Code verifikasi dinamis.
-
-6. **Pangkalan Verifikasi Kredensial Publik (`/verify`)**:
-   - Dapat diakses bebas oleh siapa saja (perusahaan/publik) tanpa harus login.
-   - Verifikasi keaslian berdasarkan Nomor Sertifikat, Nomor Transkrip, atau NIM.
-
-7. **Panel Admin & Instruktur (`/admin`)**:
-   - Tema gelap Navy khas Dasbor Admin.
-   - Ringkasan analitik akademik (Total mahasiswa, tingkat kelulusan, modul aktif).
-   - Manajemen pembukaan kunci sertifikat (*lock/unlock*).
-   - Editor data penandatangan resmi dan periode akademik.
+</div>
 
 ---
 
-## 🛠️ Panduan Instalasi Lokal
+## ✨ Fitur Unggulan
+
+### 🔐 Autentikasi & Keamanan
+- Login dengan **NIM** (`245720024`) atau **email kampus** — validasi ketat domain **`@students.utdi.ac.id`**.
+- Sesi berbasis *HTTP-only cookie* via `@supabase/ssr` + proteksi rute di **Next.js Middleware**.
+- Pendaftaran mandiri dengan pemilihan peminatan — seluruh learner otomatis berlabel **`Corporate Learner (Student Chapter)`**.
+
+### 📚 Modul, Silabus & Tugas
+- **5 modul pembelajaran** dengan silabus *checklist* interaktif — progres (0–100%) langsung tersimpan ke database.
+- **Tugas & Essay** dengan pengumpulan online dan **penilaian di sisi server** (nilai tertinggi menjadi skor kompetensi).
+
+### 📡 Presensi Barcode Realtime
+- Pemindai QR lewat **kamera perangkat** (`html5-qrcode`) atau **input token manual** — contoh: `BDC-494`.
+- Token pendek berputar otomatis tiap 30 detik, +100 XP per kehadiran, riwayat scan tervalidasi.
+
+### 🎥 Mode Proyektor (Live Presentation)
+- Satu klik **"Layar Proyektor QR"** → layar **fullscreen otomatis** & **sidebar sembunyi otomatis**.
+- QR raksasa untuk layar kelas, token alternatif, serta **daftar hadir realtime** (sinkron tiap 5 detik).
+
+### 🏆 Papan Skor & Dasbor
+- Rank kehadiran & XP, metrik capstone, badge status sertifikat, dan tautan **grup WhatsApp komunitas**.
+
+### 📜 Sertifikat & Verifikasi
+- **Sertifikat diterbitkan manual oleh admin** (bukan otomatis karena tuntas) — alur "Terbitkan / Tarik Kembali" di panel admin.
+- Dokumen **2 halaman A4**: Piagam Kelulusan + Transkrip Akademik, nomor unik, QR verifikasi, mode cetak presisi.
+- Portal verifikasi publik **`/verify`** — dapat dicek siapa saja berdasarkan Nomor Sertifikat, Transkrip, atau NIM tanpa login.
+
+### 🛡️ Panel Admin & Instruktur (`/admin`)
+- Analitik akademik, manajemen sesi & QR proyektor, data mahasiswa, penilaian tugas, manajemen pengguna, dan editor penandatangan sertifikat.
+
+---
+
+## 🛠️ Tech Stack
+
+| Lapisan | Teknologi |
+|---|---|
+| Framework | **Next.js 16** (App Router, Server Actions) |
+| UI | **React 19**, **Tailwind CSS 3**, ikon `lucide-react` |
+| Bahasa | **TypeScript** (strict) |
+| Data | **Supabase** — PostgreSQL + Supabase Auth |
+| QR / Kamera | `qrcode` (generasi) · `html5-qrcode` (pemindaian) |
+| Hosting | **Vercel** (edge, free tier) |
+
+---
+
+## 📁 Struktur Repositori
+
+```
+web-bdc/
+├── src/
+│   ├── app/                  # App Router: (auth), (portal), /admin, /verify
+│   ├── components/           # UI bersama, sertifikat, scanner, panel admin
+│   ├── lib/                  # Server Actions, store in-memory + hydrate DB, supabase client
+│   └── middleware.ts         # Proteksi rute & sesi
+├── public/                   # Logo, ilustrasi landing, aset lingkungan
+├── supabase/                 # schema.sql · seed.sql · skrip patch migrasi
+├── legacy/                   # ⚠ Arsip versi HTML statis (sebelum migrasi Next.js)
+├── docs/                     # Spesifikasi & rencana migrasi
+└── scripts/                  # Skrip verifikasi fitur & seed Supabase
+```
+
+---
+
+## 🚀 Menjalankan Secara Lokal
 
 ### 1. Prasyarat
-- Node.js versi 18.17+ atau 20+
-- npm atau pnpm
+- **Node.js 18.17+** (disarankan 20+)
+- `npm`
 
-### 2. Jalankan di Lingkungan Lokal
+### 2. Instalasi
+
 ```bash
-# Clone repositori dan masuk ke folder
-git clone https://github.com/arraffinh/web-bdc.git
+git clone https://github.com/llaayyiii/web-bdc.git
 cd web-bdc
-
-# Pasang dependensi
 npm install
-
-# Jalankan server pengembangan
 npm run dev
 ```
 
-Buka peramban Anda di [http://localhost:3000](http://localhost:3000).
+Buka [http://localhost:3000](http://localhost:3000).
 
 ---
 
 ## 🗄️ Menghubungkan ke Supabase (Free Tier)
 
-1. Buat proyek baru di [supabase.com](https://supabase.com) (Pilih region terdekat: *Singapore*).
-2. Buka **SQL Editor** di dashboard Supabase.
-3. Jalankan isi berkas [`supabase/schema.sql`](supabase/schema.sql) untuk membuat seluruh tabel dan kebijakan keamanan RLS.
-4. Jalankan isi berkas [`supabase/seed.sql`](supabase/seed.sql) untuk memasukkan data awal.
-5. Salin URL dan Kunci API dari menu **Project Settings > API**.
-6. Buat file `.env.local` di root proyek:
+1. Buat proyek baru di [supabase.com](https://supabase.com) (region terdekat: *Singapore*).
+2. Buka **SQL Editor**, jalankan [`supabase/schema.sql`](supabase/schema.sql) lalu [`supabase/seed.sql`](supabase/seed.sql).
+3. Salin **URL** & **Kunci API** dari *Project Settings → API*.
+4. Buat file `.env.local` di root:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://[YOUR-PROJECT-REF].supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=[YOUR-ANON-KEY]
 SUPABASE_SERVICE_ROLE_KEY=[YOUR-SERVICE-ROLE-KEY]
 ```
 
-*Catatan: Jika variabel lingkungan belum diatur, aplikasi secara cerdas menggunakan in-memory state engine bawaan sehingga seluruh alur halaman dapat dijalankan dan diuji 100% tanpa kendala.*
+> 💡 Tanpa variabel lingkungan, aplikasi tetap berjalan penuh memakai *in-memory state engine* bawaan — cocok untuk uji coba tanpa database.
 
 ---
 
-## ☁️ Deployment ke Vercel (Free Tier / Hobby)
+## ☁️ Deployment ke Vercel
 
-1. Push repositori ini ke akun GitHub Anda.
-2. Masuk ke [vercel.com](https://vercel.com) dan klik **Add New Project > Import Git Repository**.
-3. Pada bagian **Environment Variables**, tambahkan:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-4. Klik **Deploy**. Proyek Anda akan langsung live dengan domain `*.vercel.app`.
+1. Push repositori ke GitHub Anda.
+2. Di [vercel.com](https://vercel.com): **Add New Project → Import Git Repository**.
+3. Tambahkan ketiga *environment variables* di atas.
+4. **Deploy** — situs live di domain `*.vercel.app`.
 
 ---
 
-## 👤 Akun Uji Coba Cepat (Demo Accounts)
+## 👤 Akun Demo
 
-Untuk mempermudah pengujian, halaman login menyediakan tombol **Demo Akun Instan**:
+| Peran | Email | Password |
+|---|---|---|
+| 🎓 Mahasiswa | `arrafi.nur24@students.utdi.ac.id` | `secretPassword123` |
+| 🛡️ Admin | `nurul.layli25@students.utdi.ac.id` | `Nurul123` |
 
-- **Mahasiswa (Siswa)**:
-  - **Nama**: Siti Rahmawati
-  - **NIM**: `255720056`
-  - **Email**: `255720056@students.utdi.ac.id`
-  - **Password**: `secretPassword123`
-- **Admin (Kemahasiswaan)**:
-  - **Nama**: .
-  - **Email**: ``
-  - **Password**: `adminPassword123`
+> Mahasiswa lain: `ananda.enjelina25@students.utdi.ac.id` (password sama).
 
 ---
 
-## 🏛️ Lisensi & Hak Cipta
+## 🎨 Palet Warna & Tipografi
+
+Antarmuka bertema *retro-academic* dengan token warna kustom Tailwind:
+
+| Token | Hex | Peran |
+|---|---|---|
+| `bdc-surface` | `#EFF0F0` | Latar halaman |
+| `bdc-paper` | `#FAF9F2` | Kartu & kertas |
+| `bdc-yellow` | `#EEDD55` | Aksen badge & sorotan |
+| `bdc-gold` | `#E9AD17` | Rating, seal, detail emas |
+| `bdc-blue` | `#095BAF` | Tombol aksi utama |
+| `bdc-navy` | `#062A78` | Kartu gelap & header |
+| `bdc-midnight` | `#000741` | Teks kontras & bayangan *retro* |
+
+Tipografi: **Space Grotesk** (judul & aksen *display*) · **Plus Jakarta Sans** (teks) · **JetBrains Mono** (label & data).
+
+---
+
+## 📜 Lisensi & Hak Cipta
+
 &copy; 2026 Business Dev Club (BDC) — Universitas Teknologi Digital Indonesia (UTDI), Yogyakarta.
