@@ -43,7 +43,7 @@ export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
     let clean = (rawToken || "").trim();
     if (!clean) return;
 
-    // Handle full URL QR code (mis. https://.../attendance?token=BDC-PRESENSI-LIVE-xxx)
+    // Handle full URL QR code (mis. https://.../attendance?token=BDC-994)
     if (clean.includes("token=")) {
       const match = clean.match(/token=([A-Za-z0-9_-]+)/);
       if (match && match[1]) {
@@ -340,7 +340,7 @@ export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
                 type="text"
                 value={tokenInput}
                 onChange={(e) => setTokenInput(e.target.value)}
-                placeholder="Contoh: BDC-PRESENSI-LIVE-994"
+                placeholder="Contoh: BDC-994"
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm text-xs font-mono uppercase tracking-wider bg-white transition-all"
               />
             </div>

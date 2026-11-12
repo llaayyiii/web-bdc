@@ -577,7 +577,7 @@ class BdcDataStore {
       title: payload.title || "Sesi Live Pertemuan BDC",
       instructor: payload.instructor || "Dr. Evelyn Vance",
       meet_url: payload.meet_url || "https://meet.google.com/bdc-utdi-web",
-      qr_token: payload.qr_token || `BDC-QR-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+      qr_token: payload.qr_token || `BDC-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
       scheduled_at: payload.scheduled_at || new Date().toISOString(),
       expires_at: payload.expires_at || new Date(Date.now() + 3 * 3600 * 1000).toISOString(),
       status: payload.status || "live",

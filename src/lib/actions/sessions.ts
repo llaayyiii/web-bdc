@@ -181,7 +181,7 @@ export async function adminRotateSessionTokenAction(
 
   // Generate a fresh dynamic token
   const randomSuffix = Math.floor(100 + Math.random() * 900);
-  const freshToken = `BDC-PRESENSI-LIVE-${randomSuffix}`;
+  const freshToken = `BDC-${randomSuffix}`;
   bdcStore.setMeetSession({ id: sessionId, qr_token: freshToken });
 
   // Sinkronisasi ke Supabase

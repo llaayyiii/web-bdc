@@ -77,7 +77,7 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
         title: title.trim(),
         instructor: instructor.trim(),
         meet_url: meetUrl.trim(),
-        qr_token: `BDC-PRESENSI-LIVE-${randomSuffix}`,
+        qr_token: `BDC-${randomSuffix}`,
         scheduled_at: new Date().toISOString(),
         expires_at: new Date(Date.now() + 3 * 3600 * 1000).toISOString(),
         status,
