@@ -41,6 +41,11 @@ export function AdminSidebar() {
     });
   };
 
+  // Mode Proyektor Aktif (Live Presentation): sembunyikan sidebar otomatis
+  if (pathname.includes("/presenter")) {
+    return null;
+  }
+
   const navItems = [
     {
       name: "Ringkasan Analitik",

@@ -256,6 +256,10 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                   {/* Open Presenter Screen */}
                   <Link
                     href={`/admin/sessions/${sess.id}/presenter`}
+                    onClick={() => {
+                      // Minta layar penuh dalam gestur klik (Mode Proyektor otomatis fullscreen)
+                      document.documentElement.requestFullscreen().catch(() => {});
+                    }}
                     className="retro-btn px-4 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all flex items-center gap-2 shadow-retro-sm border border-bdc-midnight"
                   >
                     <QrCode className="w-4 h-4 text-bdc-yellow" />

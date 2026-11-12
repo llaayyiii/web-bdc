@@ -99,6 +99,19 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
     }
   };
 
+  // Otomatis masuk layar penuh saat Mode Proyektor dibuka,
+  // dan keluar layar penuh saat presenter ditutup/ditinggalkan.
+  useEffect(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+    return () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#000741] text-white flex flex-col p-6 sm:p-10 font-sans">
       {/* Top Bar for Presenter */}
