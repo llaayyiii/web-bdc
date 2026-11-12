@@ -3,121 +3,7 @@
 -- Initial Real Seed Data (UTDI Yogyakarta)
 -- ==============================================================================
 
--- 1. COURSES SEED (5 Modul Pembelajaran Nyata BDC)
-INSERT INTO public.courses (id, title, category, session_type, instructor, instructor_role, duration, level, learners_count, rating, icon, badge_color, description, syllabus)
-VALUES
-(
-  'ACT-01',
-  'Ngoding Bareng: Membangun Web App Interaktif dari Nol',
-  'Sesi Minggu Ini',
-  'Live Session',
-  'Dr. Evelyn Vance & Tim Web Dev',
-  'Inisiator / Pemateri Komunitas',
-  'Live Session (2 Jam)',
-  'Pemula (Beginner)',
-  340,
-  4.9,
-  'Code',
-  'bg-rose-100 text-rose-700',
-  'Sesi interaktif mingguan membedah struktur HTML5, styling Tailwind, dan logika JavaScript interaktif langsung dengan live coding bersama anggota.',
-  '[
-    "Struktur Dasar Web Modern & Best Practice HTML5",
-    "Live Coding: Styling Responsive dengan Tailwind CSS",
-    "Interaktivitas & DOM Manipulation JavaScript",
-    "Tanya Jawab & Bedah Kode Bareng Anggota Komunitas"
-  ]'::jsonb
-),
-(
-  'ACT-02',
-  'Workshop Hands-On: Audit Keamanan Akun & Pengujian Jaringan',
-  'Workshop & Hands-On',
-  'Workshop Lab',
-  'Ir. Hendra Saputra, M.Kom',
-  'Inisiator / Pemateri Komunitas',
-  'Workshop Lab (3 Jam)',
-  'Semua Tingkat (All Levels)',
-  420,
-  4.9,
-  'Terminal',
-  'bg-emerald-100 text-emerald-700',
-  'Praktik langsung simulasi mendeteksi tautan phishing, analisis lalu lintas Wi-Fi rentan, serta konfigurasi 2FA hardware key.',
-  '[
-    "Simulasi Uji Coba Serangan Social Engineering & Phishing",
-    "Inspeksi Jaringan Wi-Fi Publik dengan Wireshark Dasar",
-    "Langkah Proteksi Password Manager & Multi-Factor Auth",
-    "Checklist Keamanan Siber Mandiri untuk Laptop & Ponsel"
-  ]'::jsonb
-),
-(
-  'ACT-03',
-  'Proyek Kolaborasi: UI/UX Open Source Design System Komunitas',
-  'Proyek Bersama',
-  'Project File',
-  'Maya Kartika, S.Ds',
-  'Inisiator / Pemateri Komunitas',
-  'Project File',
-  'Pemula (Beginner)',
-  280,
-  4.8,
-  'FolderArchive',
-  'bg-purple-100 text-purple-700',
-  'Repositori aset desain, komponen Figma terbuka, dan panduan kontribusi bareng untuk membangun UI kit resmi komunitas kampus.',
-  '[
-    "Panduan Kontribusi & Tata Kelola Figma Team Workspace",
-    "Penyusunan Desain Token: Palet Warna & Tipografi",
-    "Pembuatan Komponen Tombol, Input & Dialog Reusable",
-    "Review Bersama & Penggabungan Aset Kontributor"
-  ]'::jsonb
-),
-(
-  'ACT-04',
-  'Rekaman Sharing: Memulai Startup Digital & Pitching ke Inkubator',
-  'Arsip Recording',
-  'Rekaman Web',
-  'Rian Danuarta, MBA',
-  'Inisiator / Pemateri Komunitas',
-  'Rekaman Web (1.5 Jam)',
-  'Pemula (Beginner)',
-  510,
-  4.9,
-  'PlayCircle',
-  'bg-blue-100 text-blue-700',
-  'Arsip video sharing alumni mengenai langkah validasi ide produk teknologi, menyusun Business Model Canvas, dan kiat lolos seleksi pendanaan inkubator.',
-  '[
-    "Rekaman Bagian 1: Validasi Masalah & Customer Interview",
-    "Rekaman Bagian 2: Menyusun Pitch Deck 10 Slide Efektif",
-    "Template Dokumen Pitching & Lembar Evaluasi Bisnis",
-    "Sesi Q&A Diskusi Pengalaman Founder Startup Mahasiswa"
-  ]'::jsonb
-),
-(
-  'ACT-05',
-  'Deploy Bareng: Hosting Web & Domain Gratis Menggunakan Cloud VPS',
-  'Workshop & Hands-On',
-  'Workshop Lab',
-  'Arya Pratama, S.Kom',
-  'Inisiator / Pemateri Komunitas',
-  'Workshop Lab (2.5 Jam)',
-  'Menengah (Intermediate)',
-  390,
-  4.8,
-  'Cloud',
-  'bg-amber-100 text-amber-700',
-  'Panduan langkah demi langkah mem-publish aplikasi web ke server cloud Linux, konfigurasi DNS domain gratis, dan sertifikat SSL Let''s Encrypt.',
-  '[
-    "Pengenalan Terminal Linux & SSH Key Authentication",
-    "Instalasi Nginx Web Server & Konfigurasi Virtual Host",
-    "Pemasangan Gratis SSL/TLS HTTPS dengan Certbot",
-    "Otomasi Deploy Git Webhook Sederhana"
-  ]'::jsonb
-)
-ON CONFLICT (id) DO UPDATE SET
-  title = EXCLUDED.title,
-  category = EXCLUDED.category,
-  description = EXCLUDED.description,
-  syllabus = EXCLUDED.syllabus;
-
--- 2. QUIZZES SEED (Uji Kompetensi BDC)
+-- 1. QUIZZES SEED (Uji Kompetensi BDC)
 INSERT INTO public.quizzes (id, title, description, time_limit_minutes, passing_score, total_questions, is_published)
 VALUES
 (
@@ -131,7 +17,7 @@ VALUES
 )
 ON CONFLICT (id) DO NOTHING;
 
--- 3. QUIZ QUESTIONS SEED (10 Soal Riil)
+-- 2. QUIZ QUESTIONS SEED (10 Soal Riil)
 INSERT INTO public.quiz_questions (quiz_id, order_index, question_text, options, correct_option, weight)
 VALUES
 (
