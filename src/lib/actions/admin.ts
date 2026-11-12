@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import bcrypt from "bcryptjs";
 import { getCurrentUser } from "./auth";
 import { bdcStore } from "../data/store";
 import { UserRole } from "../types/database";
@@ -87,19 +88,25 @@ export async function adminUpdateUserPasswordAction(
     };
   }
 
+  const passwordHash = await bcrypt.hash(cleanPassword, 10);
+
   // Update di store lokal
   const success = bdcStore.updateUserPassword(userId, cleanPassword);
+  bdcStore.updateProfile(userId, { password_hash: passwordHash });
   if (!success) {
     return { success: false, error: "Pengguna tidak ditemukan." };
   }
 
-  // Sinkronisasi live ke Supabase Auth (jika terhubung)
+  // Sinkronisasi live ke Supabase Auth & Profiles (jika terhubung)
   const supabaseAdmin = createAdminClient();
   if (supabaseAdmin) {
     try {
       await supabaseAdmin.auth.admin.updateUserById(userId, {
         password: cleanPassword,
       });
+      await supabaseAdmin.from("profiles").update({
+        password_hash: passwordHash,
+      }).eq("id", userId);
     } catch (err: unknown) {
       console.warn("Sinkronisasi kata sandi ke Supabase Auth:", err);
     }

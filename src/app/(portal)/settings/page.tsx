@@ -12,7 +12,7 @@ import {
   Server,
   Cloud,
 } from "lucide-react";
-import { getCurrentUser } from "@/lib/actions/auth";
+import { getCurrentUser, updateSelfPasswordAction } from "@/lib/actions/auth";
 import { useToast } from "@/components/ui/Toast";
 import { BdcDots } from "@/components/ui/BdcDots";
 
@@ -48,13 +48,18 @@ export default function SettingsPage() {
     }, 500);
   };
 
-  const handleSavePassword = (e: React.FormEvent) => {
+  const handleSavePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
       showToast("Konfirmasi kata sandi tidak cocok.", "error");
       return;
     }
-    showToast("Kata sandi berhasil diperbarui dengan aman.", "success");
+    const res = await updateSelfPasswordAction(oldPassword, newPassword);
+    if (!res.success) {
+      showToast(res.error || "Gagal memperbarui kata sandi.", "error");
+      return;
+    }
+    showToast(res.message || "Kata sandi berhasil diperbarui dengan aman.", "success");
     setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");

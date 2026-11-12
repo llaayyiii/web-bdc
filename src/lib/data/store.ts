@@ -25,7 +25,7 @@ export const SEED_PROFILES: Profile[] = [
     period: "2026/2027",
     location: "Yogyakarta",
     avatar_url: null,
-    password: "secretPassword123",
+    password: "Nurul123",
     score: 0.0,
     completed_modules: 0,
     total_hours: 0.0,

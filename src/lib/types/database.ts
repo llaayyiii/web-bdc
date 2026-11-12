@@ -12,6 +12,7 @@ export interface Profile {
   location: string;
   avatar_url?: string | null;
   password?: string;
+  password_hash?: string | null;
   score: number;
   completed_modules: number;
   total_hours: number;

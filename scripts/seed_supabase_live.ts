@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
+import bcrypt from "bcryptjs";
 import {
   SEED_PROFILES,
   SEED_SESSIONS,
@@ -49,11 +50,14 @@ async function main() {
   for (const profile of SEED_PROFILES) {
     let authUser = existingUsers.find((u) => u.email?.toLowerCase() === profile.email.toLowerCase());
 
+    const rawPassword = profile.password || "secretPassword123";
+    const passwordHash = bcrypt.hashSync(rawPassword, 10);
+
     if (!authUser) {
       console.log(`Creating Auth User: ${profile.email}`);
       const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
         email: profile.email,
-        password: profile.password || "secretPassword123",
+        password: rawPassword,
         email_confirm: true,
         user_metadata: {
           full_name: profile.full_name,
@@ -67,7 +71,14 @@ async function main() {
       }
       authUser = newUser.user;
     } else {
-      console.log(`Auth User already exists: ${profile.email} (${authUser.id})`);
+      console.log(`Auth User already exists: ${profile.email} (${authUser.id}) - Updating password`);
+      await supabase.auth.admin.updateUserById(authUser.id, {
+        password: rawPassword,
+        user_metadata: {
+          full_name: profile.full_name,
+          nim_id: profile.nim_id,
+        },
+      });
     }
 
     if (authUser) {
@@ -85,6 +96,7 @@ async function main() {
           score: profile.score,
           completed_modules: profile.completed_modules,
           total_hours: profile.total_hours,
+          password_hash: passwordHash,
         },
         { onConflict: "id" }
       );
@@ -92,7 +104,7 @@ async function main() {
       if (profileError) {
         console.error(`Error saving profile for ${profile.email}:`, profileError.message);
       } else {
-        console.log(`Profile synced for: ${profile.full_name} (${profile.role})`);
+        console.log(`Profile synced for: ${profile.full_name} (${profile.role}) with password_hash`);
       }
     }
   }
