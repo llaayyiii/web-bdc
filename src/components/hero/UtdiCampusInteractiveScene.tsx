@@ -101,19 +101,22 @@ export function UtdiCampusInteractiveScene() {
       style={{ perspective: "1000px" }}
       aria-hidden="true"
     >
-      {/* 1. PARALLAX 3D LEGO CAMPUS BACKGROUND WITH AMBIENT FLOAT */}
+      {/* 1. PARALLAX 3D LEGO CAMPUS BACKGROUND WITH AMBIENT FLOAT (Compressed Loop Video & Poster) */}
       <div
         ref={backgroundRef}
         className="absolute inset-0 will-change-transform transition-transform duration-75 ease-out pointer-events-none"
       >
-        <Image
-          src="/environments/utdi-campus-lego.webp"
-          alt="Environment 3D Kampus UTDI Yogyakarta Bergaya Lego Voxel"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-bottom md:object-right-bottom opacity-90 transition-opacity duration-700"
-        />
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/environments/utdi-campus-lego.webp"
+          className="w-full h-full object-cover object-bottom md:object-right-bottom opacity-90 transition-opacity duration-700"
+        >
+          <source src="/environments/utdi-hero-lego.webm" type="video/webm" />
+          <source src="/environments/utdi-hero-lego.mp4" type="video/mp4" />
+        </video>
 
         {/* Subtle Dot Matrix Layer */}
         <div className="absolute inset-0 bg-voxel-grid opacity-35" />
