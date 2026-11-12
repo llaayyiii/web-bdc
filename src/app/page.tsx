@@ -176,130 +176,67 @@ export default async function HomePage() {
         {/* Layer 3: Bottom Gradient Wash (Soft blend to next section) */}
         <div className="absolute inset-x-0 bottom-0 h-28 hero-bottom-wash z-[1] pointer-events-none" />
 
-        {/* Layer 4: Hero Content Container */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-16 w-full my-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Left 7 Cols: Typography, Headline, and CTAs */}
-            <div className="lg:col-span-7 space-y-6">
-              {/* Eyebrow Pill */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fffefa]/95 backdrop-blur-sm border border-slate-300 text-xs font-mono shadow-retro-sm">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="font-bold uppercase tracking-wider text-bdc-navy">
-                  UTDI CHAPTER // COHORT 2026
-                </span>
-                <BdcDots size="sm" />
-              </div>
-
-              {/* Main Headline (GDGoC IPB typography) */}
-              <h1
-                id="hero-heading"
-                className="font-pixel text-4xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl text-bdc-midnight leading-[0.98] tracking-tight drop-shadow-sm"
-              >
-                Belajar teknologi<br />
-                <span className="text-bdc-blue">bareng BDC UTDI</span>
-              </h1>
-
-              {/* Subtitle */}
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed max-w-xl font-sans bg-[#EFF0F0]/70 md:bg-transparent backdrop-blur-[2px] md:backdrop-blur-none rounded-xl p-1 md:p-0">
-                Komunitas mahasiswa teknologi Universitas Teknologi Digital Indonesia: tingkatkan keterampilan
-                rekayasa web, audit keamanan, dan UI/UX lewat sesi praktik langsung, presensi barcode terverifikasi,
-                dan sertifikasi kompetensi resmi.
-              </p>
-
-              {/* CTA Group */}
-              <div className="pt-2 flex flex-wrap items-center gap-4">
-                <Link
-                  href={portalHref}
-                  className="retro-btn px-7 py-3.5 rounded-2xl bg-bdc-blue hover:bg-blue-600 text-white text-sm font-bold flex items-center gap-2.5 shadow-retro transition-all border border-bdc-midnight"
-                >
-                  <Terminal className="w-4 h-4 text-bdc-yellow" />
-                  <span>{portalLabel}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-
-                <a
-                  href="#tracks"
-                  className="retro-btn px-6 py-3.5 rounded-2xl bg-[#fffefa] hover:bg-[#f4f3ea] text-bdc-midnight text-sm font-bold border border-bdc-midnight shadow-retro transition-all flex items-center gap-2"
-                >
-                  <Code2 className="w-4 h-4 text-bdc-blue" />
-                  <span>Jelajahi Peminatan</span>
-                </a>
-              </div>
-
-              {/* Micro stats banner */}
-              <div className="pt-4 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-700 font-mono">
-                <div className="flex items-center gap-1.5 bg-[#fffefa]/80 px-2.5 py-1 rounded-lg border border-slate-300 shadow-retro-sm">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Presensi Barcode Proyektor</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-[#fffefa]/80 px-2.5 py-1 rounded-lg border border-slate-300 shadow-retro-sm">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Rank Kehadiran &amp; XP</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-[#fffefa]/80 px-2.5 py-1 rounded-lg border border-slate-300 shadow-retro-sm">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>Cetak Sertifikat A4</span>
-                </div>
-              </div>
+        {/* Layer 4: Hero Content Container (Clean copy showcasing 3D voxel background) */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-16 pb-20 w-full my-auto">
+          <div className="max-w-2xl xl:max-w-3xl space-y-6">
+            {/* Eyebrow Pill */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fffefa]/95 backdrop-blur-sm border border-slate-300 text-xs font-mono shadow-retro-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-bold uppercase tracking-wider text-bdc-navy">
+                UTDI CHAPTER // COHORT 2026
+              </span>
+              <BdcDots size="sm" />
             </div>
 
-            {/* Right 5 Cols: Floating Retro CLI Island Card */}
-            <div className="lg:col-span-5">
-              <div className="relative">
-                {/* Decorative retro offset shadow frame */}
-                <div className="rounded-3xl bg-[#fffefa]/95 backdrop-blur-md border-2 border-bdc-midnight shadow-retro-lg p-6 sm:p-7 space-y-5">
-                  {/* Window Bar */}
-                  <div className="flex items-center justify-between pb-3.5 border-b border-slate-200">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-[#EA4335] border border-red-700" />
-                      <div className="w-3 h-3 rounded-full bg-[#EEDD55] border border-amber-600" />
-                      <div className="w-3 h-3 rounded-full bg-[#34A853] border border-emerald-700" />
-                    </div>
-                    <span className="font-mono text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                      bdc-terminal v2.6.4
-                    </span>
-                    <BdcDots size="sm" />
-                  </div>
+            {/* Main Headline (GDGoC IPB typography) */}
+            <h1
+              id="hero-heading"
+              className="font-pixel text-4xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl text-bdc-midnight leading-[0.98] tracking-tight drop-shadow-sm"
+            >
+              Belajar teknologi<br />
+              <span className="text-bdc-blue">bareng BDC UTDI</span>
+            </h1>
 
-                  {/* Terminal CLI code animation */}
-                  <div className="p-4 rounded-xl bg-bdc-midnight text-white font-mono text-xs space-y-2 border border-slate-800 shadow-inner">
-                    <p className="text-slate-400">$ bdc init --cohort 2026 --campus utdi</p>
-                    <p className="text-emerald-400">&gt; Menghubungkan ke pangkalan data kampus...</p>
-                    <p className="text-bdc-yellow">&gt; Presensi Sesi Aktif: {liveSession?.qr_token || "BDC-PRESENSI-LIVE-994"}</p>
-                    <p className="text-slate-200">&gt; Status Mahasiswa: Valid (@students.utdi.ac.id)</p>
-                    <div className="pt-2 flex items-center gap-1 text-slate-400">
-                      <span className="text-bdc-blue font-bold">&gt;</span>
-                      <span className="w-2.5 h-4 bg-bdc-yellow animate-pulse inline-block" />
-                    </div>
-                  </div>
+            {/* Subtitle */}
+            <p className="text-sm sm:text-base text-slate-700 leading-relaxed max-w-xl font-sans bg-[#EFF0F0]/70 md:bg-transparent backdrop-blur-[2px] md:backdrop-blur-none rounded-xl p-1 md:p-0">
+              Komunitas mahasiswa teknologi Universitas Teknologi Digital Indonesia: tingkatkan keterampilan
+              rekayasa web, audit keamanan, dan UI/UX lewat sesi praktik langsung, presensi barcode terverifikasi,
+              dan sertifikasi kompetensi resmi.
+            </p>
 
-                  {/* Live Activity Snapshot Card */}
-                  <div className="p-4 rounded-xl bg-[#EFF0F0] border border-slate-300 space-y-3 shadow-retro-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] uppercase font-bold text-slate-500">
-                        Live Sesi Hari Ini
-                      </span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
-                        Google Meet
-                      </span>
-                    </div>
+            {/* CTA Group */}
+            <div className="pt-2 flex flex-wrap items-center gap-4">
+              <Link
+                href={portalHref}
+                className="retro-btn px-7 py-3.5 rounded-2xl bg-bdc-blue hover:bg-blue-600 text-white text-sm font-bold flex items-center gap-2.5 shadow-retro transition-all border border-bdc-midnight"
+              >
+                <Terminal className="w-4 h-4 text-bdc-yellow" />
+                <span>{portalLabel}</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
 
-                    <h4 className="font-space text-xs sm:text-sm font-bold text-bdc-midnight leading-snug">
-                      {liveSession?.title || "Sesi Pertemuan 3: Integrasi API & State Management Komunitas"}
-                    </h4>
+              <a
+                href="#tracks"
+                className="retro-btn px-6 py-3.5 rounded-2xl bg-[#fffefa] hover:bg-[#f4f3ea] text-bdc-midnight text-sm font-bold border border-bdc-midnight shadow-retro transition-all flex items-center gap-2"
+              >
+                <Code2 className="w-4 h-4 text-bdc-blue" />
+                <span>Jelajahi Peminatan</span>
+              </a>
+            </div>
 
-                    <div className="flex items-center justify-between pt-1 text-[11px] text-slate-500 font-mono">
-                      <span>Pemateri: {liveSession?.instructor || "Dr. Evelyn Vance"}</span>
-                      <Link
-                        href={portalHref}
-                        className="text-bdc-blue hover:text-bdc-navy font-bold flex items-center gap-1"
-                      >
-                        <span>Presensi</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+            {/* Micro stats banner */}
+            <div className="pt-4 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-700 font-mono">
+              <div className="flex items-center gap-1.5 bg-[#fffefa]/80 px-2.5 py-1 rounded-lg border border-slate-300 shadow-retro-sm">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Presensi Barcode Proyektor</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-[#fffefa]/80 px-2.5 py-1 rounded-lg border border-slate-300 shadow-retro-sm">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Rank Kehadiran &amp; XP</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-[#fffefa]/80 px-2.5 py-1 rounded-lg border border-slate-300 shadow-retro-sm">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Cetak Sertifikat A4</span>
               </div>
             </div>
           </div>
