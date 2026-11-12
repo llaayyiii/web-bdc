@@ -60,7 +60,7 @@ export default async function CertificatesPage() {
         </div>
       </div>
 
-      {/* 2. Auto-Unlock Criteria Card */}
+      {/* 2. Prasyarat Kelulusan & Penerbitan Sertifikat */}
       <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] p-6 shadow-retro space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#d9dfd7]">
           <div>
@@ -71,7 +71,7 @@ export default async function CertificatesPage() {
               <BdcDots size="sm" />
             </div>
             <p className="text-xs text-slate-500 font-sans mt-0.5">
-              Sertifikat diterbitkan otomatis oleh sistem apabila 3 kriteria standar dipenuhi
+              Sertifikat diterbitkan oleh pengelola BDC setelah seluruh kriteria terpenuhi
             </p>
           </div>
           <span
@@ -154,27 +154,39 @@ export default async function CertificatesPage() {
 
       {!cert || cert.is_locked ? (
         <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] p-8 sm:p-12 text-center space-y-4 shadow-retro">
-          <div className="w-14 h-14 rounded-2xl bg-[#EFF0F0] text-slate-500 border border-slate-300 flex items-center justify-center mx-auto shadow-retro-sm">
-            <Lock className="w-7 h-7" />
+          <div
+            className={`w-14 h-14 rounded-2xl border flex items-center justify-center mx-auto shadow-retro-sm ${
+              allCriteriaMet
+                ? "bg-emerald-50 text-emerald-600 border-emerald-300"
+                : "bg-[#EFF0F0] text-slate-500 border-slate-300"
+            }`}
+          >
+            {allCriteriaMet ? <CheckCircle2 className="w-7 h-7" /> : <Lock className="w-7 h-7" />}
           </div>
-          <h2 className="font-space text-lg font-bold text-bdc-midnight">Sertifikat Masih Terkunci</h2>
-          <p className="text-xs text-slate-600 max-w-sm mx-auto font-sans leading-relaxed">
-            Selesaikan seluruh sesi presensi barcode (min. 80%), ikuti evaluasi ujian mandiri, dan kumpulkan tugas proyek untuk membuka sertifikat resmi.
+          <h2 className="font-space text-lg font-bold text-bdc-midnight">
+            {allCriteriaMet ? "Menunggu Penerbitan Admin" : "Sertifikat Belum Diterbitkan"}
+          </h2>
+          <p className="text-xs text-slate-600 max-w-md mx-auto font-sans leading-relaxed">
+            {allCriteriaMet
+              ? "Seluruh kriteria kelulusan telah terpenuhi. Sertifikat resmi Anda akan diterbitkan oleh pengelola BDC UTDI."
+              : "Selesaikan seluruh sesi presensi barcode (min. 80%), ratakan nilai tugas & essay (min. 75), dan dinilai minimal 1 tugas untuk memenuhi syarat penerbitan."}
           </p>
-          <div className="flex flex-wrap justify-center gap-3 pt-2">
-            <Link
-              href="/attendance"
-              className="retro-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-bdc-navy text-white text-xs font-bold shadow-retro-sm"
-            >
-              <span>Presensi Barcode</span>
-            </Link>
-            <Link
-              href="/assignments"
-              className="retro-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-bdc-blue text-white text-xs font-bold shadow-retro-sm"
-            >
-              <span>Kumpulkan Tugas</span>
-            </Link>
-          </div>
+          {!allCriteriaMet && (
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
+              <Link
+                href="/attendance"
+                className="retro-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-bdc-navy text-white text-xs font-bold shadow-retro-sm"
+              >
+                <span>Presensi Barcode</span>
+              </Link>
+              <Link
+                href="/assignments"
+                className="retro-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-bdc-blue text-white text-xs font-bold shadow-retro-sm"
+              >
+                <span>Kumpulkan Tugas</span>
+              </Link>
+            </div>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   full_name TEXT NOT NULL,
   email TEXT UNIQUE NOT NULL,
   role TEXT NOT NULL DEFAULT 'learner' CHECK (role IN ('learner', 'instructor', 'admin')),
-  role_title TEXT NOT NULL DEFAULT 'Corporate Learner',
+  role_title TEXT NOT NULL DEFAULT 'Corporate Learner (Student Chapter)',
   division TEXT NOT NULL DEFAULT 'Academic College Community',
   period TEXT NOT NULL DEFAULT '2026/2027',
   location TEXT NOT NULL DEFAULT 'Yogyakarta',
@@ -120,9 +120,9 @@ CREATE TABLE IF NOT EXISTS public.certificates (
   issue_date DATE NOT NULL DEFAULT '2026-03-24',
   total_hours NUMERIC(5,1) NOT NULL DEFAULT 64.5,
   avg_score NUMERIC(5,2) NOT NULL DEFAULT 96.40,
-  completion_status TEXT NOT NULL DEFAULT 'LULUS (KOMPETEN)',
+  completion_status TEXT NOT NULL DEFAULT 'MENUNGGU PENERBITAN',
   cohort_badge TEXT DEFAULT 'TOP 3% COHORT',
-  is_locked BOOLEAN NOT NULL DEFAULT false,
+  is_locked BOOLEAN NOT NULL DEFAULT true,
 
   -- Capstone Project Details
   capstone_title TEXT NOT NULL DEFAULT 'BDC Hub (Web Presensi & Pembelajaran Community)',

@@ -352,18 +352,13 @@ export default async function LeaderboardPage() {
                     </td>
 
                     <td className="py-3.5 px-4 text-center">
-                      <div className="inline-flex items-center gap-1.5 font-mono">
-                        <span className="font-bold text-bdc-midnight">
-                          {student.attendance_rate}%
-                        </span>
-                        <span className="text-[10px] text-slate-400">
-                          ({student.total_attendances || 0}/{student.total_sessions || 8})
-                        </span>
-                      </div>
+                      <span className="font-bold font-mono text-bdc-midnight">
+                        {student.attendance_rate}%
+                      </span>
                     </td>
 
                     <td className="py-3.5 px-4 text-center font-mono">
-                      {student.completed_modules} / 5
+                      {student.completed_modules}
                     </td>
 
                     <td className="py-3.5 px-4 text-right">

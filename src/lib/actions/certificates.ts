@@ -122,18 +122,24 @@ export async function getCertificateByIdAction(id: string): Promise<Certificate 
 }
 
 /**
- * Admin: Kunci / Buka Gembok Sertifikat
+ * Admin: Menerbitkan / Menarik kembali sertifikat mahasiswa
+ * (Sertifikat hanya terbit karena admin menerbitkan, bukan otomatis karena tuntas)
  */
 export async function adminToggleCertificateLockAction(certId: string, isLocked: boolean) {
   await requireAdmin();
-  const cert = bdcStore.updateCertificate(certId, { is_locked: isLocked });
+  // Saat diterbitkan: status LULUS; saat ditarik: kembali menunggu penerbitan
+  const completion_status = isLocked ? "MENUNGGU PENERBITAN" : "LULUS (KOMPETEN)";
+  const cert = bdcStore.updateCertificate(certId, { is_locked: isLocked, completion_status });
 
   const supabaseAdmin = createAdminClient();
   if (supabaseAdmin) {
     try {
-      await supabaseAdmin.from("certificates").update({ is_locked: isLocked, updated_at: new Date().toISOString() }).eq("id", certId);
+      await supabaseAdmin
+        .from("certificates")
+        .update({ is_locked: isLocked, completion_status, updated_at: new Date().toISOString() })
+        .eq("id", certId);
     } catch (err) {
-      console.warn("Gagal update status gembok sertifikat di Supabase:", err);
+      console.warn("Gagal update status penerbitan sertifikat di Supabase:", err);
     }
   }
 

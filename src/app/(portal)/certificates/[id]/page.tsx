@@ -72,6 +72,24 @@ export default function CertificatePreviewPage({
     );
   }
 
+  if (cert.is_locked) {
+    return (
+      <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-12 text-center space-y-4">
+        <Award className="w-10 h-10 text-slate-400 mx-auto" />
+        <p className="text-xs text-slate-500 font-sans">
+          Sertifikat ini belum diterbitkan oleh pengelola BDC.
+        </p>
+        <Link
+          href="/certificates"
+          className="retro-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-bdc-navy text-white text-xs font-bold border border-bdc-midnight shadow-retro-sm"
+        >
+          <ArrowLeft className="w-4 h-4 text-bdc-yellow" />
+          <span>Kembali ke Sertifikat</span>
+        </Link>
+      </div>
+    );
+  }
+
   const verifyUrl = `/verify?cert=${encodeURIComponent(cert.certificate_number)}`;
 
   return (

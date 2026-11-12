@@ -155,19 +155,6 @@ export async function adminGradeAssignmentAction(
         })
         .eq("id", sub.id);
 
-      // Status kelulusan sertifikat bisa berubah setelah penilaian
-      const cert = bdcStore.getCertificateByUserId(sub.user_id);
-      if (cert) {
-        await supabaseAdmin
-          .from("certificates")
-          .update({
-            is_locked: cert.is_locked,
-            completion_status: cert.completion_status,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", cert.id);
-      }
-
       // Skor profil = nilai tugas tertinggi (pengganti skor ujian)
       const gradedProfile = bdcStore.getProfileById(sub.user_id);
       if (gradedProfile) {

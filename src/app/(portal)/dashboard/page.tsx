@@ -165,7 +165,6 @@ export default async function DashboardPage() {
               <span className="font-pixel text-3xl font-black text-bdc-midnight">
                 {completedCount}
               </span>
-              <span className="font-mono text-xs font-bold text-slate-500">/ {courses.length} Modul</span>
             </div>
             <p className="text-[11px] text-slate-500 mt-1 font-mono">Silabus kompetensi terselesaikan</p>
           </div>
@@ -324,7 +323,13 @@ export default async function DashboardPage() {
                 PROYEK CAPSTONE
               </span>
               {certificate ? (
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${
+                    certificate.is_locked
+                      ? "bg-amber-100 text-amber-800 border-amber-300"
+                      : "bg-emerald-100 text-emerald-800 border-emerald-300"
+                  }`}
+                >
                   {certificate.completion_status || "LULUS (KOMPETEN)"}
                 </span>
               ) : isCapstoneGraded ? (

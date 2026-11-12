@@ -48,21 +48,21 @@ export default function AdminStudentsPage() {
       s.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleToggleLock = async (certId: string) => {
-    const nextLocked = !certLockState[certId];
+  const handleToggleLock = async (certId: string, currentlyLocked: boolean) => {
+    const nextLocked = !currentlyLocked;
     try {
       const res = await adminToggleCertificateLockAction(certId, nextLocked);
       if (res.success) {
         setCertLockState((prev) => ({ ...prev, [certId]: nextLocked }));
         showToast(
           nextLocked
-            ? "Sertifikat mahasiswa berhasil dikunci."
-            : "Sertifikat mahasiswa berhasil dibuka (unlocked).",
+            ? "Sertifikat ditarik kembali (belum terbit)."
+            : "Sertifikat berhasil diterbitkan dan siap dicetak.",
           "success"
         );
       }
     } catch {
-      showToast("Gagal memperbarui status gembok sertifikat.", "error");
+      showToast("Gagal memperbarui status penerbitan sertifikat.", "error");
     }
   };
 
@@ -84,7 +84,7 @@ export default function AdminStudentsPage() {
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
-              Kelola data mahasiswa cohort 2026/2027, kontrol manual pembukaan kunci sertifikat, dan rekapitulasi jam belajar.
+              Kelola data mahasiswa cohort 2026/2027, terbitkan sertifikat secara manual setelah mahasiswa tuntas, dan rekapitulasi jam belajar.
             </p>
           </div>
 
@@ -113,8 +113,8 @@ export default function AdminStudentsPage() {
                 <th className="px-4 py-3">Email Domain</th>
                 <th className="px-4 py-3">Nilai Rata-rata</th>
                 <th className="px-4 py-3">Jam Belajar</th>
-                <th className="px-4 py-3 text-center">Status Kredensial</th>
-                <th className="px-4 py-3 text-right">Aksi Gembok</th>
+                <th className="px-4 py-3 text-center">Status Sertifikat</th>
+                <th className="px-4 py-3 text-right">Aksi Penerbitan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#d9dfd7]">
@@ -148,21 +148,21 @@ export default function AdminStudentsPage() {
                         }`}
                       >
                         {isLocked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
-                        <span>{isLocked ? "Terkunci" : "Terbuka (Siap Cetak)"}</span>
+                        <span>{isLocked ? "Belum Terbit" : "Terbit (Siap Cetak)"}</span>
                       </span>
                     </td>
                     <td className="px-4 py-3.5 text-right">
                       {cert && (
                         <button
                           type="button"
-                          onClick={() => handleToggleLock(cert.id)}
+                          onClick={() => handleToggleLock(cert.id, isLocked)}
                           className={`retro-btn px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all shadow-retro-sm border cursor-pointer ${
                             isLocked
                               ? "bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-800"
                               : "bg-[#EFF0F0] hover:bg-slate-200 text-slate-800 border-slate-300"
                           }`}
                         >
-                          {isLocked ? "Buka Kunci" : "Kunci Kembali"}
+                          {isLocked ? "Terbitkan" : "Tarik Kembali"}
                         </button>
                       )}
                     </td>

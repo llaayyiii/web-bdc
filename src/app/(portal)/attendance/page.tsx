@@ -24,7 +24,6 @@ export default async function AttendancePage() {
 
   const liveSession = bdcStore.getLiveSession();
   const attendances = bdcStore.getAttendancesByUser(user.id);
-  const totalSessions = user.total_sessions || 8;
   const attendedCount = user.total_attendances || attendances.length;
   const attendanceRate = user.attendance_rate || 0;
   const isEligible = attendanceRate >= 80;
@@ -106,7 +105,6 @@ export default async function AttendancePage() {
           <div className="mt-3">
             <div className="flex items-baseline gap-1">
               <span className="font-pixel text-3xl font-black text-bdc-midnight">{attendedCount}</span>
-              <span className="font-mono text-xs font-bold text-slate-400">/ {totalSessions} Sesi</span>
             </div>
             <p className="font-mono text-[11px] text-slate-500 mt-1">Dihitung otomatis oleh server</p>
           </div>

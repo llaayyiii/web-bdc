@@ -497,7 +497,7 @@ export async function verifyRegistrationOtpAction(
     full_name: pending.fullName,
     email: pending.email,
     role: "learner",
-    role_title: "Junior Web Developer Cohort",
+    role_title: "Corporate Learner (Student Chapter)",
     division: "Academic College Community",
     period: "2026/2027",
     location: "Yogyakarta",

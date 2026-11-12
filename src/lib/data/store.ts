@@ -40,7 +40,7 @@ export const SEED_PROFILES: Profile[] = [
     full_name: "Arrafi Nur Hafiz",
     email: "arrafi.nur24@students.utdi.ac.id",
     role: "learner",
-    role_title: "Junior Web Developer Cohort",
+    role_title: "Corporate Learner (Student Chapter)",
     division: "Academic College Community",
     period: "2026/2027",
     location: "Yogyakarta",
@@ -690,9 +690,6 @@ class BdcDataStore {
       attendance_rate: newRate,
     });
 
-    // Check Auto-Unlock Certificate
-    this.checkCertificateEligibility(userId);
-
     return { success: true, record: newRecord, pointsEarned: 100 };
   }
 
@@ -794,9 +791,6 @@ class BdcDataStore {
       .reduce((max, s) => Math.max(max, s.score || 0), 0);
     this.updateProfile(sub.user_id, { score: best });
 
-    // Auto-check certificate eligibility
-    this.checkCertificateEligibility(sub.user_id);
-
     return { success: true, submission: sub };
   }
 
@@ -813,30 +807,6 @@ class BdcDataStore {
       }
       return b.score - a.score;
     });
-  }
-
-  // 6. AUTO-UNLOCK CERTIFICATE CRITERIA
-  checkCertificateEligibility(userId: string) {
-    const user = this.getProfileById(userId);
-    const cert = this.getCertificateByUserId(userId);
-    if (!user || !cert) return false;
-
-    const meetRequirement = (user.attendance_rate || 0) >= 80;
-    const examRequirement = (user.score || 0) >= 75;
-
-    // Check assignments
-    const userSubs = this.getSubmissionsByUser(userId);
-    const gradedSubs = userSubs.filter((s) => s.status === "graded");
-    const assignmentsMet = gradedSubs.length >= 1;
-
-    const isEligible = meetRequirement && examRequirement && assignmentsMet;
-
-    if (isEligible && cert.is_locked) {
-      cert.is_locked = false;
-      cert.completion_status = "LULUS (KOMPETEN)";
-    }
-
-    return isEligible;
   }
 }
 
