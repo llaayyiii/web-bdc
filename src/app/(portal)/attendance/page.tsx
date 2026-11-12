@@ -214,11 +214,11 @@ export default async function AttendancePage() {
           </div>
 
           {/* Quick Guide Card */}
-          <div className="bg-bdc-midnight text-white rounded-2xl p-5 border-2 border-bdc-midnight shadow-retro-sm">
-            <h4 className="font-mono text-xs font-bold text-bdc-yellow uppercase tracking-wider mb-2">
+          <div className="bg-[#fffefa] rounded-2xl border border-[#d9dfd7] p-5 shadow-retro-sm">
+            <h4 className="font-mono text-xs font-bold text-bdc-midnight uppercase tracking-wider mb-2">
               Tata Cara Presensi Barcode
             </h4>
-            <ul className="text-xs text-slate-300 space-y-2 font-mono">
+            <ul className="text-xs text-slate-600 space-y-2 font-mono">
               <li className="flex items-start gap-2">
                 <span className="w-4 h-4 rounded-full bg-bdc-blue text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
                 <span>Perhatikan kode QR yang ditampilkan instruktur di layar proyektor kelas atau share screen Meet.</span>
