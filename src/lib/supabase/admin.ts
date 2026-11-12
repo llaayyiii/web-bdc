@@ -17,3 +17,22 @@ export function createAdminClient() {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
+
+/**
+ * Supabase Client dengan Anon Key (tanpa persistensi sesi).
+ * Dipakai di Server Action untuk operasi auth publik seperti
+ * `signInWithOtp` (kirim kode OTP email) dan `verifyOtp` (verifikasi kode),
+ * dengan hak akses yang sama seperti pemanggilan dari browser.
+ */
+export function createAnonClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !anonKey) {
+    return null;
+  }
+
+  return createClient(supabaseUrl, anonKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}

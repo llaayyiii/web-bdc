@@ -6,10 +6,67 @@ import bcrypt from "bcryptjs";
 import { bdcStore } from "../data/store";
 import { hydrateFromDb } from "../data/db";
 import { Profile } from "../types/database";
-import { createAdminClient } from "../supabase/admin";
+import { createAdminClient, createAnonClient } from "../supabase/admin";
 
 const CAMPUS_STUDENT_DOMAIN = "students.utdi.ac.id";
 const CAMPUS_STAFF_DOMAINS = ["utdi.ac.id", "businessdevclub.id"];
+
+/** Cookie berisi data pendaftaran yang menunggu verifikasi OTP email (10 menit). */
+const PENDING_REG_COOKIE = "bdc_pending_reg";
+const PENDING_REG_TTL_MS = 10 * 60 * 1000;
+const OTP_MAX_ATTEMPTS = 5;
+const OTP_RESEND_COOLDOWN_MS = 60 * 1000;
+
+interface PendingRegistration {
+  fullName: string;
+  nimId: string;
+  email: string;
+  passwordHash: string;
+  exp: number;
+  attempts: number;
+  lastSentAt: number;
+}
+
+async function readPendingReg(): Promise<PendingRegistration | null> {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get(PENDING_REG_COOKIE)?.value;
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as PendingRegistration;
+    if (!parsed?.email || typeof parsed.exp !== "number") return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+async function writePendingReg(pending: PendingRegistration) {
+  const cookieStore = await cookies();
+  const maxAge = Math.max(1, Math.ceil((pending.exp - Date.now()) / 1000));
+  cookieStore.set(PENDING_REG_COOKIE, JSON.stringify(pending), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge,
+  });
+}
+
+async function clearPendingReg() {
+  const cookieStore = await cookies();
+  cookieStore.delete(PENDING_REG_COOKIE);
+}
+
+/** Pesan error yang ramah untuk kegagalan pengiriman email OTP. */
+function friendlyEmailError(err: { code?: string; message: string }, email: string): string {
+  if (err.code === "over_email_send_rate_limit") {
+    return "Layanan pengiriman email verifikasi sedang mencapai batas. Silakan coba lagi dalam beberapa menit.";
+  }
+  if (err.code === "email_address_not_authorized") {
+    return `Alamat ${email} tidak dapat menerima email dari layanan bawaan Supabase. Silakan hubungi admin kampus.`;
+  }
+  return `Gagal mengirim kode verifikasi ke ${email}. ${err.message}`;
+}
 
 export interface SessionData {
   userId: string;
@@ -211,7 +268,13 @@ export async function logoutAction() {
  */
 export async function registerAction(
   formData: FormData
-): Promise<{ success: boolean; error?: string; redirectTo?: string }> {
+): Promise<{
+  success: boolean;
+  error?: string;
+  requiresOtp?: boolean;
+  email?: string;
+  redirectTo?: string;
+}> {
   const fullName = (formData.get("full_name") as string || "").trim();
   const nimId = (formData.get("nim_id") as string || "").trim();
   const email = (formData.get("email") as string || "").trim().toLowerCase();
@@ -271,21 +334,175 @@ export async function registerAction(
     };
   }
 
+  const supabaseAdmin = createAdminClient();
+  if (!supabaseAdmin) {
+    return { success: false, error: "Layanan pendaftaran belum terkonfigurasi. Silakan coba lagi nanti." };
+  }
+
+  // 1. Buat akun autentikasi Supabase (email sudah dikonfirmasi;
+  //    verifikasi kepemilikan email dilakukan lewat kode OTP di langkah berikutnya)
+  try {
+    const { error: createErr } = await supabaseAdmin.auth.admin.createUser({
+      email: email,
+      password: password,
+      email_confirm: true,
+      user_metadata: { full_name: fullName, nim_id: nimId },
+    });
+
+    if (createErr) {
+      const alreadyExists =
+        createErr.code === "email_exists" || /already registered|has already been/i.test(createErr.message);
+
+      if (!alreadyExists) {
+        return { success: false, error: createErr.message || "Gagal membuat akun autentikasi." };
+      }
+
+      // Sudah pernah mendaftar: lanjutkan hanya jika verifikasi belum selesai (profil belum ada)
+      const { data: existingProfile } = await supabaseAdmin
+        .from("profiles")
+        .select("id")
+        .eq("email", email)
+        .maybeSingle();
+
+      if (existingProfile) {
+        return {
+          success: false,
+          error: `Akun dengan NIM "${nimId}" atau Email "${email}" telah terdaftar pada sistem. Silakan langsung login.`,
+        };
+      }
+    }
+  } catch (err) {
+    console.warn("Gagal membuat akun autentikasi Supabase:", err);
+    return { success: false, error: "Gagal membuat akun autentikasi. Silakan coba lagi." };
+  }
+
+  // 2. Hash kata sandi untuk disimpan ke tabel profiles
   const passwordHash = await bcrypt.hash(password, 10);
-  const userId = `usr-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-  const newProfile: Profile = {
-    id: userId,
-    nim_id: nimId,
-    full_name: fullName,
+
+  // 3. Kirim kode OTP ke email kampus
+  const anonClient = createAnonClient();
+  if (!anonClient) {
+    return { success: false, error: "Layanan verifikasi email tidak terkonfigurasi. Silakan hubungi admin." };
+  }
+
+  const { error: otpErr } = await anonClient.auth.signInWithOtp({ email: email });
+  if (otpErr) {
+    console.warn("Gagal mengirim kode OTP pendaftaran:", otpErr);
+    return { success: false, error: friendlyEmailError(otpErr, email) };
+  }
+
+  // 4. Simpan data pendaftaran sementara di cookie httpOnly (berlaku 10 menit)
+  await writePendingReg({
+    fullName: fullName,
+    nimId: nimId,
     email: email,
+    passwordHash: passwordHash,
+    exp: Date.now() + PENDING_REG_TTL_MS,
+    attempts: 0,
+    lastSentAt: Date.now(),
+  });
+
+  return { success: true, requiresOtp: true, email: email };
+}
+
+/**
+ * Server Action untuk memverifikasi kode OTP saat pendaftaran.
+ * Jika berhasil, profil mahasiswa disimpan ke database dan sesi diaktifkan.
+ */
+export async function verifyRegistrationOtpAction(
+  rawCode: string
+): Promise<{ success: boolean; error?: string; redirectTo?: string }> {
+  const code = (rawCode || "").replace(/\D/g, "");
+
+  if (code.length < 6) {
+    return { success: false, error: "Kode verifikasi terdiri dari angka. Periksa kembali email Anda." };
+  }
+
+  const pending = await readPendingReg();
+  if (!pending) {
+    return { success: false, error: "Sesi pendaftaran tidak ditemukan atau sudah kedaluwarsa. Silakan daftar ulang." };
+  }
+
+  if (pending.exp < Date.now()) {
+    await clearPendingReg();
+    return { success: false, error: "Kode verifikasi kedaluwarsa. Silakan daftar ulang." };
+  }
+
+  if (pending.attempts >= OTP_MAX_ATTEMPTS) {
+    await clearPendingReg();
+    return { success: false, error: "Terlalu banyak percobaan kode yang salah. Silakan daftar ulang." };
+  }
+
+  const anonClient = createAnonClient();
+  const supabaseAdmin = createAdminClient();
+  if (!anonClient || !supabaseAdmin) {
+    return { success: false, error: "Layanan verifikasi email tidak terkonfigurasi. Silakan hubungi admin." };
+  }
+
+  // 1. Verifikasi kode OTP terhadap email pendaftaran
+  const { data: verifyData, error: verifyErr } = await anonClient.auth.verifyOtp({
+    email: pending.email,
+    token: code,
+    type: "email",
+  });
+
+  if (verifyErr) {
+    pending.attempts += 1;
+    const exhausted = pending.attempts >= OTP_MAX_ATTEMPTS;
+    if (exhausted) {
+      await clearPendingReg();
+    } else {
+      await writePendingReg(pending);
+    }
+
+    if (exhausted) {
+      return { success: false, error: "Terlalu banyak percobaan kode yang salah. Silakan daftar ulang." };
+    }
+
+    // Supabase memakai pesan generik "Token has expired or is invalid" (code otp_expired)
+    // untuk kode yang salah maupun yang sudah kedaluwarsa, jadi pesannya digabung.
+    return {
+      success: false,
+      error: "Kode verifikasi salah atau sudah kedaluwarsa. Periksa kembali email Anda, atau minta kode baru.",
+    };
+  }
+
+  // 2. Ambil id akun auth dari hasil verifikasi (identitas pengguna pada sesi)
+  const authUserId = verifyData?.user?.id || verifyData?.session?.user?.id || null;
+
+  if (!authUserId) {
+    await clearPendingReg();
+    return { success: false, error: "Akun autentikasi tidak ditemukan. Silakan daftar ulang." };
+  }
+
+  // 3. Cek ulang duplikat NIM/Email (kondisi dapat berubah sejak langkah pertama)
+  const { data: duplicate } = await supabaseAdmin
+    .from("profiles")
+    .select("id")
+    .or(`email.eq.${pending.email},nim_id.eq.${pending.nimId}`)
+    .maybeSingle();
+
+  if (duplicate) {
+    await clearPendingReg();
+    return {
+      success: false,
+      error: `Akun dengan NIM "${pending.nimId}" atau Email "${pending.email}" telah terdaftar pada sistem. Silakan langsung login.`,
+    };
+  }
+
+  // 4. Simpan profil mahasiswa ke database (terikat ke akun auth)
+  const newProfile: Profile = {
+    id: authUserId,
+    nim_id: pending.nimId,
+    full_name: pending.fullName,
+    email: pending.email,
     role: "learner",
     role_title: "Junior Web Developer Cohort",
     division: "Academic College Community",
     period: "2026/2027",
     location: "Yogyakarta",
     avatar_url: null,
-    password: password,
-    password_hash: passwordHash,
+    password_hash: pending.passwordHash,
     score: 0.0,
     completed_modules: 0,
     total_hours: 0.0,
@@ -295,28 +512,10 @@ export async function registerAction(
     total_sessions: 8,
   };
 
-  // Simpan ke store in-memory
-  bdcStore.registerProfile(newProfile);
-
-  // Sinkronisasi ke Supabase jika terhubung
-  const supabaseAdmin = createAdminClient();
-  if (supabaseAdmin) {
-    try {
-      const { data: authData } = await supabaseAdmin.auth.admin.createUser({
-        email: email,
-        password: password,
-        email_confirm: true,
-        user_metadata: {
-          full_name: fullName,
-          nim_id: nimId,
-        },
-      });
-
-      const finalId = authData?.user?.id || userId;
-      newProfile.id = finalId;
-
-      await supabaseAdmin.from("profiles").upsert({
-        id: finalId,
+  try {
+    const { error: insertErr } = await supabaseAdmin.from("profiles").upsert(
+      {
+        id: newProfile.id,
         nim_id: newProfile.nim_id,
         full_name: newProfile.full_name,
         email: newProfile.email,
@@ -332,14 +531,26 @@ export async function registerAction(
         attendance_rate: newProfile.attendance_rate,
         total_attendances: newProfile.total_attendances,
         total_sessions: newProfile.total_sessions,
-        password_hash: passwordHash,
-      });
-    } catch (err) {
-      console.warn("Sinkronisasi pendaftaran ke Supabase:", err);
+        password_hash: newProfile.password_hash,
+      },
+      { onConflict: "id" }
+    );
+
+    if (insertErr) {
+      console.warn("Gagal menyimpan profil pendaftaran baru:", insertErr);
+      return {
+        success: false,
+        error: `Gagal menyimpan data akun (${insertErr.message}). Silakan coba lagi.`,
+      };
     }
+  } catch (err) {
+    console.warn("Gagal menyimpan profil pendaftaran baru:", err);
+    return { success: false, error: "Gagal menyimpan data akun. Silakan coba lagi." };
   }
 
-  // Set session cookie otomatis
+  // 5. Sinkronkan ke cache lokal, aktifkan sesi, hapus cookie pendaftaran
+  bdcStore.registerProfile(newProfile);
+
   const sessionData: SessionData = {
     userId: newProfile.id,
     nimId: newProfile.nim_id,
@@ -356,8 +567,44 @@ export async function registerAction(
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
+  cookieStore.delete(PENDING_REG_COOKIE);
 
   return { success: true, redirectTo: "/dashboard" };
+}
+
+/**
+ * Server Action untuk mengirim ulang kode OTP pendaftaran (cooldown 60 detik).
+ */
+export async function resendRegistrationOtpAction(): Promise<{ success: boolean; error?: string }> {
+  const pending = await readPendingReg();
+  if (!pending || pending.exp < Date.now()) {
+    await clearPendingReg();
+    return { success: false, error: "Sesi pendaftaran sudah kedaluwarsa. Silakan daftar ulang." };
+  }
+
+  const waitMs = pending.lastSentAt + OTP_RESEND_COOLDOWN_MS - Date.now();
+  if (waitMs > 0) {
+    return {
+      success: false,
+      error: `Tunggu ${Math.ceil(waitMs / 1000)} detik sebelum meminta kode baru.`,
+    };
+  }
+
+  const anonClient = createAnonClient();
+  if (!anonClient) {
+    return { success: false, error: "Layanan verifikasi email tidak terkonfigurasi. Silakan hubungi admin." };
+  }
+
+  const { error } = await anonClient.auth.signInWithOtp({ email: pending.email });
+  if (error) {
+    console.warn("Gagal mengirim ulang kode OTP:", error);
+    return { success: false, error: friendlyEmailError(error, pending.email) };
+  }
+
+  pending.lastSentAt = Date.now();
+  await writePendingReg(pending);
+
+  return { success: true };
 }
 
 /**

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -15,12 +15,30 @@ import {
   Shield,
   QrCode,
   FolderGit2,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [showEmail, setShowEmail] = useState(true);
+
+  // Pulihkan preferensi tampil/sembunyi email (disimpan di browser)
+  useEffect(() => {
+    if (localStorage.getItem("bdc_admin_hide_email") === "1") {
+      setShowEmail(false);
+    }
+  }, []);
+
+  const toggleEmail = () => {
+    setShowEmail((prev) => {
+      const next = !prev;
+      localStorage.setItem("bdc_admin_hide_email", next ? "0" : "1");
+      return next;
+    });
+  };
 
   const navItems = [
     {
@@ -171,10 +189,21 @@ export function AdminSidebar() {
             <div className="w-9 h-9 rounded-xl bg-bdc-midnight text-bdc-yellow font-pixel text-xs flex items-center justify-center shrink-0 border border-bdc-midnight shadow-retro-sm">
               SA
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="font-space text-xs font-bold text-bdc-midnight truncate">Super Admin BDC</p>
-              <p className="font-mono text-[10px] text-slate-500 truncate">admin@utdi.ac.id</p>
+              <p className="font-mono text-[10px] text-slate-500 truncate">
+                {showEmail ? "admin@utdi.ac.id" : "••••••••••"}
+              </p>
             </div>
+            <button
+              type="button"
+              onClick={toggleEmail}
+              aria-label={showEmail ? "Sembunyikan alamat email" : "Tampilkan alamat email"}
+              title={showEmail ? "Sembunyikan email" : "Tampilkan email"}
+              className="retro-btn p-1.5 rounded-lg bg-[#EFF0F0] hover:bg-white border border-[#d9dfd7] text-slate-400 hover:text-bdc-midnight shadow-retro-sm shrink-0"
+            >
+              {showEmail ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+            </button>
           </div>
         </div>
       </aside>
