@@ -150,12 +150,12 @@ export default async function HomePage() {
         {/* Layer 1: 3D Voxel Campus Environment Art Background */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <Image
-            src="/environments/01-hello-campus-3d.webp"
-            alt="Environment 3D Kampus UTDI Voxel Arcade"
+            src="/environments/utdi-campus-lego.webp"
+            alt="Environment 3D Kampus UTDI Yogyakarta Bergaya Lego Voxel"
             fill
             priority
             sizes="100vw"
-            className="object-cover object-bottom md:object-right-bottom opacity-85 transition-opacity duration-700"
+            className="object-cover object-bottom md:object-right-bottom opacity-90 transition-opacity duration-700"
           />
 
           {/* Floating Pixel Clouds */}
