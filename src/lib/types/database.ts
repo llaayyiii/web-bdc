@@ -11,6 +11,7 @@ export interface Profile {
   period: string;
   location: string;
   avatar_url?: string | null;
+  password?: string;
   score: number;
   completed_modules: number;
   total_hours: number;

@@ -20,148 +20,7 @@ import { useToast } from "@/components/ui/Toast";
 import { QuizQuestion } from "@/lib/types/database";
 import { BdcDots } from "@/components/ui/BdcDots";
 
-const QUESTIONS_DATA: QuizQuestion[] = [
-  {
-    id: "q-1",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 1,
-    question_text:
-      "Metode enkripsi mana yang menggunakan sepasang kunci publik (public key) dan kunci privat (private key) untuk mengamankan transmisi data?",
-    options: [
-      { id: "A", text: "Enkripsi Simetris (AES-256)" },
-      { id: "B", text: "Enkripsi Asimetris (RSA / ECC)" },
-      { id: "C", text: "Fungsi Hash Kriptografis (SHA-256)" },
-      { id: "D", text: "Base64 Encoding" },
-    ],
-    weight: 1.0,
-  },
-  {
-    id: "q-2",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 2,
-    question_text:
-      "Serangan siber di mana penyerang menyisipkan script berbahaya ke dalam halaman web yang kemudian dieksekusi di browser korban dikenal dengan istilah?",
-    options: [
-      { id: "A", text: "SQL Injection (SQLi)" },
-      { id: "B", text: "Cross-Site Scripting (XSS)" },
-      { id: "C", text: "Distributed Denial of Service (DDoS)" },
-      { id: "D", text: "Man-in-the-Middle (MitM)" },
-    ],
-    weight: 1.0,
-  },
-  {
-    id: "q-3",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 3,
-    question_text:
-      "Langkah mitigasi paling efektif untuk mencegah serangan SQL Injection pada aplikasi modern adalah?",
-    options: [
-      { id: "A", text: "Menggunakan Prepared Statements dan Parameterized Queries" },
-      { id: "B", text: "Melakukan enkripsi MD5 pada seluruh input string" },
-      { id: "C", text: "Menghapus tanda spasi dari query database" },
-      { id: "D", text: "Menonaktifkan firewall server database" },
-    ],
-    weight: 1.0,
-  },
-  {
-    id: "q-4",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 4,
-    question_text:
-      "Standar internasional terkemuka untuk Sistem Manajemen Keamanan Informasi (SMKI / ISMS) adalah?",
-    options: [
-      { id: "A", text: "ISO 9001:2015" },
-      { id: "B", text: "ISO/IEC 27001:2022" },
-      { id: "C", text: "IEEE 802.11" },
-      { id: "D", text: "RFC 2616" },
-    ],
-    weight: 1.0,
-  },
-  {
-    id: "q-5",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 5,
-    question_text:
-      "Dalam konsep keamanan informasi, prinsip \"CIA Triad\" merupakan singkatan dari?",
-    options: [
-      { id: "A", text: "Confidentiality, Integrity, Availability" },
-      { id: "B", text: "Control, Identification, Authentication" },
-      { id: "C", text: "Compliance, Inspection, Authorization" },
-      { id: "D", text: "Cryptography, Infrastructure, Analytics" },
-    ],
-    weight: 1.0,
-  },
-  {
-    id: "q-6",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 6,
-    question_text:
-      "Manakah atribut cookie berikut yang berfungsi mencegah script JavaScript di sisi browser membaca token autentikasi sesi?",
-    options: [
-      { id: "A", text: "SameSite=Lax" },
-      { id: "B", text: "HttpOnly" },
-      { id: "C", text: "Secure" },
-      { id: "D", text: "Domain=.utdi.ac.id" },
-    ],
-    weight: 1.0,
-  },
-  {
-    id: "q-7",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 7,
-    question_text:
-      "Di Next.js App Router, pemanggilan database atau operasi sensitif disarankan diletakkan pada komponen jenis apa?",
-    options: [
-      { id: "A", text: "Client Component dengan useLayoutEffect" },
-      { id: "B", text: "Server Component / Server Actions" },
-      { id: "C", text: "Public static JSON file" },
-      { id: "D", text: "HTML inline script" },
-    ],
-    weight: 1.0,
-  },
-  {
-    id: "q-8",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 8,
-    question_text:
-      "Protokol jaringan yang digunakan untuk mengamankan pertukaran data web melalui saluran terenkripsi SSL/TLS adalah?",
-    options: [
-      { id: "A", text: "HTTP" },
-      { id: "B", text: "FTP" },
-      { id: "C", text: "HTTPS" },
-      { id: "D", text: "Telnet" },
-    ],
-    weight: 1.0,
-  },
-  {
-    id: "q-9",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 9,
-    question_text:
-      "Apa fungsi utama dari mekanisme Row Level Security (RLS) pada PostgreSQL Supabase?",
-    options: [
-      { id: "A", text: "Mempercepat pengurutan kolom string" },
-      { id: "B", text: "Membatasi akses baris data secara spesifik berdasarkan token identitas pengguna" },
-      { id: "C", text: "Menghapus data duplikat secara otomatis" },
-      { id: "D", text: "Mengompresi file media di storage" },
-    ],
-    weight: 1.0,
-  },
-  {
-    id: "q-10",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 10,
-    question_text:
-      "Faktor pembuktian identitas yang menggabungkan kata sandi (knowledge) dengan token OTP di ponsel (possession) disebut?",
-    options: [
-      { id: "A", text: "Single Sign-On (SSO)" },
-      { id: "B", text: "Multi-Factor Authentication (MFA / 2FA)" },
-      { id: "C", text: "Role-Based Access Control (RBAC)" },
-      { id: "D", text: "Biometric Spoofing" },
-    ],
-    weight: 1.0,
-  },
-];
+const QUESTIONS_DATA: QuizQuestion[] = [];
 
 export default function QuizPlayerPage({
   params,
@@ -241,6 +100,33 @@ export default function QuizPlayerPage({
       setIsSubmitting(false);
     }
   };
+
+  if (QUESTIONS_DATA.length === 0) {
+    return (
+      <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-8 sm:p-12 text-center space-y-4">
+        <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EFF0F0] border border-slate-300 flex items-center justify-center text-slate-400 shadow-retro-sm">
+          <HelpCircle className="w-7 h-7" />
+        </div>
+        <div className="space-y-1">
+          <h2 className="font-space text-lg sm:text-xl font-bold text-bdc-midnight">
+            Bank Soal Evaluasi Sedang Kosong
+          </h2>
+          <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed font-sans">
+            Pangkalan data butir soal evaluasi telah dibersihkan. Tidak ada butir soal yang dapat dikerjakan saat ini.
+          </p>
+        </div>
+        <div className="pt-2">
+          <Link
+            href="/assessments"
+            className="retro-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-bdc-navy text-white text-xs font-bold border border-bdc-midnight shadow-retro-sm"
+          >
+            <ArrowLeft className="w-4 h-4 text-bdc-yellow" />
+            <span>Kembali ke Halaman Evaluasi</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const currentQ = QUESTIONS_DATA[currentIndex];
   const selectedAnswer = answers[currentIndex + 1];

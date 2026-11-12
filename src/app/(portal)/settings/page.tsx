@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   User,
   Mail,
@@ -12,19 +12,32 @@ import {
   Server,
   Cloud,
 } from "lucide-react";
+import { getCurrentUser } from "@/lib/actions/auth";
 import { useToast } from "@/components/ui/Toast";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 export default function SettingsPage() {
   const { showToast } = useToast();
 
-  const [fullName, setFullName] = useState("Siti Rahmawati");
-  const [nimId, setNimId] = useState("255720056");
-  const [email, setEmail] = useState("255720056@students.utdi.ac.id");
+  const [fullName, setFullName] = useState("");
+  const [nimId, setNimId] = useState("");
+  const [email, setEmail] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    async function loadUser() {
+      const user = await getCurrentUser();
+      if (user) {
+        setFullName(user.full_name);
+        setNimId(user.nim_id);
+        setEmail(user.email);
+      }
+    }
+    loadUser();
+  }, []);
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();

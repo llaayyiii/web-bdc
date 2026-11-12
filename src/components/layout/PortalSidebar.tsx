@@ -16,7 +16,9 @@ import {
   Menu,
   X,
   ExternalLink,
+  LogOut,
 } from "lucide-react";
+import { logoutAction } from "@/lib/actions/auth";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 interface PortalSidebarProps {
@@ -52,7 +54,7 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
       name: "Materi & Silabus",
       href: "/courses",
       icon: BookOpen,
-      description: "5 Modul Komunitas BDC",
+      description: "Modul Praktik Komunitas BDC",
     },
     {
       name: "Tugas & Proyek",
@@ -85,9 +87,13 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
       {/* Mobile Topbar Toggle */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-[#f4f3ea] text-bdc-midnight border-b border-slate-300 sticky top-0 z-40 shadow-sm">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-bdc-midnight flex items-center justify-center p-1.5 border border-slate-800 shadow-retro-sm">
-            <Image src="/logo.svg" alt="BDC Logo" width={20} height={20} className="w-5 h-5 object-contain" />
-          </div>
+          <Image
+            src="/logo.svg"
+            alt="BDC Logo"
+            width={40}
+            height={22}
+            className="h-7 w-auto object-contain"
+          />
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-space font-extrabold text-sm tracking-tight text-bdc-midnight">
@@ -125,9 +131,13 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
         {/* Brand Area */}
         <div className="p-5 border-b border-[#d9dfd7] bg-[#f4f3ea]">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-bdc-midnight flex items-center justify-center p-2 border border-slate-700 shadow-retro-sm group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
-              <Image src="/logo.svg" alt="BDC Logo" width={24} height={24} className="w-6 h-6 object-contain" />
-            </div>
+            <Image
+              src="/logo.svg"
+              alt="BDC Logo"
+              width={48}
+              height={27}
+              className="h-8 w-auto object-contain transition-transform group-hover:scale-105"
+            />
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
                 <span className="font-space font-extrabold text-sm tracking-tight text-bdc-midnight">
@@ -204,19 +214,28 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
         <div className="p-3 border-t border-[#d9dfd7] bg-[#f4f3ea]">
           <div className="p-2.5 rounded-xl bg-white border border-[#d5dcd0] flex items-center gap-3 shadow-sm">
             <div className="w-9 h-9 font-pixel bg-[#e6eddc] border border-[#c9d7bc] text-bdc-midnight font-bold text-sm flex items-center justify-center shrink-0 shadow-retro-sm">
-              {userName ? userName.charAt(0).toUpperCase() : "S"}
+              {userName ? userName.charAt(0).toUpperCase() : "M"}
             </div>
             <div className="flex flex-col min-w-0 flex-1">
               <span className="text-xs font-bold text-bdc-midnight truncate leading-tight">
-                {userName || "Siti Rahmawati"}
+                {userName || "Mahasiswa"}
               </span>
               <span className="text-[10px] text-slate-500 truncate font-mono">
-                NIM: {userNim || "255720056"}
+                NIM: {userNim || "-"}
               </span>
               <span className="inline-block mt-0.5 text-[9px] font-mono font-bold text-bdc-blue bg-blue-50 border border-blue-200 px-1 rounded w-fit">
                 {userRole === "admin" ? "Curator Admin" : "Active Learner"}
               </span>
             </div>
+            <form action={logoutAction}>
+              <button
+                type="submit"
+                title="Keluar dari Akun"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </form>
           </div>
         </div>
       </aside>

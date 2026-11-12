@@ -103,7 +103,7 @@ VALUES
   4.8,
   'Cloud',
   'bg-amber-100 text-amber-700',
-  'Panduan langkah demi langkah mem-publish aplikasi web ke server cloud Linux, konfigurasi DNS domain gratis, dan sertifikat SSL Let\'s Encrypt.',
+  'Panduan langkah demi langkah mem-publish aplikasi web ke server cloud Linux, konfigurasi DNS domain gratis, dan sertifikat SSL Let''s Encrypt.',
   '[
     "Pengenalan Terminal Linux & SSH Key Authentication",
     "Instalasi Nginx Web Server & Konfigurasi Virtual Host",

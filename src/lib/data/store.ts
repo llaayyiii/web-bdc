@@ -12,121 +12,67 @@ import {
   AssignmentSubmission,
 } from "../types/database";
 
-// Seed Profiles with Points & Attendance
+// Registered Accounts (Admin, Anggota & Instruktur Resmi UTDI - Synced with Supabase Auth)
 export const SEED_PROFILES: Profile[] = [
   {
-    id: "user-siti-255720056",
-    nim_id: "255720056",
-    full_name: "Siti Rahmawati",
-    email: "255720056@students.utdi.ac.id",
-    role: "learner",
-    role_title: "Corporate Learner (Student Chapter)",
-    division: "Academic College Community",
-    period: "2026/2027",
-    location: "Yogyakarta",
-    avatar_url: null,
-    score: 96.4,
-    completed_modules: 4,
-    total_hours: 64.5,
-    points: 1450, // Top 1 XP
-    attendance_rate: 100, // 100%
-    total_attendances: 8,
-    total_sessions: 8,
-  },
-  {
-    id: "user-budi-255720058",
-    nim_id: "255720058",
-    full_name: "Budi Santoso, S.Kom.",
-    email: "255720058@students.utdi.ac.id",
-    role: "learner",
-    role_title: "Junior Cloud Engineer Cohort",
-    division: "Academic College Community",
-    period: "2026/2027",
-    location: "Yogyakarta",
-    avatar_url: null,
-    score: 89.2,
-    completed_modules: 3,
-    total_hours: 48.0,
-    points: 1280, // Top 2 XP
-    attendance_rate: 87.5,
-    total_attendances: 7,
-    total_sessions: 8,
-  },
-  {
-    id: "user-anisa-255720061",
-    nim_id: "255720061",
-    full_name: "Anisa Permata Sari",
-    email: "255720061@students.utdi.ac.id",
-    role: "learner",
-    role_title: "UI/UX Researcher Cohort",
-    division: "Academic College Community",
-    period: "2026/2027",
-    location: "Yogyakarta",
-    avatar_url: null,
-    score: 92.0,
-    completed_modules: 4,
-    total_hours: 58.0,
-    points: 1190, // Top 3 XP
-    attendance_rate: 87.5,
-    total_attendances: 7,
-    total_sessions: 8,
-  },
-  {
-    id: "user-dimas-255720070",
-    nim_id: "255720070",
-    full_name: "Dimas Arya Pratama",
-    email: "255720070@students.utdi.ac.id",
-    role: "learner",
-    role_title: "Cybersecurity Analyst Fellow",
-    division: "Academic College Community",
-    period: "2026/2027",
-    location: "Yogyakarta",
-    avatar_url: null,
-    score: 88.5,
-    completed_modules: 3,
-    total_hours: 46.0,
-    points: 980,
-    attendance_rate: 75.0,
-    total_attendances: 6,
-    total_sessions: 8,
-  },
-  {
-    id: "admin-bagas-001",
-    nim_id: "ADM-0001-BT",
-    full_name: "Bagas Triaji, S.Kom., M.Kom.",
-    email: "bagas.triaji@utdi.ac.id",
+    id: "71c1be75-7e15-407f-80c9-a525202e23da",
+    nim_id: "255720025",
+    full_name: "Nurul Layli",
+    email: "nurul.layli25@students.utdi.ac.id",
     role: "admin",
-    role_title: "Kemahasiswaan & Tim Akademik",
+    role_title: "Curator Admin & PIC Komunitas",
     division: "Biro Kemahasiswaan & BDC UTDI",
     period: "2026/2027",
     location: "Yogyakarta",
     avatar_url: null,
-    score: 99.0,
-    completed_modules: 5,
-    total_hours: 120.0,
-    points: 9999,
+    password: "secretPassword123",
+    score: 0.0,
+    completed_modules: 0,
+    total_hours: 0.0,
+    points: 0,
     attendance_rate: 100,
-    total_attendances: 8,
-    total_sessions: 8,
+    total_attendances: 0,
+    total_sessions: 0,
   },
   {
-    id: "instructor-evelyn-002",
-    nim_id: "INS-0002-EV",
-    full_name: "Dr. Evelyn Vance",
-    email: "evelyn.vance@utdi.ac.id",
-    role: "instructor",
-    role_title: "Lead Cybersecurity Curriculum Curator",
+    id: "78a53c2c-fbd8-435e-b16e-0cb1b4291a31",
+    nim_id: "245720024",
+    full_name: "Arrafi Nur Hafiz",
+    email: "arrafi.nur24@students.utdi.ac.id",
+    role: "learner",
+    role_title: "Junior Web Developer Cohort",
     division: "Academic College Community",
     period: "2026/2027",
     location: "Yogyakarta",
     avatar_url: null,
-    score: 98.5,
+    password: "secretPassword123",
+    score: 0.0,
+    completed_modules: 0,
+    total_hours: 0.0,
+    points: 0,
+    attendance_rate: 0,
+    total_attendances: 0,
+    total_sessions: 0,
+  },
+  {
+    id: "07343796-f393-4f54-8488-60fb6a3bf9f2",
+    nim_id: "INS-2026-01",
+    full_name: "Dr. Evelyn Vance",
+    email: "evelyn.vance@utdi.ac.id",
+    role: "instructor",
+    role_title: "Inisiator & Pemateri Komunitas",
+    division: "Biro Akademik & BDC UTDI",
+    period: "2026/2027",
+    location: "Yogyakarta",
+    avatar_url: null,
+    password: "secretPassword123",
+    score: 95.0,
     completed_modules: 5,
-    total_hours: 100.0,
-    points: 9999,
+    total_hours: 60.0,
+    points: 1200,
     attendance_rate: 100,
-    total_attendances: 8,
-    total_sessions: 8,
+    total_attendances: 6,
+    total_sessions: 6,
   },
 ];
 
@@ -244,290 +190,19 @@ export const SEED_COURSES: Course[] = [
   },
 ];
 
-// Seed Quiz
-export const SEED_QUIZ: Quiz = {
-  id: "quiz-bdc-eval-2026",
-  title: "Uji Evaluasi Akhir: Keamanan Siber & Pemrograman Web Terintegrasi",
-  description:
-    "Ujian komprehensif 10 butir soal standar kompetensi BDC UTDI meliputi kriptografi modern, keamanan aplikasi web, mitigasi XSS/CSRF, serta tata kelola ISO 27001.",
-  time_limit_minutes: 30,
-  passing_score: 75.0,
-  total_questions: 10,
-  is_published: true,
-};
+// Seed Quiz & Questions (Dikosongkan untuk awal pangkalan data bersih)
+export const SEED_QUIZZES: Quiz[] = [];
+export const SEED_QUIZ: Quiz | null = null;
+export const SEED_QUESTIONS: QuizQuestion[] = [];
 
-// Seed Quiz Questions (Server-side with correct options)
-export const SEED_QUESTIONS: QuizQuestion[] = [
-  {
-    id: "q-1",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 1,
-    question_text:
-      "Metode enkripsi mana yang menggunakan sepasang kunci publik (public key) dan kunci privat (private key) untuk mengamankan transmisi data?",
-    options: [
-      { id: "A", text: "Enkripsi Simetris (AES-256)" },
-      { id: "B", text: "Enkripsi Asimetris (RSA / ECC)" },
-      { id: "C", text: "Fungsi Hash Kriptografis (SHA-256)" },
-      { id: "D", text: "Base64 Encoding" },
-    ],
-    correct_option: "B",
-    weight: 1.0,
-  },
-  {
-    id: "q-2",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 2,
-    question_text:
-      "Serangan siber di mana penyerang menyisipkan script berbahaya ke dalam halaman web yang kemudian dieksekusi di browser korban dikenal dengan istilah?",
-    options: [
-      { id: "A", text: "SQL Injection (SQLi)" },
-      { id: "B", text: "Cross-Site Scripting (XSS)" },
-      { id: "C", text: "Distributed Denial of Service (DDoS)" },
-      { id: "D", text: "Man-in-the-Middle (MitM)" },
-    ],
-    correct_option: "B",
-    weight: 1.0,
-  },
-  {
-    id: "q-3",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 3,
-    question_text:
-      "Langkah mitigasi paling efektif untuk mencegah serangan SQL Injection pada aplikasi modern adalah?",
-    options: [
-      { id: "A", text: "Menggunakan Prepared Statements dan Parameterized Queries" },
-      { id: "B", text: "Melakukan enkripsi MD5 pada seluruh input string" },
-      { id: "C", text: "Menghapus tanda spasi dari query database" },
-      { id: "D", text: "Menonaktifkan firewall server database" },
-    ],
-    correct_option: "A",
-    weight: 1.0,
-  },
-  {
-    id: "q-4",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 4,
-    question_text:
-      "Standar internasional terkemuka untuk Sistem Manajemen Keamanan Informasi (SMKI / ISMS) adalah?",
-    options: [
-      { id: "A", text: "ISO 9001:2015" },
-      { id: "B", text: "ISO/IEC 27001:2022" },
-      { id: "C", text: "IEEE 802.11" },
-      { id: "D", text: "RFC 2616" },
-    ],
-    correct_option: "B",
-    weight: 1.0,
-  },
-  {
-    id: "q-5",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 5,
-    question_text:
-      "Dalam konsep keamanan informasi, prinsip \"CIA Triad\" merupakan singkatan dari?",
-    options: [
-      { id: "A", text: "Confidentiality, Integrity, Availability" },
-      { id: "B", text: "Control, Identification, Authentication" },
-      { id: "C", text: "Compliance, Inspection, Authorization" },
-      { id: "D", text: "Cryptography, Infrastructure, Analytics" },
-    ],
-    correct_option: "A",
-    weight: 1.0,
-  },
-  {
-    id: "q-6",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 6,
-    question_text:
-      "Manakah atribut cookie berikut yang berfungsi mencegah script JavaScript di sisi browser membaca token autentikasi sesi?",
-    options: [
-      { id: "A", text: "SameSite=Lax" },
-      { id: "B", text: "HttpOnly" },
-      { id: "C", text: "Secure" },
-      { id: "D", text: "Domain=.utdi.ac.id" },
-    ],
-    correct_option: "B",
-    weight: 1.0,
-  },
-  {
-    id: "q-7",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 7,
-    question_text:
-      "Di Next.js App Router, pemanggilan database atau operasi sensitif disarankan diletakkan pada komponen jenis apa?",
-    options: [
-      { id: "A", text: "Client Component dengan useLayoutEffect" },
-      { id: "B", text: "Server Component / Server Actions" },
-      { id: "C", text: "Public static JSON file" },
-      { id: "D", text: "HTML inline script" },
-    ],
-    correct_option: "B",
-    weight: 1.0,
-  },
-  {
-    id: "q-8",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 8,
-    question_text:
-      "Protokol jaringan yang digunakan untuk mengamankan pertukaran data web melalui saluran terenkripsi SSL/TLS adalah?",
-    options: [
-      { id: "A", text: "HTTP" },
-      { id: "B", text: "FTP" },
-      { id: "C", text: "HTTPS" },
-      { id: "D", text: "Telnet" },
-    ],
-    correct_option: "C",
-    weight: 1.0,
-  },
-  {
-    id: "q-9",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 9,
-    question_text:
-      "Apa fungsi utama dari mekanisme Row Level Security (RLS) pada PostgreSQL Supabase?",
-    options: [
-      { id: "A", text: "Mempercepat pengurutan kolom string" },
-      { id: "B", text: "Membatasi akses baris data secara spesifik berdasarkan token identitas pengguna" },
-      { id: "C", text: "Menghapus data duplikat secara otomatis" },
-      { id: "D", text: "Mengompresi file media di storage" },
-    ],
-    correct_option: "B",
-    weight: 1.0,
-  },
-  {
-    id: "q-10",
-    quiz_id: "quiz-bdc-eval-2026",
-    order_index: 10,
-    question_text:
-      "Faktor pembuktian identitas yang menggabungkan kata sandi (knowledge) dengan token OTP di ponsel (possession) disebut?",
-    options: [
-      { id: "A", text: "Single Sign-On (SSO)" },
-      { id: "B", text: "Multi-Factor Authentication (MFA / 2FA)" },
-      { id: "C", text: "Role-Based Access Control (RBAC)" },
-      { id: "D", text: "Biometric Spoofing" },
-    ],
-    correct_option: "B",
-    weight: 1.0,
-  },
-];
+// Seed Certificates (Dikosongkan untuk awal pangkalan data bersih)
+export const SEED_CERTIFICATES: Certificate[] = [];
 
-// Seed Certificates
-export const SEED_CERTIFICATES: Certificate[] = [
-  {
-    id: "cert-siti-001",
-    user_id: "user-siti-255720056",
-    certificate_number: "BDC-CERT-2026-99482-SEC",
-    transcript_number: "BDC-TRX-2026-99482",
-    recipient_name: "Siti Rahmawati",
-    nim_id: "255720056",
-    cohort: "Cohort VI Nasional",
-    program_title: "Cybersecurity Compliance & ISO/IEC 27001 Enterprise Defense",
-    period: "2026/2027",
-    location: "Yogyakarta",
-    issue_date: "2026-03-24",
-    total_hours: 64.5,
-    avg_score: 96.4,
-    completion_status: "LULUS (KOMPETEN)",
-    cohort_badge: "TOP 3% COHORT",
-    is_locked: false,
-    capstone_title: "BDC Hub (Web Presensi & Pembelajaran Community)",
-    capstone_hours: 16.5,
-    capstone_score: 98.0,
-    capstone_grade: "A+",
-    capstone_status: "Lulus Paripurna",
-    signatory_1_name: "Bagas Triaji, S.Kom., M.Kom.",
-    signatory_1_role: "Kemahasiswaan",
-    signatory_2_name: "Nurul Layli",
-    signatory_2_role: "PIC Program BDC",
-    modules_json: [
-      {
-        code: "SEC-501",
-        title: "Dasar Kriptografi Modern & Enkripsi Kunci Asimetris",
-        hours: 10.0,
-        score: 96.0,
-        grade: "A",
-        status: "Tuntas (Kompeten)",
-      },
-      {
-        code: "SEC-502",
-        title: "Proteksi Endpoint, Web App Sec & Mitigasi XSS",
-        hours: 12.0,
-        score: 98.0,
-        grade: "A+",
-        status: "Unggul (Paripurna)",
-      },
-      {
-        code: "SEC-503",
-        title: "Audit Regulasi ISO/IEC 27001:2022 & Framework Tata Kelola",
-        hours: 12.0,
-        score: 94.5,
-        grade: "A",
-        status: "Tuntas (Kompeten)",
-      },
-      {
-        code: "SEC-504",
-        title: "Incident Response, Forensik Siber & Cloud SOC Telemetri",
-        hours: 14.0,
-        score: 97.0,
-        grade: "A",
-        status: "Tuntas (Kompeten)",
-      },
-    ],
-  },
-];
+// Seed Meet Sessions (Dikosongkan untuk awal pangkalan data bersih)
+export const SEED_SESSIONS: MeetSession[] = [];
 
-// Seed Meet Sessions (Fitur 6 & Fitur 1)
-export const SEED_SESSIONS: MeetSession[] = [
-  {
-    id: "session-live-01",
-    course_id: "ACT-01",
-    course_title: "Ngoding Bareng: Membangun Web App Interaktif dari Nol",
-    title: "Sesi Pertemuan 3: Integrasi API & State Management Komunitas",
-    instructor: "Dr. Evelyn Vance",
-    meet_url: "https://meet.google.com/bdc-utdi-web",
-    qr_token: "BDC-PRESENSI-LIVE-994",
-    scheduled_at: "2026-11-12T08:00:00Z",
-    expires_at: "2026-11-12T11:00:00Z",
-    status: "live", // Sedang berlangsung
-  },
-  {
-    id: "session-upcoming-02",
-    course_id: "ACT-02",
-    course_title: "Workshop Hands-On: Audit Keamanan Akun & Pengujian Jaringan",
-    title: "Sesi Praktik Lab 2: Simulasi Penetrasi & Analisis Wireshark",
-    instructor: "Ir. Hendra Saputra, M.Kom",
-    meet_url: "https://meet.google.com/bdc-sec-audit",
-    qr_token: "BDC-PRESENSI-SEC-882",
-    scheduled_at: "2026-11-15T09:00:00Z",
-    expires_at: "2026-11-15T12:00:00Z",
-    status: "scheduled",
-  },
-];
-
-// Seed Attendances (Fitur 1)
-export const SEED_ATTENDANCES: AttendanceRecord[] = [
-  {
-    id: "att-01",
-    session_id: "session-live-01",
-    session_title: "Sesi Pertemuan 3: Integrasi API & State Management Komunitas",
-    user_id: "user-siti-255720056",
-    user_name: "Siti Rahmawati",
-    nim_id: "255720056",
-    scanned_at: "2026-11-12T08:05:12Z",
-    method: "qr_scanner",
-    points_earned: 100,
-  },
-  {
-    id: "att-02",
-    session_id: "session-live-01",
-    session_title: "Sesi Pertemuan 3: Integrasi API & State Management Komunitas",
-    user_id: "user-budi-255720058",
-    user_name: "Budi Santoso, S.Kom.",
-    nim_id: "255720058",
-    scanned_at: "2026-11-12T08:12:44Z",
-    method: "token_code",
-    points_earned: 100,
-  },
-];
+// Seed Attendances (Dikosongkan untuk awal pangkalan data bersih)
+export const SEED_ATTENDANCES: AttendanceRecord[] = [];
 
 // Seed Assignments (Fitur 5)
 export const SEED_ASSIGNMENTS: Assignment[] = [
@@ -555,48 +230,17 @@ export const SEED_ASSIGNMENTS: Assignment[] = [
   },
 ];
 
-// Seed Assignment Submissions
-export const SEED_SUBMISSIONS: AssignmentSubmission[] = [
-  {
-    id: "sub-01",
-    assignment_id: "assign-01",
-    user_id: "user-siti-255720056",
-    user_name: "Siti Rahmawati",
-    nim_id: "255720056",
-    submission_url: "https://github.com/sitirahmawati/bdc-nextjs-form",
-    notes: "Tugas telah diselesaikan dengan Next.js App Router, TypeScript ketat, dan palet Taste.",
-    submitted_at: "2026-11-11T14:30:00Z",
-    score: 95.0,
-    feedback: "Struktur arsitektur sangat rapi, validasi domain kampus bekerja sempurna. Kerja bagus!",
-    status: "graded",
-  },
-];
+// Seed Assignment Submissions (Dikosongkan untuk awal pangkalan data bersih)
+export const SEED_SUBMISSIONS: AssignmentSubmission[] = [];
 
-// Initial Enrollments
-export const SEED_ENROLLMENTS: CourseEnrollment[] = [
-  {
-    id: "enr-01",
-    user_id: "user-siti-255720056",
-    course_id: "ACT-01",
-    completed_topics: [0, 1, 2, 3],
-    progress_percent: 100,
-    is_completed: true,
-  },
-  {
-    id: "enr-02",
-    user_id: "user-siti-255720056",
-    course_id: "ACT-02",
-    completed_topics: [0, 1],
-    progress_percent: 50,
-    is_completed: false,
-  },
-];
+// Initial Enrollments (Dikosongkan untuk awal pangkalan data bersih)
+export const SEED_ENROLLMENTS: CourseEnrollment[] = [];
 
 // Stateful Repository
 class BdcDataStore {
   private profiles = [...SEED_PROFILES];
   private courses = [...SEED_COURSES];
-  private quizzes = [SEED_QUIZ];
+  private quizzes: Quiz[] = [...SEED_QUIZZES];
   private questions = [...SEED_QUESTIONS];
   private attempts: QuizAttempt[] = [];
   private certificates = [...SEED_CERTIFICATES];
@@ -624,6 +268,35 @@ class BdcDataStore {
     );
   }
 
+  registerProfile(profile: Profile): Profile {
+    const existing = this.profiles.find(
+      (p) =>
+        p.id === profile.id ||
+        p.email.toLowerCase() === profile.email.toLowerCase() ||
+        p.nim_id.toLowerCase() === profile.nim_id.toLowerCase()
+    );
+    if (existing) {
+      return existing;
+    }
+    this.profiles.push(profile);
+    return profile;
+  }
+
+  deleteUser(id: string): boolean {
+    const initialLen = this.profiles.length;
+    this.profiles = this.profiles.filter((p) => p.id !== id);
+    if (this.profiles.length === initialLen) return false;
+
+    // Cascade hapus referensi entitas terkait user di in-memory store
+    this.enrollments = this.enrollments.filter((e) => e.user_id !== id);
+    this.submissions = this.submissions.filter((s) => s.user_id !== id);
+    this.certificates = this.certificates.filter((c) => c.user_id !== id);
+    this.attendances = this.attendances.filter((a) => a.user_id !== id);
+    this.attempts = this.attempts.filter((a) => a.user_id !== id);
+
+    return true;
+  }
+
   updateProfile(id: string, update: Partial<Profile>) {
     const index = this.profiles.findIndex((p) => p.id === id);
     if (index !== -1) {
@@ -631,6 +304,29 @@ class BdcDataStore {
       return this.profiles[index];
     }
     return null;
+  }
+
+  updateUserPassword(id: string, newPassword: string) {
+    const profile = this.updateProfile(id, { password: newPassword });
+    return !!profile;
+  }
+
+  updateUserRole(id: string, newRole: import("../types/database").UserRole, roleTitle?: string) {
+    const user = this.getProfileById(id);
+    if (!user) return null;
+
+    let defaultTitle = user.role_title;
+    if (roleTitle) {
+      defaultTitle = roleTitle;
+    } else if (newRole === "admin") {
+      defaultTitle = "Curator Admin & PIC Komunitas";
+    } else if (newRole === "instructor") {
+      defaultTitle = "Inisiator & Pemateri Komunitas";
+    } else if (newRole === "learner") {
+      defaultTitle = "Corporate Learner (Student Chapter)";
+    }
+
+    return this.updateProfile(id, { role: newRole, role_title: defaultTitle });
   }
 
   // Courses
@@ -691,13 +387,78 @@ class BdcDataStore {
     return enrollment;
   }
 
-  // Quizzes
-  getQuiz(id: string) {
-    return this.quizzes.find((q) => q.id === id) || this.quizzes[0];
+  // Quizzes & Questions
+  ensureDefaultQuiz(): Quiz {
+    if (this.quizzes.length === 0) {
+      const defaultQuiz: Quiz = {
+        id: "e2b4f9d0-1234-5678-90ab-cdef12345678",
+        title: "Uji Evaluasi Akhir: Keamanan Siber & Pemrograman Web Terintegrasi",
+        description:
+          "Ujian komprehensif standar kompetensi BDC UTDI meliputi kriptografi modern, keamanan aplikasi web, mitigasi XSS/CSRF, serta tata kelola ISO 27001.",
+        time_limit_minutes: 30,
+        passing_score: 75,
+        total_questions: this.questions.length,
+        is_published: true,
+      };
+      this.quizzes.push(defaultQuiz);
+    }
+    return this.quizzes[0];
+  }
+
+  getQuiz(id: string): Quiz | null {
+    if (this.quizzes.length === 0) {
+      return this.ensureDefaultQuiz();
+    }
+    return this.quizzes.find((q) => q.id === id) || this.quizzes[0] || null;
+  }
+
+  getAllQuizzes(): Quiz[] {
+    this.ensureDefaultQuiz();
+    return this.quizzes;
+  }
+
+  getAllQuestions(): QuizQuestion[] {
+    return [...this.questions].sort((a, b) => a.order_index - b.order_index);
   }
 
   getQuizQuestions(quizId: string) {
-    return this.questions.filter((q) => q.quiz_id === quizId);
+    const questions = this.questions.filter((q) => q.quiz_id === quizId);
+    if (questions.length === 0 && this.questions.length > 0) {
+      return [...this.questions].sort((a, b) => a.order_index - b.order_index);
+    }
+    return questions.sort((a, b) => a.order_index - b.order_index);
+  }
+
+  addQuizQuestion(payload: Omit<QuizQuestion, "id">): QuizQuestion {
+    const quiz = this.ensureDefaultQuiz();
+    const newId = `q-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+    const newQuestion: QuizQuestion = {
+      ...payload,
+      id: newId,
+      quiz_id: payload.quiz_id || quiz.id,
+      order_index: payload.order_index || (this.questions.length + 1),
+      weight: payload.weight ?? 1.0,
+      options: payload.options || [],
+      correct_option: payload.correct_option || "A",
+      explanation: payload.explanation || null,
+    };
+    this.questions.push(newQuestion);
+    quiz.total_questions = this.questions.length;
+    return newQuestion;
+  }
+
+  deleteQuizQuestion(questionId: string): boolean {
+    const initialLen = this.questions.length;
+    this.questions = this.questions.filter((q) => q.id !== questionId);
+    if (this.questions.length < initialLen) {
+      this.questions.forEach((q, idx) => {
+        q.order_index = idx + 1;
+      });
+      const quiz = this.ensureDefaultQuiz();
+      quiz.total_questions = this.questions.length;
+      return true;
+    }
+    return false;
   }
 
   recordAttempt(attempt: Omit<QuizAttempt, "id">) {
@@ -776,7 +537,7 @@ class BdcDataStore {
       title: payload.title || "Sesi Live Pertemuan BDC",
       instructor: payload.instructor || "Dr. Evelyn Vance",
       meet_url: payload.meet_url || "https://meet.google.com/bdc-utdi-web",
-      qr_token: `BDC-QR-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+      qr_token: payload.qr_token || `BDC-QR-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
       scheduled_at: payload.scheduled_at || new Date().toISOString(),
       expires_at: payload.expires_at || new Date(Date.now() + 3 * 3600 * 1000).toISOString(),
       status: payload.status || "live",
@@ -791,6 +552,12 @@ class BdcDataStore {
 
     this.sessions.unshift(newSession);
     return newSession;
+  }
+
+  deleteMeetSession(id: string): boolean {
+    const initialLen = this.sessions.length;
+    this.sessions = this.sessions.filter((s) => s.id !== id);
+    return this.sessions.length < initialLen;
   }
 
   // 2. ATTENDANCES (Barcode / QR)
@@ -814,15 +581,40 @@ class BdcDataStore {
     const user = this.getProfileById(userId);
     if (!user) return { success: false, error: "Mahasiswa tidak ditemukan." };
 
-    // Find active session matching token
-    const cleanToken = qrToken.trim().toUpperCase();
-    const session = this.sessions.find(
-      (s) => s.status === "live" && (s.qr_token.toUpperCase() === cleanToken || cleanToken === "BDC-PRESENSI-LIVE-994")
+    // Ekstrak token jika input berbentuk URL (misal scan kamera membaca URL proyektor)
+    let token = qrToken.trim();
+    if (token.includes("token=")) {
+      const match = token.match(/token=([A-Za-z0-9_-]+)/);
+      if (match && match[1]) {
+        token = match[1];
+      }
+    }
+    const cleanToken = token.toUpperCase();
+
+    // Find session matching token
+    const matchingSession = this.sessions.find(
+      (s) => s.qr_token.toUpperCase() === cleanToken
     );
 
-    if (!session) {
-      return { success: false, error: "Kode QR / Barcode presensi tidak valid atau sesi telah berakhir." };
+    if (!matchingSession) {
+      return { success: false, error: "Kode QR / Barcode presensi tidak valid atau sesi tidak ditemukan." };
     }
+
+    if (matchingSession.status === "scheduled") {
+      return {
+        success: false,
+        error: `Sesi "${matchingSession.title}" masih berstatus 'Terjadwal'. Minta dosen/instruktur untuk mengaktifkan sesi (Live) terlebih dahulu.`,
+      };
+    }
+
+    if (matchingSession.status === "completed") {
+      return {
+        success: false,
+        error: `Sesi "${matchingSession.title}" telah berakhir. Presensi ditutup.`,
+      };
+    }
+
+    const session = matchingSession;
 
     // Check if user already attended this session
     const existing = this.attendances.find(

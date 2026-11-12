@@ -14,11 +14,14 @@ import {
   Calendar,
   User,
   Radio,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { MeetSession } from "@/lib/types/database";
 import {
   adminCreateMeetSessionAction,
   adminUpdateMeetSessionAction,
+  adminDeleteMeetSessionAction,
 } from "@/lib/actions/sessions";
 import { BdcDots } from "@/components/ui/BdcDots";
 
@@ -31,6 +34,9 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
   const [showModal, setShowModal] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sessionToDelete, setSessionToDelete] = useState<MeetSession | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // New session form state
   const [title, setTitle] = useState("");
@@ -89,6 +95,27 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
     }
   };
 
+  const handleConfirmDelete = async () => {
+    if (!sessionToDelete) return;
+    setIsDeleting(true);
+    setDeleteError(null);
+
+    try {
+      const res = await adminDeleteMeetSessionAction(sessionToDelete.id);
+      if (!res.success) {
+        setDeleteError(res.message || "Gagal menghapus sesi.");
+        return;
+      }
+
+      setSessions((prev) => prev.filter((s) => s.id !== sessionToDelete.id));
+      setSessionToDelete(null);
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Terjadi kesalahan saat menghapus sesi.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="space-y-6 font-sans">
       {/* Header and Add Button */}
@@ -117,7 +144,22 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
 
       {/* Sessions Grid */}
       <div className="grid grid-cols-1 gap-4">
-        {sessions.map((sess) => {
+        {sessions.length === 0 ? (
+          <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] p-8 sm:p-12 text-center shadow-retro space-y-4">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EFF0F0] border border-slate-300 flex items-center justify-center text-slate-400 shadow-retro-sm">
+              <Video className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-space text-lg font-bold text-bdc-midnight">
+                Belum Ada Sesi Pertemuan
+              </h3>
+              <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed font-sans">
+                Pangkalan data sesi pertemuan telah dibersihkan. Klik tombol &quot;Jadwalkan Sesi Baru&quot; di atas untuk membuka kelas kuliah tatap muka atau Google Meet baru.
+              </p>
+            </div>
+          </div>
+        ) : (
+          sessions.map((sess) => {
           const isLive = sess.status === "live";
           return (
             <div
@@ -219,11 +261,24 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                     <QrCode className="w-4 h-4 text-bdc-yellow" />
                     <span>Layar Proyektor QR</span>
                   </Link>
+
+                  {/* Tombol Hapus Sesi */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDeleteError(null);
+                      setSessionToDelete(sess);
+                    }}
+                    className="retro-btn p-2.5 rounded-xl border border-rose-300 text-rose-600 hover:text-rose-700 hover:bg-rose-50 transition-all text-xs font-medium flex items-center gap-1.5 shadow-retro-sm bg-white"
+                    title="Hapus Sesi Pertemuan"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
           );
-        })}
+        }))}
       </div>
 
       {/* Modal Add Session */}
@@ -335,6 +390,71 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Konfirmasi Hapus Sesi */}
+      {sessionToDelete && (
+        <div className="fixed inset-0 bg-[#000741]/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#fffefa] rounded-3xl border-2 border-rose-600 shadow-retro-lg w-full max-w-md p-6 space-y-4">
+            <div className="flex items-center gap-3 pb-3 border-b border-[#d9dfd7]">
+              <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center border border-rose-300 shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-space text-base font-bold text-bdc-midnight">
+                  Hapus Sesi Pertemuan?
+                </h3>
+                <p className="text-xs text-slate-500 font-sans">
+                  Konfirmasi pembatalan atau hapus data sesi salah ketik
+                </p>
+              </div>
+            </div>
+
+            {deleteError && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-sans">
+                {deleteError}
+              </div>
+            )}
+
+            <div className="space-y-2 text-xs font-sans text-slate-700 bg-[#EFF0F0] p-4 rounded-2xl border border-slate-300">
+              <p>
+                Sesi berikut akan dihapus secara permanen dari pangkalan data:
+              </p>
+              <p className="font-bold font-space text-sm text-bdc-midnight">
+                &ldquo;{sessionToDelete.title}&rdquo;
+              </p>
+              <p className="font-mono text-[11px] text-slate-500">
+                Token QR: <span className="font-bold text-rose-700">{sessionToDelete.qr_token}</span>
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-[#d9dfd7]">
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => setSessionToDelete(null)}
+                className="retro-btn px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-bold transition-all text-xs shadow-retro-sm"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={handleConfirmDelete}
+                className="retro-btn px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all text-xs disabled:opacity-50 flex items-center gap-2 shadow-retro-sm border border-rose-700"
+              >
+                {isDeleting ? (
+                  <span>Menghapus...</span>
+                ) : (
+                  <>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Ya, Hapus Sesi</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -18,6 +18,11 @@ export default function AdminDashboardPage() {
   const certificates = bdcStore.getCertificates();
   const courses = bdcStore.getCourses();
 
+  const graduationRate =
+    students.length > 0
+      ? `${((certificates.length / students.length) * 100).toFixed(1)}%`
+      : "0.0%";
+
   return (
     <div className="space-y-8 font-sans">
       {/* 1. Header (GDGoC dash-intro style) */}
@@ -41,6 +46,13 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            <Link
+              href="/admin/users"
+              className="retro-btn px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-bdc-midnight text-xs font-bold transition-all shadow-retro-sm flex items-center gap-2 border border-slate-300"
+            >
+              <ShieldCheck className="w-4 h-4 text-bdc-blue" />
+              <span>Manajemen User</span>
+            </Link>
             <Link
               href="/admin/certificates"
               className="retro-btn px-4 py-2.5 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-retro-sm flex items-center gap-2 border border-bdc-midnight"
@@ -66,7 +78,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="mt-3">
             <div className="flex items-baseline gap-1">
-              <span className="font-pixel text-3xl sm:text-4xl text-bdc-midnight">760</span>
+              <span className="font-pixel text-3xl sm:text-4xl text-bdc-midnight">{students.length}</span>
               <span className="font-mono text-xs text-slate-500">Mahasiswa</span>
             </div>
             <p className="font-mono text-[10px] text-slate-500 mt-1">Cohort 2026/2027 Aktif</p>
@@ -85,7 +97,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="mt-3">
             <div className="flex items-baseline gap-1">
-              <span className="font-pixel text-3xl sm:text-4xl text-emerald-600">94.8%</span>
+              <span className="font-pixel text-3xl sm:text-4xl text-emerald-600">{graduationRate}</span>
             </div>
             <p className="font-mono text-[10px] text-slate-500 mt-1">Memenuhi 3 Kriteria Standar</p>
           </div>
@@ -122,7 +134,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="mt-3">
             <div className="flex items-baseline gap-1">
-              <span className="font-pixel text-3xl sm:text-4xl text-bdc-midnight">340</span>
+              <span className="font-pixel text-3xl sm:text-4xl text-bdc-midnight">{certificates.length}</span>
               <span className="font-mono text-xs text-slate-500">Kredensial</span>
             </div>
             <p className="font-mono text-[10px] text-slate-500 mt-1">Terverifikasi Digital</p>
@@ -163,30 +175,38 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#d9dfd7]">
-              {students.map((st) => (
-                <tr key={st.id} className="hover:bg-[#fff8e6] transition-colors">
-                  <td className="px-4 py-3.5 font-bold text-bdc-midnight">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-bdc-midnight text-bdc-yellow font-pixel text-xs flex items-center justify-center shrink-0 border border-bdc-midnight shadow-retro-sm">
-                        {st.full_name.charAt(0)}
-                      </div>
-                      <span className="font-space text-sm">{st.full_name}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3.5 font-mono text-[11px] text-bdc-blue font-bold">{st.nim_id}</td>
-                  <td className="px-4 py-3.5 text-slate-600 font-mono text-[11px]">{st.email}</td>
-                  <td className="px-4 py-3.5 font-bold text-emerald-700">
-                    <span className="font-pixel text-lg">{st.score}</span>{" "}
-                    <span className="font-mono text-[10px] text-slate-400 font-normal">/ 100</span>
-                  </td>
-                  <td className="px-4 py-3.5">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-retro-sm">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Kompeten Paripurna</span>
-                    </span>
+              {students.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-slate-500 font-mono text-xs">
+                    Belum ada mahasiswa terdaftar pada sistem.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                students.map((st) => (
+                  <tr key={st.id} className="hover:bg-[#fff8e6] transition-colors">
+                    <td className="px-4 py-3.5 font-bold text-bdc-midnight">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-bdc-midnight text-bdc-yellow font-pixel text-xs flex items-center justify-center shrink-0 border border-bdc-midnight shadow-retro-sm">
+                          {st.full_name.charAt(0)}
+                        </div>
+                        <span className="font-space text-sm">{st.full_name}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3.5 font-mono text-[11px] text-bdc-blue font-bold">{st.nim_id}</td>
+                    <td className="px-4 py-3.5 text-slate-600 font-mono text-[11px]">{st.email}</td>
+                    <td className="px-4 py-3.5 font-bold text-emerald-700">
+                      <span className="font-pixel text-lg">{st.score}</span>{" "}
+                      <span className="font-mono text-[10px] text-slate-400 font-normal">/ 100</span>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-retro-sm">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Kompeten Paripurna</span>
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

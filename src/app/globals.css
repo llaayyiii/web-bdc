@@ -28,6 +28,23 @@
   background-size: 24px 24px;
 }
 
+/* Cosmic Dark Glassmorphism Styles (Reference: gemini-code) */
+.hero-gradient {
+  background: radial-gradient(circle at 50% -20%, rgba(120, 119, 198, 0.25) 0%, rgba(3, 0, 20, 0) 50%),
+              radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(3, 0, 20, 0) 30%);
+}
+.blur-glow {
+  filter: blur(130px);
+}
+.bg-grid-dark {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+.bg-grid-light {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
 /* Tactile Neo-Retro Classes */
 .retro-card {
   background-color: #ffffff;

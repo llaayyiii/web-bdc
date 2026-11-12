@@ -14,9 +14,13 @@ export function TranscriptPageTwo({ cert, verifyUrl }: TranscriptPageTwoProps) {
       {/* Header */}
       <div className="border-b-2 border-bdc-navy pb-3 relative z-10 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-bdc-midnight p-2 flex items-center justify-center shadow-md border border-bdc-navy">
-            <Image src="/logo.svg" alt="BDC Logo" width={24} height={24} className="w-6 h-6 object-contain" />
-          </div>
+          <Image
+            src="/logo.svg"
+            alt="BDC Logo"
+            width={54}
+            height={30}
+            className="h-9 w-auto object-contain"
+          />
           <div>
             <h1 className="text-sm font-extrabold text-bdc-midnight uppercase tracking-wider">
               Transkrip Akademik &amp; Capstone Project

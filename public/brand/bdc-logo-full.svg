@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" width="280" height="64" fill="none">
+  <!-- BDC Full Logo Lockup - Chapter UTDI Yogyakarta -->
+  <defs>
+    <filter id="bdc_full_shadow" x="-15%" y="-15%" width="135%" height="135%">
+      <feDropShadow dx="2" dy="2" stdDeviation="0" flood-color="#000741" />
+    </filter>
+  </defs>
+
+  <!-- Left: Emblem -->
+  <g transform="translate(4, 2)" filter="url(#bdc_full_shadow)">
+    <!-- Top Face (Yellow) -->
+    <path d="M28 6L48 17.5L28 29L8 17.5L28 6Z" fill="#EEDD55" stroke="#000741" stroke-width="2.2" stroke-linejoin="round"/>
+    <path d="M28 9L44 18L28 27L12 18L28 9Z" fill="#FFF79A" fill-opacity="0.6"/>
+    <!-- Stud -->
+    <path d="M28 12.5L34 16L28 19.5L22 16L28 12.5Z" fill="#E9AD17" stroke="#000741" stroke-width="1.5" stroke-linejoin="round"/>
+    
+    <!-- Left Face (Blue) -->
+    <path d="M8 17.5L28 29V51L8 39.5V17.5Z" fill="#095BAF" stroke="#000741" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- Red Accent Bracket -->
+    <path d="M14 24.5L22 29V40.5L14 36V24.5Z" fill="#EA4335" stroke="#000741" stroke-width="1.8" stroke-linejoin="round"/>
+
+    <!-- Right Face (Green) -->
+    <path d="M28 29L48 17.5V39.5L28 51V29Z" fill="#34A853" stroke="#000741" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- Cyan Accent Bracket -->
+    <path d="M34 32L42 27.5V39L34 43.5V32Z" fill="#60A5FA" stroke="#000741" stroke-width="1.8" stroke-linejoin="round"/>
+
+    <!-- Center Line -->
+    <path d="M28 29V51" stroke="#000741" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right: Typography -->
+  <text x="64" y="29" font-family="var(--font-space), -apple-system, sans-serif" font-weight="800" font-size="16" fill="#000741" letter-spacing="-0.5">Business Dev Club</text>
+  
+  <!-- 4 Developer Dots -->
+  <circle cx="228" cy="24" r="2.5" fill="#095BAF" />
+  <circle cx="236" cy="24" r="2.5" fill="#EA4335" />
+  <circle cx="244" cy="24" r="2.5" fill="#EEDD55" />
+  <circle cx="252" cy="24" r="2.5" fill="#34A853" />
+
+  <!-- Subtitle -->
+  <text x="64" y="46" font-family="var(--font-mono), monospace" font-weight="600" font-size="9" fill="#64748B" letter-spacing="1.5">CHAPTER UTDI YOGYAKARTA</text>
+</svg>

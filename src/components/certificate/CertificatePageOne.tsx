@@ -19,15 +19,19 @@ export function CertificatePageOne({ cert, verifyUrl }: CertificatePageOneProps)
 
       {/* Subtle Background Seal Watermark */}
       <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
-        <Image src="/logo.svg" alt="Watermark" width={400} height={400} className="w-[400px] h-[400px]" />
+        <Image src="/logo.svg" alt="Watermark" width={400} height={400} className="w-[400px] h-[400px] object-contain" />
       </div>
 
       {/* Certificate Header */}
       <div className="text-center space-y-2 relative z-10">
         <div className="flex items-center justify-center gap-3 mb-1">
-          <div className="w-10 h-10 rounded-xl bg-bdc-midnight p-2 flex items-center justify-center shadow-md border border-bdc-navy">
-            <Image src="/logo.svg" alt="BDC Logo" width={24} height={24} className="w-6 h-6 object-contain" />
-          </div>
+          <Image
+            src="/logo.svg"
+            alt="BDC Logo"
+            width={54}
+            height={30}
+            className="h-9 w-auto object-contain"
+          />
           <div className="text-left">
             <h1 className="text-xs sm:text-sm font-extrabold tracking-wider uppercase text-bdc-navy">
               Business Dev Club (BDC)

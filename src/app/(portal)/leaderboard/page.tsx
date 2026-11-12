@@ -93,14 +93,14 @@ export default async function LeaderboardPage() {
           </div>
           <div className="mt-3">
             <span className="font-space font-extrabold text-base text-bdc-midnight block leading-tight">
-              {top1?.full_name || "Siti Rahmawati"}
+              {top1 ? top1.full_name : "Belum Ada Data"}
             </span>
             <div className="flex items-center gap-2 mt-1">
               <span className="font-pixel text-2xl font-black text-bdc-blue">
-                {top1?.points || 1450} XP
+                {top1 ? top1.points : 0} XP
               </span>
               <span className="font-mono text-[11px] text-slate-500">
-                ({top1?.attendance_rate || 100}% Hadir)
+                ({top1 ? top1.attendance_rate : 0}% Hadir)
               </span>
             </div>
           </div>

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   QrCode,
   Camera,
+  CameraOff,
   CheckCircle2,
   AlertCircle,
   Sparkles,
@@ -11,6 +12,7 @@ import {
   RefreshCw,
   KeyRound,
   ShieldCheck,
+  Upload,
 } from "lucide-react";
 import { scanAttendanceAction } from "@/lib/actions/attendance";
 import { MeetSession } from "@/lib/types/database";
@@ -31,16 +33,29 @@ export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
     newRate?: number;
   } | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
 
-  const handleSubmitToken = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!tokenInput.trim()) return;
+  const scannerRef = useRef<any>(null);
+  const readerElementId = "bdc-qr-reader-container";
+
+  // Process a scanned / inputted token
+  const processToken = async (rawToken: string, method: "qr_scanner" | "token_code" = "qr_scanner") => {
+    let clean = (rawToken || "").trim();
+    if (!clean) return;
+
+    // Handle full URL QR code (mis. https://.../attendance?token=BDC-PRESENSI-LIVE-xxx)
+    if (clean.includes("token=")) {
+      const match = clean.match(/token=([A-Za-z0-9_-]+)/);
+      if (match && match[1]) {
+        clean = match[1];
+      }
+    }
 
     setIsSubmitting(true);
     setResult(null);
 
     try {
-      const res = await scanAttendanceAction(tokenInput.trim(), "token_code");
+      const res = await scanAttendanceAction(clean, method);
       setResult({
         success: res.success,
         message: res.message,
@@ -50,6 +65,10 @@ export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
 
       if (res.success) {
         setTokenInput("");
+        // Matikan kamera jika berhasil scan
+        if (isCameraActive) {
+          stopScanner();
+        }
       }
     } catch {
       setResult({
@@ -61,38 +80,119 @@ export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
     }
   };
 
+  const handleSubmitToken = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!tokenInput.trim()) return;
+    await processToken(tokenInput.trim(), "token_code");
+  };
+
   const handleSimulateQuickScan = async () => {
     if (!liveSession) {
       setResult({
         success: false,
-        message: "Tidak ada sesi kuliah/workshop BDC yang sedang aktif saat ini.",
+        message: "Tidak ada sesi kuliah/workshop BDC yang sedang aktif (live) saat ini.",
       });
       return;
     }
+    await processToken(liveSession.qr_token, "qr_scanner");
+  };
 
-    setIsSubmitting(true);
+  // Start HTML5 QR Code Scanner
+  const startScanner = async () => {
+    setCameraError(null);
     setResult(null);
+    setIsCameraActive(true);
 
     try {
-      const res = await scanAttendanceAction(liveSession.qr_token, "qr_scanner");
-      setResult({
-        success: res.success,
-        message: res.message,
-        points: res.pointsEarned,
-        newRate: res.newAttendanceRate,
-      });
-    } catch {
-      setResult({
-        success: false,
-        message: "Gagal memproses pindaian barcode.",
-      });
-    } finally {
-      setIsSubmitting(false);
+      const { Html5Qrcode } = await import("html5-qrcode");
+      
+      // Tunggu elemen DOM siap
+      setTimeout(async () => {
+        try {
+          if (scannerRef.current) {
+            try {
+              await scannerRef.current.stop();
+            } catch {}
+          }
+
+          const html5QrCode = new Html5Qrcode(readerElementId);
+          scannerRef.current = html5QrCode;
+
+          await html5QrCode.start(
+            { facingMode: "environment" },
+            {
+              fps: 10,
+              qrbox: { width: 220, height: 220 },
+              aspectRatio: 1.0,
+            },
+            (decodedText) => {
+              processToken(decodedText, "qr_scanner");
+            },
+            () => {
+              // Frame scan error biasa saat belum menemukan QR, abaikan
+            }
+          );
+        } catch (err: unknown) {
+          console.error("Camera start error:", err);
+          setCameraError(
+            "Tidak dapat mengakses kamera perangkat. Pastikan izin kamera aktif atau gunakan tombol tangkap sesi / input token di bawah."
+          );
+          setIsCameraActive(false);
+        }
+      }, 100);
+    } catch (err: unknown) {
+      console.error("Scanner load error:", err);
+      setCameraError("Gagal memuat pustaka optical scanner.");
+      setIsCameraActive(false);
     }
   };
 
+  // Stop HTML5 QR Code Scanner
+  const stopScanner = async () => {
+    if (scannerRef.current) {
+      try {
+        await scannerRef.current.stop();
+        scannerRef.current.clear();
+      } catch (err) {
+        console.warn("Stop scanner warning:", err);
+      }
+      scannerRef.current = null;
+    }
+    setIsCameraActive(false);
+  };
+
+  // Scan from image file upload
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const { Html5Qrcode } = await import("html5-qrcode");
+      const html5QrCode = new Html5Qrcode("bdc-file-scan-temp");
+      const decoded = await html5QrCode.scanFile(file, true);
+      if (decoded) {
+        processToken(decoded, "qr_scanner");
+      }
+    } catch (err) {
+      setResult({
+        success: false,
+        message: "Tidak ditemukan kode QR valid pada gambar yang diunggah.",
+      });
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (scannerRef.current) {
+        scannerRef.current.stop().catch(() => {});
+      }
+    };
+  }, []);
+
   return (
     <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-6 sm:p-7 overflow-hidden relative font-sans">
+      <div id="bdc-file-scan-temp" className="hidden" />
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#d9dfd7] mb-5 gap-3">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-bdc-midnight text-bdc-yellow flex items-center justify-center border-2 border-bdc-midnight shadow-retro-sm shrink-0">
@@ -106,7 +206,7 @@ export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
               <BdcDots size="sm" />
             </div>
             <p className="text-xs text-slate-500 font-sans">
-              Arahkan kamera ke layar proyektor kelas atau masukkan kode sesi aktif
+              Arahkan kamera ke layar proyektor kelas atau masukkan token sesi aktif
             </p>
           </div>
         </div>
@@ -117,60 +217,94 @@ export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
         </span>
       </div>
 
+      {cameraError && (
+        <div className="mb-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-start gap-2.5 shadow-retro-sm">
+          <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <span className="font-bold">Info Izin Kamera: </span>
+            {cameraError}
+          </div>
+        </div>
+      )}
+
       {/* Viewfinder Scanner Canvas */}
-      <div className="relative rounded-2xl bg-[#000741] text-white p-6 sm:p-8 flex flex-col items-center justify-center overflow-hidden border-2 border-bdc-midnight shadow-inner">
+      <div className="relative rounded-2xl bg-[#000741] text-white p-6 sm:p-8 flex flex-col items-center justify-center overflow-hidden border-2 border-bdc-midnight shadow-inner min-h-[300px]">
         {/* Animated Scanner Laser */}
-        <div className="absolute inset-x-8 top-1/4 h-0.5 bg-gradient-to-r from-transparent via-bdc-yellow to-transparent animate-pulse shadow-[0_0_15px_#EEDD55]" />
+        {isCameraActive && (
+          <div className="absolute inset-x-8 top-1/3 h-0.5 bg-gradient-to-r from-transparent via-bdc-yellow to-transparent animate-pulse shadow-[0_0_15px_#EEDD55] z-10 pointer-events-none" />
+        )}
 
         {/* Viewfinder Corners */}
-        <div className="relative w-56 h-56 sm:w-64 sm:h-64 border-2 border-bdc-blue/40 rounded-3xl flex flex-col items-center justify-center p-4 bg-bdc-navy/40 backdrop-blur-sm">
+        <div className="relative w-64 h-64 border-2 border-bdc-blue/40 rounded-3xl flex flex-col items-center justify-center p-2 bg-bdc-navy/40 backdrop-blur-sm overflow-hidden">
           {/* Top-left corner */}
-          <div className="absolute top-2 left-2 w-6 h-6 border-t-4 border-l-4 border-bdc-yellow rounded-tl-xl" />
+          <div className="absolute top-2 left-2 w-6 h-6 border-t-4 border-l-4 border-bdc-yellow rounded-tl-xl pointer-events-none z-20" />
           {/* Top-right corner */}
-          <div className="absolute top-2 right-2 w-6 h-6 border-t-4 border-r-4 border-bdc-yellow rounded-tr-xl" />
+          <div className="absolute top-2 right-2 w-6 h-6 border-t-4 border-r-4 border-bdc-yellow rounded-tr-xl pointer-events-none z-20" />
           {/* Bottom-left corner */}
-          <div className="absolute bottom-2 left-2 w-6 h-6 border-b-4 border-l-4 border-bdc-yellow rounded-bl-xl" />
+          <div className="absolute bottom-2 left-2 w-6 h-6 border-b-4 border-l-4 border-bdc-yellow rounded-bl-xl pointer-events-none z-20" />
           {/* Bottom-right corner */}
-          <div className="absolute bottom-2 right-2 w-6 h-6 border-b-4 border-r-4 border-bdc-yellow rounded-br-xl" />
+          <div className="absolute bottom-2 right-2 w-6 h-6 border-b-4 border-r-4 border-bdc-yellow rounded-br-xl pointer-events-none z-20" />
 
-          {isCameraActive ? (
-            <div className="text-center space-y-2">
-              <Camera className="w-10 h-10 text-bdc-yellow mx-auto animate-bounce" />
-              <p className="text-xs text-slate-300 font-mono">
-                Mencari Kode QR Aktif...
-              </p>
-              <button
-                type="button"
-                onClick={handleSimulateQuickScan}
-                disabled={isSubmitting}
-                className="retro-btn mt-2 px-3 py-1.5 rounded-xl bg-bdc-yellow text-bdc-midnight text-[11px] font-black hover:bg-amber-400 transition-all flex items-center gap-1.5 mx-auto shadow-retro-sm"
-              >
-                <Zap className="w-3.5 h-3.5" />
-                <span>Tangkap Barcode Otomatis</span>
-              </button>
-            </div>
-          ) : (
-            <div className="text-center space-y-3">
+          {/* HTML5 QR Code Mount Element */}
+          <div
+            id={readerElementId}
+            className={`w-full h-full rounded-2xl overflow-hidden ${
+              isCameraActive ? "block" : "hidden"
+            }`}
+          />
+
+          {!isCameraActive && (
+            <div className="text-center space-y-3 p-3">
               <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center mx-auto text-bdc-yellow border border-white/15">
                 <QrCode className="w-7 h-7" />
               </div>
               <div>
-                <p className="font-space text-sm font-bold text-white tracking-tight">Optical QR Scanner</p>
+                <p className="font-space text-sm font-bold text-white tracking-tight">
+                  Optical QR Scanner
+                </p>
                 <p className="text-[11px] text-slate-400 mt-0.5 font-sans">
-                  Siap memindai kode proyektor
+                  Siap memindai barcode proyektor
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsCameraActive(true)}
-                className="retro-btn px-4 py-2 rounded-xl bg-bdc-blue hover:bg-blue-600 text-white text-xs font-bold transition-all flex items-center gap-2 mx-auto shadow-retro-sm"
-              >
-                <Camera className="w-4 h-4 text-bdc-yellow" />
-                <span>Aktifkan Pemindai</span>
-              </button>
+              <div className="flex flex-col gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={startScanner}
+                  disabled={isSubmitting}
+                  className="retro-btn px-4 py-2 rounded-xl bg-bdc-blue hover:bg-blue-600 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 mx-auto shadow-retro-sm"
+                >
+                  <Camera className="w-4 h-4 text-bdc-yellow" />
+                  <span>Aktifkan Kamera</span>
+                </button>
+
+                <label className="retro-btn px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 text-[11px] font-mono cursor-pointer flex items-center justify-center gap-1.5 transition-all">
+                  <Upload className="w-3.5 h-3.5 text-bdc-yellow" />
+                  <span>Upload Foto Barcode</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </label>
+              </div>
             </div>
           )}
         </div>
+
+        {/* Camera Stop Control */}
+        {isCameraActive && (
+          <div className="mt-4 flex items-center gap-2 z-20">
+            <button
+              type="button"
+              onClick={stopScanner}
+              className="retro-btn px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-retro-sm"
+            >
+              <CameraOff className="w-3.5 h-3.5" />
+              <span>Matikan Kamera</span>
+            </button>
+          </div>
+        )}
 
         {/* Quick simulation button if live session is present */}
         {liveSession && (

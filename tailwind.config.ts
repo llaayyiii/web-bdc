@@ -9,6 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        brand: {
+          dark: "#030014",
+          card: "#0a052e",
+          primary: "#6366f1",
+          secondary: "#a855f7",
+          accent: "#3b82f6",
+        },
         bdc: {
           surface: "#EFF0F0",
           yellow: "#EEDD55",

@@ -24,9 +24,7 @@ export default function AdminStudentsPage() {
   const [students, setStudents] = useState(
     SEED_PROFILES.filter((p) => p.role === "learner")
   );
-  const [certLockState, setCertLockState] = useState<Record<string, boolean>>({
-    "cert-siti-001": false,
-  });
+  const [certLockState, setCertLockState] = useState<Record<string, boolean>>({});
 
   const filtered = students.filter(
     (s) =>

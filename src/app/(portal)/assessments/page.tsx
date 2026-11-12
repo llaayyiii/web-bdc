@@ -44,84 +44,100 @@ export default async function AssessmentsPage() {
       </div>
 
       {/* 2. Primary Quiz Card */}
-      <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-6 sm:p-8">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-          <div className="space-y-4 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-xl text-xs font-mono font-bold bg-bdc-midnight text-bdc-yellow border border-bdc-midnight shadow-retro-sm">
-                UJIAN UTAMA COHORT
-              </span>
-              <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-300">
-                Terbuka untuk Mahasiswa Aktif
-              </span>
+      {quiz ? (
+        <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-6 sm:p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="space-y-4 max-w-2xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-3 py-1 rounded-xl text-xs font-mono font-bold bg-bdc-midnight text-bdc-yellow border border-bdc-midnight shadow-retro-sm">
+                  UJIAN UTAMA COHORT
+                </span>
+                <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-300">
+                  Terbuka untuk Mahasiswa Aktif
+                </span>
+              </div>
+
+              <h2 className="font-space text-xl sm:text-2xl font-bold text-bdc-midnight tracking-tight leading-snug">
+                {quiz.title}
+              </h2>
+
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
+                {quiz.description}
+              </p>
+
+              {/* 4 Inset Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-[inset_0_3px_0_#095BAF]">
+                  <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
+                    Durasi Waktu
+                  </span>
+                  <span className="font-pixel text-lg text-bdc-midnight flex items-center gap-1.5 mt-0.5">
+                    <Clock className="w-4 h-4 text-bdc-blue" />
+                    <span>{quiz.time_limit_minutes} Menit</span>
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-[inset_0_3px_0_#E9AD17]">
+                  <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
+                    Jumlah Soal
+                  </span>
+                  <span className="font-pixel text-lg text-bdc-midnight flex items-center gap-1.5 mt-0.5">
+                    <FileQuestion className="w-4 h-4 text-bdc-blue" />
+                    <span>{quiz.total_questions} Soal</span>
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-[inset_0_3px_0_#34A853]">
+                  <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
+                    Passing Grade
+                  </span>
+                  <span className="font-pixel text-lg text-emerald-700 flex items-center gap-1.5 mt-0.5">
+                    <Award className="w-4 h-4 text-emerald-600" />
+                    <span>Min. {quiz.passing_score}</span>
+                  </span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-[inset_0_3px_0_#EA4335]">
+                  <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
+                    Percobaan
+                  </span>
+                  <span className="font-pixel text-lg text-bdc-midnight block mt-0.5">
+                    {attempts.length > 0 ? `${attempts.length}x Dikerjakan` : "Belum Coba"}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <h2 className="font-space text-xl sm:text-2xl font-bold text-bdc-midnight tracking-tight leading-snug">
-              {quiz.title}
-            </h2>
-
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-sans">
-              {quiz.description}
-            </p>
-
-            {/* 4 Inset Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-              <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-[inset_0_3px_0_#095BAF]">
-                <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
-                  Durasi Waktu
-                </span>
-                <span className="font-pixel text-lg text-bdc-midnight flex items-center gap-1.5 mt-0.5">
-                  <Clock className="w-4 h-4 text-bdc-blue" />
-                  <span>{quiz.time_limit_minutes} Menit</span>
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-[inset_0_3px_0_#E9AD17]">
-                <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
-                  Jumlah Soal
-                </span>
-                <span className="font-pixel text-lg text-bdc-midnight flex items-center gap-1.5 mt-0.5">
-                  <FileQuestion className="w-4 h-4 text-bdc-blue" />
-                  <span>{quiz.total_questions} Soal</span>
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-[inset_0_3px_0_#34A853]">
-                <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
-                  Passing Grade
-                </span>
-                <span className="font-pixel text-lg text-emerald-700 flex items-center gap-1.5 mt-0.5">
-                  <Award className="w-4 h-4 text-emerald-600" />
-                  <span>Min. {quiz.passing_score}</span>
-                </span>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-[inset_0_3px_0_#EA4335]">
-                <span className="font-mono text-[10px] font-bold text-slate-500 block uppercase">
-                  Percobaan
-                </span>
-                <span className="font-pixel text-lg text-bdc-midnight block mt-0.5">
-                  {attempts.length > 0 ? `${attempts.length}x Dikerjakan` : "Belum Coba"}
-                </span>
-              </div>
+            {/* Action CTA */}
+            <div className="flex flex-col gap-3 shrink-0 lg:w-60">
+              <Link
+                href={`/assessments/${quiz.id}`}
+                className="retro-btn w-full py-3.5 px-5 rounded-2xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-retro flex items-center justify-center gap-2 border-2 border-bdc-midnight"
+              >
+                <Play className="w-4 h-4 text-bdc-yellow fill-bdc-yellow" />
+                <span>{attempts.length > 0 ? "Ulangi Pengerjaan" : "Mulai Ujian Sekarang"}</span>
+              </Link>
+              <p className="font-mono text-[10px] text-center text-slate-500 leading-tight">
+                Timer otomatis berjalan saat halaman dibuka.
+              </p>
             </div>
           </div>
-
-          {/* Action CTA */}
-          <div className="flex flex-col gap-3 shrink-0 lg:w-60">
-            <Link
-              href={`/assessments/${quiz.id}`}
-              className="retro-btn w-full py-3.5 px-5 rounded-2xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-retro flex items-center justify-center gap-2 border-2 border-bdc-midnight"
-            >
-              <Play className="w-4 h-4 text-bdc-yellow fill-bdc-yellow" />
-              <span>{attempts.length > 0 ? "Ulangi Pengerjaan" : "Mulai Ujian Sekarang"}</span>
-            </Link>
-            <p className="font-mono text-[10px] text-center text-slate-500 leading-tight">
-              Timer otomatis berjalan saat halaman dibuka.
+        </div>
+      ) : (
+        <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-8 sm:p-12 text-center space-y-4">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-[#EFF0F0] border border-slate-300 flex items-center justify-center text-slate-400 shadow-retro-sm">
+            <FileQuestion className="w-7 h-7" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="font-space text-lg sm:text-xl font-bold text-bdc-midnight">
+              Belum Ada Ujian Evaluasi Aktif
+            </h2>
+            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+              Bank butir soal evaluasi saat ini telah dibersihkan. Instruktur atau kurator akademik BDC UTDI belum menjadwalkan sesi ujian evaluasi kompetensi baru.
             </p>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 3. Attempt History Section (dash-table style) */}
       <div className="bg-[#fffefa] rounded-3xl border border-[#d9dfd7] shadow-retro p-6 space-y-4">
@@ -185,13 +201,17 @@ export default async function AssessmentsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3.5 text-right">
-                      <Link
-                        href={`/assessments/${quiz.id}`}
-                        className="retro-btn text-xs font-mono font-bold text-bdc-blue hover:text-bdc-midnight inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 bg-white shadow-retro-sm"
-                      >
-                        <span>Coba Lagi</span>
-                        <RotateCcw className="w-3 h-3" />
-                      </Link>
+                      {quiz ? (
+                        <Link
+                          href={`/assessments/${quiz.id}`}
+                          className="retro-btn text-xs font-mono font-bold text-bdc-blue hover:text-bdc-midnight inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 bg-white shadow-retro-sm"
+                        >
+                          <span>Coba Lagi</span>
+                          <RotateCcw className="w-3 h-3" />
+                        </Link>
+                      ) : (
+                        <span className="text-xs font-mono text-slate-400">-</span>
+                      )}
                     </td>
                   </tr>
                 ))}

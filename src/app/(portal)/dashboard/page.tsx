@@ -26,12 +26,24 @@ export default async function DashboardPage() {
   const courses = bdcStore.getCourses();
   const certificate = user ? bdcStore.getCertificateByUserId(user.id) : null;
   const enrollments = user ? bdcStore.getEnrollments(user.id) : [];
+  const userSubmissions = user ? bdcStore.getSubmissionsByUser(user.id) : [];
   const liveSession = bdcStore.getLiveSession();
   const leaderboard = bdcStore.getLeaderboard();
 
   const userRankIndex = leaderboard.findIndex((p) => p.id === user?.id);
   const userRank = userRankIndex !== -1 ? userRankIndex + 1 : leaderboard.length + 1;
   const completedCount = enrollments.filter((e) => e.is_completed).length;
+
+  // Real Capstone evaluation data
+  const capstoneSubmission =
+    userSubmissions.find(
+      (s) => s.assignment_id === "assign-01" || s.notes?.toLowerCase().includes("capstone")
+    ) || userSubmissions[0] || null;
+  const isCapstoneGraded = capstoneSubmission?.status === "graded";
+  const capstoneScore = certificate?.capstone_score ?? capstoneSubmission?.score ?? null;
+  const capstoneGrade =
+    certificate?.capstone_grade ??
+    (capstoneScore !== null ? (capstoneScore >= 85 ? "A" : capstoneScore >= 75 ? "B" : "C") : null);
 
   return (
     <div className="space-y-8 font-sans">
@@ -95,7 +107,7 @@ export default async function DashboardPage() {
           <div className="mt-2">
             <div className="flex items-baseline gap-1">
               <span className="font-pixel text-3xl font-black text-bdc-midnight">
-                {user?.total_hours || 64.5}
+                {user?.total_hours ?? 0}
               </span>
               <span className="font-mono text-xs font-bold text-slate-500">Jam Hands-on</span>
             </div>
@@ -116,9 +128,9 @@ export default async function DashboardPage() {
           <div className="mt-2">
             <div className="flex items-baseline gap-1">
               <span className="font-pixel text-3xl font-black text-bdc-midnight">
-                {completedCount || 4}
+                {completedCount}
               </span>
-              <span className="font-mono text-xs font-bold text-slate-500">/ 5 Modul</span>
+              <span className="font-mono text-xs font-bold text-slate-500">/ {courses.length} Modul</span>
             </div>
             <p className="text-[11px] text-slate-500 mt-1 font-mono">Silabus kompetensi terselesaikan</p>
           </div>
@@ -137,10 +149,10 @@ export default async function DashboardPage() {
           <div className="mt-2">
             <div className="flex items-baseline gap-1">
               <span className="font-pixel text-3xl font-black text-bdc-midnight">
-                {user?.attendance_rate || 100}%
+                {user?.attendance_rate ?? 0}%
               </span>
               <span className="font-mono text-xs font-bold text-emerald-700">
-                ({user?.attendance_rate && user.attendance_rate >= 80 ? "Memenuhi" : "Perlu ditingkatkan"})
+                ({(user?.attendance_rate ?? 0) >= 80 ? "Memenuhi" : "Perlu ditingkatkan"})
               </span>
             </div>
             <p className="text-[11px] text-slate-500 mt-1 font-mono">Batas minimal sertifikat: 80%</p>
@@ -163,7 +175,7 @@ export default async function DashboardPage() {
                 #{userRank}
               </span>
               <span className="font-mono text-xs font-bold text-bdc-gold">
-                ({user?.points || 0} XP)
+                ({user?.points ?? 0} XP)
               </span>
             </div>
             <p className="text-[11px] text-slate-500 mt-1 font-mono">Dari {leaderboard.length} peserta cohort</p>
@@ -198,68 +210,74 @@ export default async function DashboardPage() {
 
           {/* Top 3 List */}
           <div className="space-y-2.5">
-            {leaderboard.slice(0, 3).map((stu, idx) => {
-              const rank = idx + 1;
-              const isUser = stu.id === user?.id;
-              return (
-                <div
-                  key={stu.id}
-                  className={`p-3.5 rounded-xl border flex items-center justify-between transition-all ${
-                    isUser
-                      ? "bg-[#fff8e6] border-bdc-gold shadow-retro-sm"
-                      : "bg-white border-slate-200 hover:border-slate-300"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-7 h-7 rounded-lg font-pixel flex items-center justify-center text-xs font-black border ${
-                        rank === 1
-                          ? "bg-bdc-gold text-bdc-midnight border-amber-600"
-                          : rank === 2
-                          ? "bg-slate-200 text-slate-800 border-slate-300"
-                          : "bg-amber-400 text-bdc-midnight border-amber-600"
-                      }`}
-                    >
-                      {rank}
-                    </div>
-
-                    <div className="w-8 h-8 font-pixel bg-[#e6eddc] border border-[#c9d7bc] text-bdc-midnight font-bold text-xs flex items-center justify-center shrink-0">
-                      {stu.full_name.charAt(0)}
-                    </div>
-
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-xs text-bdc-midnight">
-                          {stu.full_name}
-                        </span>
-                        {isUser && (
-                          <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-bdc-navy text-bdc-yellow uppercase">
-                            Anda
-                          </span>
-                        )}
+            {leaderboard.length === 0 ? (
+              <div className="p-6 text-center text-xs text-slate-500 font-mono bg-white rounded-xl border border-dashed border-slate-300">
+                Belum ada data keaktifan mahasiswa di papan skor.
+              </div>
+            ) : (
+              leaderboard.slice(0, 3).map((stu, idx) => {
+                const rank = idx + 1;
+                const isUser = stu.id === user?.id;
+                return (
+                  <div
+                    key={stu.id}
+                    className={`p-3.5 rounded-xl border flex items-center justify-between transition-all ${
+                      isUser
+                        ? "bg-[#fff8e6] border-bdc-gold shadow-retro-sm"
+                        : "bg-white border-slate-200 hover:border-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-7 h-7 rounded-lg font-pixel flex items-center justify-center text-xs font-black border ${
+                          rank === 1
+                            ? "bg-bdc-gold text-bdc-midnight border-amber-600"
+                            : rank === 2
+                            ? "bg-slate-200 text-slate-800 border-slate-300"
+                            : "bg-amber-400 text-bdc-midnight border-amber-600"
+                        }`}
+                      >
+                        {rank}
                       </div>
-                      <span className="font-mono text-[10px] text-slate-500">
-                        {stu.role_title} | {stu.attendance_rate}% Hadir
+
+                      <div className="w-8 h-8 font-pixel bg-[#e6eddc] border border-[#c9d7bc] text-bdc-midnight font-bold text-xs flex items-center justify-center shrink-0">
+                        {stu.full_name.charAt(0)}
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-xs text-bdc-midnight">
+                            {stu.full_name}
+                          </span>
+                          {isUser && (
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-bdc-navy text-bdc-yellow uppercase">
+                              Anda
+                            </span>
+                          )}
+                        </div>
+                        <span className="font-mono text-[10px] text-slate-500">
+                          {stu.role_title} | {stu.attendance_rate}% Hadir
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="font-mono font-black text-xs text-bdc-navy block">
+                        {stu.points} XP
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        {stu.total_attendances || 0} Sesi
                       </span>
                     </div>
                   </div>
-
-                  <div className="text-right">
-                    <span className="font-mono font-black text-xs text-bdc-navy block">
-                      {stu.points} XP
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      {stu.total_attendances || 0} Sesi
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
 
           <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 font-mono flex items-center justify-between">
             <span>Posisi Anda saat ini: <strong>#{userRank}</strong></span>
-            <span className="text-bdc-gold font-bold">+{user?.points || 0} XP Akumulasi</span>
+            <span className="text-bdc-gold font-bold">+{user?.points ?? 0} XP Akumulasi</span>
           </div>
         </div>
 
@@ -270,14 +288,34 @@ export default async function DashboardPage() {
               <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 PROYEK CAPSTONE
               </span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                LULUS KOMPETEN
-              </span>
+              {certificate ? (
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  {certificate.completion_status || "LULUS (KOMPETEN)"}
+                </span>
+              ) : isCapstoneGraded ? (
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                    (capstoneScore ?? 0) >= 75
+                      ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                      : "bg-amber-100 text-amber-800 border border-amber-300"
+                  }`}
+                >
+                  {(capstoneScore ?? 0) >= 75 ? "LULUS EVALUASI" : "PERLU PERBAIKAN"}
+                </span>
+              ) : capstoneSubmission ? (
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-blue-100 text-bdc-blue border border-blue-300">
+                  MENUNGGU PENILAIAN
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 text-slate-600 border border-slate-300">
+                  BELUM DIKUMPULKAN
+                </span>
+              )}
             </div>
 
             <div>
               <h3 className="font-space font-bold text-base text-bdc-midnight">
-                BDC Hub (Web Presensi &amp; Pembelajaran)
+                {certificate?.capstone_title || "BDC Hub (Web Presensi & Pembelajaran)"}
               </h3>
               <p className="text-xs text-slate-600 mt-1 leading-relaxed">
                 Tugas akhir pembuktian kompetensi: integrasi RBAC, skema relasional, presensi barcode proyektor,
@@ -288,7 +326,13 @@ export default async function DashboardPage() {
             <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-[#EFF0F0] border border-slate-300 font-mono text-xs">
               <div>
                 <span className="text-[10px] text-slate-400 block uppercase">Nilai Evaluasi</span>
-                <span className="font-bold text-emerald-700">98.00 (A+)</span>
+                <span className="font-bold text-bdc-midnight">
+                  {capstoneScore !== null && capstoneScore !== undefined
+                    ? `${capstoneScore.toFixed(1)}${capstoneGrade ? ` (${capstoneGrade})` : ""}`
+                    : user?.score && user.score > 0
+                    ? `${user.score.toFixed(1)}`
+                    : "-"}
+                </span>
               </div>
               <div>
                 <span className="text-[10px] text-slate-400 block uppercase">Sertifikat</span>
@@ -299,10 +343,16 @@ export default async function DashboardPage() {
 
           <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
             <Link
-              href="/certificates"
+              href={certificate ? "/certificates" : "/assignments"}
               className="text-xs font-bold text-bdc-blue hover:text-bdc-navy flex items-center gap-1 font-mono"
             >
-              <span>Lihat Transkrip Nilai &rarr;</span>
+              <span>
+                {certificate
+                  ? "Lihat Transkrip Nilai →"
+                  : capstoneSubmission
+                  ? "Cek Status Pengumpulan →"
+                  : "Kumpulkan Tugas Proyek →"}
+              </span>
             </Link>
           </div>
         </div>
@@ -327,39 +377,45 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {courses.slice(0, 3).map((course) => (
-            <Link
-              key={course.id}
-              href={`/courses/${course.id}`}
-              className="p-4 rounded-xl border border-slate-200 bg-white hover:border-bdc-midnight hover:shadow-retro-sm transition-all group flex flex-col justify-between"
-            >
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${course.badge_color}`}>
-                    {course.category}
-                  </span>
-                  <span className="font-mono text-[10px] text-slate-400">{course.id}</span>
+        {courses.length === 0 ? (
+          <div className="p-8 text-center text-xs text-slate-500 font-mono bg-white rounded-xl border border-dashed border-slate-300">
+            Belum ada modul pelatihan yang dipublikasikan saat ini.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {courses.slice(0, 3).map((course) => (
+              <Link
+                key={course.id}
+                href={`/courses/${course.id}`}
+                className="p-4 rounded-xl border border-slate-200 bg-white hover:border-bdc-midnight hover:shadow-retro-sm transition-all group flex flex-col justify-between"
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${course.badge_color}`}>
+                      {course.category}
+                    </span>
+                    <span className="font-mono text-[10px] text-slate-400">{course.id}</span>
+                  </div>
+
+                  <h3 className="font-space font-bold text-xs text-bdc-midnight group-hover:text-bdc-blue transition-colors line-clamp-2">
+                    {course.title}
+                  </h3>
+
+                  <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
+                    {course.description}
+                  </p>
                 </div>
 
-                <h3 className="font-space font-bold text-xs text-bdc-midnight group-hover:text-bdc-blue transition-colors line-clamp-2">
-                  {course.title}
-                </h3>
-
-                <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
-                  {course.description}
-                </p>
-              </div>
-
-              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-                <span>{course.duration}</span>
-                <span className="font-bold text-bdc-blue group-hover:underline">
-                  Buka Modul &rarr;
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+                <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+                  <span>{course.duration}</span>
+                  <span className="font-bold text-bdc-blue group-hover:underline">
+                    Buka Modul &rarr;
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

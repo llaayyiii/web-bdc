@@ -9,20 +9,28 @@ import { BdcDots } from "@/components/ui/BdcDots";
 
 export default function AdminCertificatesPage() {
   const { showToast } = useToast();
-  const cert = SEED_CERTIFICATES[0];
+  const cert = SEED_CERTIFICATES[0] || null;
 
-  const [sig1Name, setSig1Name] = useState(cert.signatory_1_name);
-  const [sig1Role, setSig1Role] = useState(cert.signatory_1_role);
-  const [sig2Name, setSig2Name] = useState(cert.signatory_2_name);
-  const [sig2Role, setSig2Role] = useState(cert.signatory_2_role);
-  const [period, setPeriod] = useState(cert.period);
-  const [location, setLocation] = useState(cert.location);
-  const [issueDate, setIssueDate] = useState(cert.issue_date);
+  const [sig1Name, setSig1Name] = useState(cert?.signatory_1_name || "Bagas Triaji, S.Kom., M.Kom.");
+  const [sig1Role, setSig1Role] = useState(cert?.signatory_1_role || "Biro Kemahasiswaan UTDI");
+  const [sig2Name, setSig2Name] = useState(cert?.signatory_2_name || "Nurul Layli");
+  const [sig2Role, setSig2Role] = useState(cert?.signatory_2_role || "PIC Program BDC");
+  const [period, setPeriod] = useState(cert?.period || "2026/2027");
+  const [location, setLocation] = useState(cert?.location || "Yogyakarta");
+  const [issueDate, setIssueDate] = useState(cert?.issue_date || "2026-03-24");
   const [saving, setSaving] = useState(false);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+
+    if (!cert) {
+      setTimeout(() => {
+        setSaving(false);
+        showToast("Konfigurasi penandatangan tersimpan untuk penerbitan sertifikat mendatang.", "success");
+      }, 400);
+      return;
+    }
 
     try {
       const res = await adminUpdateSignatoriesAction(cert.id, {

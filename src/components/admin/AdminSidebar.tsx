@@ -59,6 +59,12 @@ export function AdminSidebar() {
       icon: FileQuestion,
       code: "06",
     },
+    {
+      name: "Manajemen Pengguna",
+      href: "/admin/users",
+      icon: Shield,
+      code: "07",
+    },
   ];
 
   return (
@@ -89,9 +95,13 @@ export function AdminSidebar() {
         {/* Brand */}
         <div className="p-5 border-b border-[#d9dfd7]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-bdc-midnight flex items-center justify-center p-2 border-2 border-bdc-midnight shadow-retro-sm">
-              <Image src="/logo.svg" alt="BDC Logo" width={24} height={24} className="w-6 h-6 object-contain" />
-            </div>
+            <Image
+              src="/logo.svg"
+              alt="BDC Logo"
+              width={48}
+              height={27}
+              className="h-8 w-auto object-contain"
+            />
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-space font-bold text-sm text-bdc-midnight tracking-tight">Admin BDC</span>

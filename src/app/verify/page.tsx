@@ -22,7 +22,7 @@ import { BdcDots } from "@/components/ui/BdcDots";
 
 function VerifyContent() {
   const searchParams = useSearchParams();
-  const initialCert = searchParams.get("cert") || searchParams.get("nim") || "BDC-CERT-2026-99482-SEC";
+  const initialCert = searchParams.get("cert") || searchParams.get("nim") || "";
 
   const [query, setQuery] = useState(initialCert);
   const [searched, setSearched] = useState(false);
@@ -53,9 +53,14 @@ function VerifyContent() {
       {/* Top Header */}
       <header className="max-w-4xl w-full mx-auto flex items-center justify-between pb-6 border-b border-slate-300">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-bdc-midnight p-2 flex items-center justify-center border-2 border-bdc-midnight shadow-retro-sm group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
-            <Image src="/logo.svg" alt="BDC Logo" width={24} height={24} className="w-6 h-6 object-contain" />
-          </div>
+          <Image
+            src="/logo.svg"
+            alt="BDC Logo"
+            width={54}
+            height={30}
+            className="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105"
+            priority
+          />
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-space font-extrabold text-sm text-bdc-midnight tracking-tight">
@@ -110,7 +115,7 @@ function VerifyContent() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Contoh: BDC-CERT-2026-99482-SEC atau 255720056"
+                placeholder="Masukkan Nomor Sertifikat atau NIM..."
                 className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-bdc-midnight placeholder:text-slate-400 focus:outline-none focus:border-bdc-midnight focus:bg-white shadow-inner font-mono font-medium"
               />
             </div>

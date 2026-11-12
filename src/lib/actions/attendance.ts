@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "./auth";
 import { bdcStore } from "../data/store";
 import { AttendanceRecord } from "../types/database";
+import { createAdminClient } from "../supabase/admin";
 
 export interface AttendanceResult {
   success: boolean;
@@ -47,6 +48,38 @@ export async function scanAttendanceAction(
 
   // Refresh profile data to get updated attendance rate
   const updatedProfile = bdcStore.getProfileById(currentUser.id);
+
+  // Sinkronisasi live ke Supabase jika terhubung
+  const supabaseAdmin = createAdminClient();
+  if (supabaseAdmin && result.record) {
+    try {
+      await supabaseAdmin.from("attendance_records").insert({
+        id: result.record.id,
+        session_id: result.record.session_id,
+        session_title: result.record.session_title,
+        user_id: result.record.user_id,
+        user_name: result.record.user_name,
+        nim_id: result.record.nim_id,
+        scanned_at: result.record.scanned_at,
+        method: result.record.method,
+        points_earned: result.record.points_earned,
+      });
+
+      if (updatedProfile) {
+        await supabaseAdmin
+          .from("profiles")
+          .update({
+            points: updatedProfile.points,
+            attendance_rate: updatedProfile.attendance_rate,
+            total_attendances: updatedProfile.total_attendances,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", currentUser.id);
+      }
+    } catch (err) {
+      console.warn("Sinkronisasi presensi ke Supabase:", err);
+    }
+  }
 
   revalidatePath("/attendance");
   revalidatePath("/dashboard");
