@@ -81,7 +81,6 @@ export default async function AttendancePage() {
           <div className="mt-3">
             <div className="flex items-baseline gap-1">
               <span className="font-pixel text-3xl font-black text-bdc-midnight">{attendanceRate}%</span>
-              <span className="font-mono text-xs font-bold text-slate-400">/ 100%</span>
             </div>
             <div className="w-full bg-slate-100 rounded-full h-2 mt-2 overflow-hidden border border-slate-200">
               <div

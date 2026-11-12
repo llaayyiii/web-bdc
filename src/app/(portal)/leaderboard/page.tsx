@@ -142,7 +142,6 @@ export default async function LeaderboardPage() {
               <span className="font-pixel text-3xl font-black text-emerald-700">
                 Posisi #{userRank}
               </span>
-              <span className="font-mono text-xs text-slate-500">/ {leaderboard.length}</span>
             </div>
             <p className="font-mono text-[11px] text-slate-500 mt-1">
               {user.attendance_rate && user.attendance_rate >= 80 ? "Syarat sertifikat terpenuhi" : "Tingkatkan presensi barcode"}
