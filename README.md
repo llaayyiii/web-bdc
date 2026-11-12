@@ -121,8 +121,8 @@ Untuk mempermudah pengujian, halaman login menyediakan tombol **Demo Akun Instan
   - **Email**: `255720056@students.utdi.ac.id`
   - **Password**: `secretPassword123`
 - **Admin (Kemahasiswaan)**:
-  - **Nama**: Bagas Triaji, S.Kom., M.Kom.
-  - **Email**: `bagas.triaji@utdi.ac.id`
+  - **Nama**: .
+  - **Email**: ``
   - **Password**: `adminPassword123`
 
 ---
