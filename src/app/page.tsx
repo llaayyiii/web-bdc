@@ -142,13 +142,13 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* 3. HERO SECTION (Interactive 3D Voxel Campus Environment with Circling Birds & Blinking Dino) */}
+      {/* 3. HERO SECTION (Interactive 3D Lego Voxel Campus Environment with Mouse Parallax & Ambient Float) */}
       <section
         className="relative overflow-hidden isolate bg-[#EFF0F0] border-b border-slate-300 min-h-[720px] md:min-h-[800px] lg:min-h-[860px] flex flex-col justify-between"
         id="hero"
         aria-labelledby="hero-heading"
       >
-        {/* Interactive 3D Lego Campus Scene: Circling Birds, Blinking Dino, Mouse Parallax & Floating Clouds */}
+        {/* Interactive 3D Lego Campus Scene: Mouse Parallax, Ambient Float & Floating Clouds */}
         <UtdiCampusInteractiveScene />
 
         {/* Hero Content Container (Clean copy showcasing 3D voxel background) */}
