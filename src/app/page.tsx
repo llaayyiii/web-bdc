@@ -141,14 +141,48 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* 3. HERO SECTION (Neo-Retro Voxel Arcade Aesthetic) */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:py-24 bg-voxel-grid border-b border-slate-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left 7 Cols: Punchy Typography & CTAs */}
+      {/* 3. HERO SECTION (Identical structure and 3D voxel campus environment background to GDGoC IPB) */}
+      <section
+        className="relative overflow-hidden isolate bg-[#EFF0F0] border-b border-slate-300 min-h-[720px] md:min-h-[800px] lg:min-h-[860px] flex flex-col justify-between"
+        id="hero"
+        aria-labelledby="hero-heading"
+      >
+        {/* Layer 1: 3D Voxel Campus Environment Art Background */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          <Image
+            src="/environments/01-hello-campus-3d.webp"
+            alt="Environment 3D Kampus UTDI Voxel Arcade"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-bottom md:object-right-bottom opacity-85 transition-opacity duration-700"
+          />
+
+          {/* Floating Pixel Clouds */}
+          <div className="absolute top-12 left-10 md:left-24 opacity-80 animate-float-cloud pointer-events-none">
+            <Image src="/cards/cloud.svg" alt="Pixel Cloud" width={80} height={20} className="w-16 md:w-24 h-auto pixelated" />
+          </div>
+          <div className="absolute top-28 right-12 md:right-40 opacity-70 animate-float-cloud-delayed pointer-events-none">
+            <Image src="/cards/cloud.svg" alt="Pixel Cloud" width={90} height={22} className="w-20 md:w-28 h-auto pixelated" />
+          </div>
+
+          {/* Subtle Dot Matrix Layer */}
+          <div className="absolute inset-0 bg-voxel-grid opacity-35" />
+        </div>
+
+        {/* Layer 2: Top Gradient Wash (Soft fade into paper canvas) */}
+        <div className="absolute inset-x-0 top-0 h-44 hero-wash z-[1] pointer-events-none" />
+
+        {/* Layer 3: Bottom Gradient Wash (Soft blend to next section) */}
+        <div className="absolute inset-x-0 bottom-0 h-28 hero-bottom-wash z-[1] pointer-events-none" />
+
+        {/* Layer 4: Hero Content Container */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-16 w-full my-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left 7 Cols: Typography, Headline, and CTAs */}
             <div className="lg:col-span-7 space-y-6">
               {/* Eyebrow Pill */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-300 text-xs font-mono shadow-retro-sm">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fffefa]/95 backdrop-blur-sm border border-slate-300 text-xs font-mono shadow-retro-sm">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="font-bold uppercase tracking-wider text-bdc-navy">
                   UTDI CHAPTER // COHORT 2026
@@ -156,17 +190,17 @@ export default async function HomePage() {
                 <BdcDots size="sm" />
               </div>
 
-              {/* Main Headline */}
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-space tracking-tight text-bdc-midnight leading-[1.08]">
-                Belajar Coding, Bangun Solusi Digital bareng{" "}
-                <span className="font-pixel text-bdc-blue underline decoration-bdc-yellow decoration-4 underline-offset-4">
-                  BDC UTDI
-                </span>
-                .
+              {/* Main Headline (GDGoC IPB typography) */}
+              <h1
+                id="hero-heading"
+                className="font-pixel text-4xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl text-bdc-midnight leading-[0.98] tracking-tight drop-shadow-sm"
+              >
+                Belajar teknologi<br />
+                <span className="text-bdc-blue">bareng BDC UTDI</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
+              <p className="text-sm sm:text-base text-slate-700 leading-relaxed max-w-xl font-sans bg-[#EFF0F0]/70 md:bg-transparent backdrop-blur-[2px] md:backdrop-blur-none rounded-xl p-1 md:p-0">
                 Komunitas mahasiswa teknologi Universitas Teknologi Digital Indonesia: tingkatkan keterampilan
                 rekayasa web, audit keamanan, dan UI/UX lewat sesi praktik langsung, presensi barcode terverifikasi,
                 dan sertifikasi kompetensi resmi.
@@ -176,7 +210,7 @@ export default async function HomePage() {
               <div className="pt-2 flex flex-wrap items-center gap-4">
                 <Link
                   href={portalHref}
-                  className="retro-btn px-6 py-3.5 rounded-2xl bg-bdc-midnight hover:bg-bdc-navy text-white text-sm font-black flex items-center gap-2 shadow-retro transition-all"
+                  className="retro-btn px-7 py-3.5 rounded-2xl bg-bdc-blue hover:bg-blue-600 text-white text-sm font-bold flex items-center gap-2.5 shadow-retro transition-all border border-bdc-midnight"
                 >
                   <Terminal className="w-4 h-4 text-bdc-yellow" />
                   <span>{portalLabel}</span>
@@ -184,38 +218,38 @@ export default async function HomePage() {
                 </Link>
 
                 <a
-                  href="#fitur"
-                  className="retro-btn px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-50 text-bdc-midnight text-sm font-bold border border-slate-400 shadow-retro transition-all flex items-center gap-2"
+                  href="#tracks"
+                  className="retro-btn px-6 py-3.5 rounded-2xl bg-[#fffefa] hover:bg-[#f4f3ea] text-bdc-midnight text-sm font-bold border border-bdc-midnight shadow-retro transition-all flex items-center gap-2"
                 >
                   <Code2 className="w-4 h-4 text-bdc-blue" />
-                  <span>Lihat Fitur &amp; Silabus</span>
+                  <span>Jelajahi Peminatan</span>
                 </a>
               </div>
 
               {/* Micro stats banner */}
-              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-slate-600 font-mono">
-                <div className="flex items-center gap-1.5">
+              <div className="pt-4 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-700 font-mono">
+                <div className="flex items-center gap-1.5 bg-[#fffefa]/80 px-2.5 py-1 rounded-lg border border-slate-300 shadow-retro-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>Presensi Barcode Proyektor</span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 bg-[#fffefa]/80 px-2.5 py-1 rounded-lg border border-slate-300 shadow-retro-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>Rank Kehadiran &amp; XP</span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 bg-[#fffefa]/80 px-2.5 py-1 rounded-lg border border-slate-300 shadow-retro-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   <span>Cetak Sertifikat A4</span>
                 </div>
               </div>
             </div>
 
-            {/* Right 5 Cols: Retro Voxel / Terminal Card */}
+            {/* Right 5 Cols: Floating Retro CLI Island Card */}
             <div className="lg:col-span-5">
               <div className="relative">
                 {/* Decorative retro offset shadow frame */}
-                <div className="rounded-3xl bg-white border-2 border-bdc-midnight shadow-retro-lg p-6 sm:p-7 space-y-5">
+                <div className="rounded-3xl bg-[#fffefa]/95 backdrop-blur-md border-2 border-bdc-midnight shadow-retro-lg p-6 sm:p-7 space-y-5">
                   {/* Window Bar */}
-                  <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+                  <div className="flex items-center justify-between pb-3.5 border-b border-slate-200">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-[#EA4335] border border-red-700" />
                       <div className="w-3 h-3 rounded-full bg-[#EEDD55] border border-amber-600" />
@@ -231,7 +265,7 @@ export default async function HomePage() {
                   <div className="p-4 rounded-xl bg-bdc-midnight text-white font-mono text-xs space-y-2 border border-slate-800 shadow-inner">
                     <p className="text-slate-400">$ bdc init --cohort 2026 --campus utdi</p>
                     <p className="text-emerald-400">&gt; Menghubungkan ke pangkalan data kampus...</p>
-                    <p className="text-bdc-yellow">&gt; Presensi Sesi Aktif: BDC-PRESENSI-LIVE-994</p>
+                    <p className="text-bdc-yellow">&gt; Presensi Sesi Aktif: {liveSession?.qr_token || "BDC-PRESENSI-LIVE-994"}</p>
                     <p className="text-slate-200">&gt; Status Mahasiswa: Valid (@students.utdi.ac.id)</p>
                     <div className="pt-2 flex items-center gap-1 text-slate-400">
                       <span className="text-bdc-blue font-bold">&gt;</span>
@@ -240,17 +274,17 @@ export default async function HomePage() {
                   </div>
 
                   {/* Live Activity Snapshot Card */}
-                  <div className="p-4 rounded-xl bg-bdc-surface border border-slate-300 space-y-3">
+                  <div className="p-4 rounded-xl bg-[#EFF0F0] border border-slate-300 space-y-3 shadow-retro-sm">
                     <div className="flex items-center justify-between">
                       <span className="font-mono text-[10px] uppercase font-bold text-slate-500">
                         Live Sesi Hari Ini
                       </span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
                         Google Meet
                       </span>
                     </div>
 
-                    <h4 className="text-xs font-bold text-bdc-midnight leading-snug">
+                    <h4 className="font-space text-xs sm:text-sm font-bold text-bdc-midnight leading-snug">
                       {liveSession?.title || "Sesi Pertemuan 3: Integrasi API & State Management Komunitas"}
                     </h4>
 
@@ -270,6 +304,26 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
+
+        {/* Layer 5: Hero Scroll Indicator (Inspired by GDGoC IPB hero-scroll button) */}
+        <a
+          href="#tracks"
+          className="hero-scroll"
+          aria-label="Jelajahi komunitas BDC UTDI"
+        >
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            shapeRendering="crispEdges"
+            className="text-bdc-midnight"
+          >
+            <path d="M13 12h6v2h-2v2h-2v2h-2v2h-2v-2H9v-2H7v-2H5v-2h6V4h2v8Z" />
+          </svg>
+        </a>
       </section>
 
       {/* 4. FOUR LEARNING TRACKS (Level System inspired by GDGoC IPB) */}
