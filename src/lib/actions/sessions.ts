@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "./auth";
-import { bdcStore } from "../data/store";
+import { bdcStore, deriveMeetSessionStatus } from "../data/store";
 import { hydrateFromDb } from "../data/db";
 import { MeetSession } from "../types/database";
 import { createAdminClient } from "../supabase/admin";
@@ -29,7 +29,7 @@ export async function getAllMeetSessionsAction(): Promise<MeetSession[]> {
 export async function adminUpdateMeetSessionAction(
   sessionId: string,
   updates: Partial<MeetSession>
-): Promise<{ success: boolean; message: string }> {
+): Promise<{ success: boolean; message: string; session?: MeetSession }> {
   const currentUser = await getCurrentUser();
   if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "instructor")) {
     return {
@@ -45,13 +45,18 @@ export async function adminUpdateMeetSessionAction(
     return { success: false, message: "Sesi pertemuan tidak ditemukan." };
   }
 
-  bdcStore.setMeetSession({ id: sessionId, ...updates });
+  // Gabungkan dan hitung status terbaru berdasarkan jadwal
+  const merged = { ...session, ...updates };
+  merged.status = deriveMeetSessionStatus(merged);
+  const finalUpdates: Partial<MeetSession> = { ...updates, status: merged.status };
+
+  const updatedSession = bdcStore.setMeetSession({ id: sessionId, ...finalUpdates });
 
   // Sinkronisasi ke Supabase
   const supabaseAdmin = createAdminClient();
   if (supabaseAdmin) {
     try {
-      await supabaseAdmin.from("meet_sessions").update(updates).eq("id", sessionId);
+      await supabaseAdmin.from("meet_sessions").update(finalUpdates).eq("id", sessionId);
     } catch (err) {
       console.warn("Sinkronisasi update sesi ke Supabase:", err);
     }
@@ -65,8 +70,37 @@ export async function adminUpdateMeetSessionAction(
 
   return {
     success: true,
-    message: "Data sesi pertemuan dan link konferensi video berhasil diperbarui.",
+    message: "Data sesi pertemuan berhasil diperbarui.",
+    session: updatedSession || undefined,
   };
+}
+
+/**
+ * Override Cepat: Mulai sesi sekarang (set jadwal mulai = sekarang, selesai = 3 jam ke depan)
+ */
+export async function adminStartSessionNowAction(
+  sessionId: string
+): Promise<{ success: boolean; message: string; session?: MeetSession }> {
+  const now = new Date();
+  const expires = new Date(now.getTime() + 3 * 3600 * 1000);
+
+  return adminUpdateMeetSessionAction(sessionId, {
+    scheduled_at: now.toISOString(),
+    expires_at: expires.toISOString(),
+  });
+}
+
+/**
+ * Override Cepat: Akhiri sesi sekarang (set jadwal selesai = sekarang)
+ */
+export async function adminEndSessionNowAction(
+  sessionId: string
+): Promise<{ success: boolean; message: string; session?: MeetSession }> {
+  const now = new Date();
+
+  return adminUpdateMeetSessionAction(sessionId, {
+    expires_at: now.toISOString(),
+  });
 }
 
 /**

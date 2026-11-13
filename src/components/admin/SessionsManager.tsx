@@ -1,32 +1,49 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Video,
   QrCode,
   Plus,
   Play,
+  Square,
   CheckCircle2,
   ExternalLink,
   Copy,
   Check,
   Calendar,
+  Clock,
   User,
   Radio,
   Trash2,
   AlertTriangle,
+  RotateCw,
 } from "lucide-react";
 import { MeetSession } from "@/lib/types/database";
 import {
   adminCreateMeetSessionAction,
   adminUpdateMeetSessionAction,
   adminDeleteMeetSessionAction,
+  adminStartSessionNowAction,
+  adminEndSessionNowAction,
+  getAllMeetSessionsAction,
 } from "@/lib/actions/sessions";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 interface SessionsManagerProps {
   initialSessions: MeetSession[];
+}
+
+/** Format Date object ke string input type datetime-local (YYYY-MM-DDTHH:mm) */
+function toDatetimeLocalString(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
 export function SessionsManager({ initialSessions }: SessionsManagerProps) {
@@ -37,13 +54,35 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
   const [sessionToDelete, setSessionToDelete] = useState<MeetSession | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
   // New session form state
   const [title, setTitle] = useState("");
   const [courseTitle, setCourseTitle] = useState("Ngoding Bareng: Membangun Web App Interaktif dari Nol");
   const [instructor, setInstructor] = useState("Dr. Evelyn Vance");
   const [meetUrl, setMeetUrl] = useState("https://meet.google.com/bdc-utdi-web");
-  const [status, setStatus] = useState<"scheduled" | "live" | "completed">("live");
+
+  // Default jadwal: mulai sekarang s/d 3 jam ke depan
+  const now = new Date();
+  const defaultEnd = new Date(now.getTime() + 3 * 3600 * 1000);
+  const [scheduledAtStr, setScheduledAtStr] = useState<string>(toDatetimeLocalString(now));
+  const [expiresAtStr, setExpiresAtStr] = useState<string>(toDatetimeLocalString(defaultEnd));
+
+  // Polling data sesi setiap 30 detik agar perubahan waktu otomatis berganti live/selesai
+  useEffect(() => {
+    const timer = setInterval(async () => {
+      try {
+        const fresh = await getAllMeetSessionsAction();
+        if (fresh && Array.isArray(fresh)) {
+          setSessions(fresh);
+        }
+      } catch (err) {
+        console.warn("Gagal auto-refresh sesi:", err);
+      }
+    }, 30000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const handleCopyLink = (url: string, id: string) => {
     navigator.clipboard.writeText(url);
@@ -51,16 +90,31 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const handleStatusChange = async (sessionId: string, newStatus: "scheduled" | "live" | "completed") => {
+  const handleStartNow = async (sessionId: string) => {
+    setActionLoadingId(sessionId);
     try {
-      const res = await adminUpdateMeetSessionAction(sessionId, { status: newStatus });
-      if (res.success) {
-        setSessions((prev) =>
-          prev.map((s) => (s.id === sessionId ? { ...s, status: newStatus } : s))
-        );
+      const res = await adminStartSessionNowAction(sessionId);
+      if (res.success && res.session) {
+        setSessions((prev) => prev.map((s) => (s.id === sessionId ? res.session! : s)));
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const handleEndNow = async (sessionId: string) => {
+    setActionLoadingId(sessionId);
+    try {
+      const res = await adminEndSessionNowAction(sessionId);
+      if (res.success && res.session) {
+        setSessions((prev) => prev.map((s) => (s.id === sessionId ? res.session! : s)));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -70,6 +124,15 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
 
     setIsSubmitting(true);
     try {
+      const startDate = new Date(scheduledAtStr);
+      const endDate = new Date(expiresAtStr);
+
+      if (endDate.getTime() <= startDate.getTime()) {
+        alert("Waktu selesai harus lebih lambat dari waktu mulai pertemuan.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const randomSuffix = Math.floor(100 + Math.random() * 900);
       const res = await adminCreateMeetSessionAction({
         course_id: "ACT-01",
@@ -78,15 +141,20 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
         instructor: instructor.trim(),
         meet_url: meetUrl.trim(),
         qr_token: `BDC-${randomSuffix}`,
-        scheduled_at: new Date().toISOString(),
-        expires_at: new Date(Date.now() + 3 * 3600 * 1000).toISOString(),
-        status,
+        scheduled_at: startDate.toISOString(),
+        expires_at: endDate.toISOString(),
+        status: "scheduled", // status sesungguhnya akan dihitung otomatis oleh store
       });
 
       if (res.success && res.session) {
         setSessions([res.session, ...sessions]);
         setShowModal(false);
         setTitle("");
+        // Reset jadwal ke default
+        const freshNow = new Date();
+        const freshEnd = new Date(freshNow.getTime() + 3 * 3600 * 1000);
+        setScheduledAtStr(toDatetimeLocalString(freshNow));
+        setExpiresAtStr(toDatetimeLocalString(freshEnd));
       }
     } catch (err) {
       console.error(err);
@@ -177,9 +245,15 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                         <Radio className="w-3 h-3 text-emerald-600 animate-pulse" />
                         Live Sesi Berlangsung
                       </span>
+                    ) : sess.status === "scheduled" ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-mono font-bold uppercase bg-amber-50 text-amber-800 border border-amber-300 shadow-retro-sm">
+                        <Clock className="w-3 h-3 text-amber-600" />
+                        Terjadwal (Otomatis Live)
+                      </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-xl text-[10px] font-mono font-bold uppercase bg-[#EFF0F0] text-slate-600 border border-slate-300">
-                        {sess.status === "scheduled" ? "Terjadwal" : "Selesai"}
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-mono font-bold uppercase bg-[#EFF0F0] text-slate-600 border border-slate-300">
+                        <CheckCircle2 className="w-3 h-3 text-slate-500" />
+                        Selesai
                       </span>
                     )}
 
@@ -202,30 +276,45 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                       <User className="w-3.5 h-3.5 text-slate-400" />
                       <span>{sess.instructor}</span>
                     </span>
-                    <span className="flex items-center gap-1.5">
+                    <span className="flex items-center gap-1.5" title="Jadwal otomatis sesi">
                       <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{new Date(sess.scheduled_at).toLocaleDateString("id-ID")}</span>
+                      <span>{new Date(sess.scheduled_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</span>
+                    </span>
+                    <span className="flex items-center gap-1.5 font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
+                      <Clock className="w-3 h-3 text-bdc-blue" />
+                      <span>
+                        {new Date(sess.scheduled_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} &ndash; {new Date(sess.expires_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                      </span>
                     </span>
                   </div>
                 </div>
 
                 {/* Right Action Buttons */}
                 <div className="flex flex-wrap items-center gap-2.5 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-[#d9dfd7]">
-                  {/* Status selector */}
-                  <select
-                    value={sess.status}
-                    onChange={(e) =>
-                      handleStatusChange(
-                        sess.id,
-                        e.target.value as "scheduled" | "live" | "completed"
-                      )
-                    }
-                    className="text-xs font-mono font-bold px-3 py-2 rounded-xl border border-slate-300 bg-[#EFF0F0] focus:outline-none focus:border-bdc-midnight shadow-retro-sm"
-                  >
-                    <option value="live">Live (Aktif)</option>
-                    <option value="scheduled">Terjadwal</option>
-                    <option value="completed">Selesai</option>
-                  </select>
+                  {/* Tombol Override Mulai / Akhiri Sekarang */}
+                  {isLive ? (
+                    <button
+                      type="button"
+                      disabled={actionLoadingId === sess.id}
+                      onClick={() => handleEndNow(sess.id)}
+                      className="retro-btn px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-retro-sm disabled:opacity-50"
+                      title="Akhiri sesi sekarang (tutup presensi)"
+                    >
+                      <Square className="w-3.5 h-3.5 text-amber-700 fill-amber-700" />
+                      <span>{actionLoadingId === sess.id ? "..." : "Akhiri Sesi"}</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={actionLoadingId === sess.id}
+                      onClick={() => handleStartNow(sess.id)}
+                      className="retro-btn px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-retro-sm disabled:opacity-50"
+                      title="Mulai sesi sekarang (jadikan live & buka presensi)"
+                    >
+                      <Play className="w-3.5 h-3.5 text-emerald-700 fill-emerald-700" />
+                      <span>{actionLoadingId === sess.id ? "..." : "Mulai Sekarang"}</span>
+                    </button>
+                  )}
 
                   {/* Copy Meet Link */}
                   <button
@@ -335,31 +424,50 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block font-space font-bold text-slate-800 mb-1">
+                  Nama Pemateri / Instruktur
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={instructor}
+                  onChange={(e) => setInstructor(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm bg-white"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300">
                 <div>
-                  <label className="block font-space font-bold text-slate-800 mb-1">
-                    Nama Pemateri / Instruktur
+                  <label className="block font-space font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-bdc-blue" />
+                    <span>Waktu Mulai</span>
                   </label>
                   <input
-                    type="text"
+                    type="datetime-local"
                     required
-                    value={instructor}
-                    onChange={(e) => setInstructor(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm bg-white"
+                    value={scheduledAtStr}
+                    onChange={(e) => setScheduledAtStr(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight bg-white font-mono text-xs"
                   />
                 </div>
                 <div>
-                  <label className="block font-space font-bold text-slate-800 mb-1">
-                    Status Awal Sesi
+                  <label className="block font-space font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-rose-600" />
+                    <span>Waktu Selesai (Tutup)</span>
                   </label>
-                  <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value as any)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm font-semibold bg-white"
-                  >
-                    <option value="live">Live (Langsung Dibuka)</option>
-                    <option value="scheduled">Terjadwal</option>
-                  </select>
+                  <input
+                    type="datetime-local"
+                    required
+                    value={expiresAtStr}
+                    onChange={(e) => setExpiresAtStr(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight bg-white font-mono text-xs"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <p className="text-[11px] text-slate-600 font-sans leading-tight">
+                    ⚡ <strong>Otomatis Tanpa Klik Manual:</strong> Sesi otomatis <em>Live & Buka Presensi</em> saat waktu mulai tiba, dan otomatis <em>Selesai & Tutup</em> saat waktu selesai.
+                  </p>
                 </div>
               </div>
 

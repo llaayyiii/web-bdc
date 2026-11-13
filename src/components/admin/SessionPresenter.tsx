@@ -136,6 +136,16 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
             <h1 className="font-space text-xl sm:text-2xl font-bold text-white tracking-tight mt-0.5">
               {currentSession.title}
             </h1>
+            <p className="text-[11px] font-mono text-slate-300 mt-0.5 flex items-center gap-2">
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3 text-bdc-yellow" />
+                <span>
+                  Jadwal: {new Date(currentSession.scheduled_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} &ndash; {new Date(currentSession.expires_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                </span>
+              </span>
+              <span className="text-white/30">•</span>
+              <span className="text-emerald-400">Presensi Terbuka Otomatis</span>
+            </p>
           </div>
         </div>
 

@@ -237,6 +237,35 @@ export const SEED_SUBMISSIONS: AssignmentSubmission[] = [];
 export const SEED_ENROLLMENTS: CourseEnrollment[] = [];
 
 // Stateful Repository
+/**
+ * Menghitung status sesi secara otomatis berdasarkan jadwal waktu.
+ * - Sekarang < scheduled_at   => "scheduled" (Terjadwal)
+ * - scheduled_at <= Sekarang < expires_at => "live" (Aktif berlangsung)
+ * - Sekarang >= expires_at    => "completed" (Selesai)
+ */
+export function deriveMeetSessionStatus(
+  session: { scheduled_at?: string; expires_at?: string; status?: MeetSession["status"] },
+  nowMs: number = Date.now()
+): "scheduled" | "live" | "completed" {
+  if (!session.scheduled_at || !session.expires_at) {
+    return session.status || "scheduled";
+  }
+  const startMs = new Date(session.scheduled_at).getTime();
+  const endMs = new Date(session.expires_at).getTime();
+
+  if (isNaN(startMs) || isNaN(endMs)) {
+    return session.status || "scheduled";
+  }
+
+  if (nowMs < startMs) {
+    return "scheduled";
+  }
+  if (nowMs >= endMs) {
+    return "completed";
+  }
+  return "live";
+}
+
 class BdcDataStore {
   /**
    * Mengganti isi cache in-memory dengan data segar dari Supabase.
@@ -272,7 +301,12 @@ class BdcDataStore {
     if (data.attempts) this.attempts = data.attempts;
     if (data.certificates) this.certificates = data.certificates;
     if (data.enrollments) this.enrollments = data.enrollments;
-    if (data.sessions) this.sessions = data.sessions;
+    if (data.sessions) {
+      this.sessions = data.sessions.map((s) => ({
+        ...s,
+        status: deriveMeetSessionStatus(s),
+      }));
+    }
     if (data.attendances) this.attendances = data.attendances;
     if (data.assignments) this.assignments = data.assignments;
     if (data.submissions) this.submissions = data.submissions;
@@ -550,25 +584,41 @@ class BdcDataStore {
 
   // 1. MEET SESSIONS
   getSessions() {
-    return this.sessions;
+    const now = Date.now();
+    return this.sessions.map((s) => ({
+      ...s,
+      status: deriveMeetSessionStatus(s, now),
+    }));
   }
 
   getLiveSession() {
-    return this.sessions.find((s) => s.status === "live") || null;
+    const sessions = this.getSessions();
+    return sessions.find((s) => s.status === "live") || null;
   }
 
   getSessionById(id: string) {
-    return this.sessions.find((s) => s.id === id) || null;
+    const session = this.sessions.find((s) => s.id === id);
+    if (!session) return null;
+    return {
+      ...session,
+      status: deriveMeetSessionStatus(session),
+    };
   }
 
   setMeetSession(payload: Partial<MeetSession> & { id?: string }) {
     if (payload.id) {
       const idx = this.sessions.findIndex((s) => s.id === payload.id);
       if (idx !== -1) {
-        this.sessions[idx] = { ...this.sessions[idx], ...payload };
+        const merged = { ...this.sessions[idx], ...payload };
+        merged.status = deriveMeetSessionStatus(merged);
+        this.sessions[idx] = merged;
         return this.sessions[idx];
       }
     }
+
+    const scheduled_at = payload.scheduled_at || new Date().toISOString();
+    const expires_at = payload.expires_at || new Date(Date.now() + 3 * 3600 * 1000).toISOString();
+    const computedStatus = deriveMeetSessionStatus({ scheduled_at, expires_at });
 
     const newSession: MeetSession = {
       id: `session-${Date.now()}`,
@@ -578,17 +628,10 @@ class BdcDataStore {
       instructor: payload.instructor || "Dr. Evelyn Vance",
       meet_url: payload.meet_url || "https://meet.google.com/bdc-utdi-web",
       qr_token: payload.qr_token || `BDC-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
-      scheduled_at: payload.scheduled_at || new Date().toISOString(),
-      expires_at: payload.expires_at || new Date(Date.now() + 3 * 3600 * 1000).toISOString(),
-      status: payload.status || "live",
+      scheduled_at,
+      expires_at,
+      status: payload.status && !payload.scheduled_at ? payload.status : computedStatus,
     };
-
-    // If setting to live, make others scheduled
-    if (newSession.status === "live") {
-      this.sessions.forEach((s) => {
-        if (s.id !== newSession.id && s.status === "live") s.status = "completed";
-      });
-    }
 
     this.sessions.unshift(newSession);
     return newSession;
@@ -640,14 +683,20 @@ class BdcDataStore {
       return { success: false, error: "Kode QR / Barcode presensi tidak valid atau sesi tidak ditemukan." };
     }
 
-    if (matchingSession.status === "scheduled") {
+    const sessionStatus = deriveMeetSessionStatus(matchingSession);
+
+    if (sessionStatus === "scheduled") {
+      const startTime = new Date(matchingSession.scheduled_at).toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
       return {
         success: false,
-        error: `Sesi "${matchingSession.title}" masih berstatus 'Terjadwal'. Minta dosen/instruktur untuk mengaktifkan sesi (Live) terlebih dahulu.`,
+        error: `Sesi "${matchingSession.title}" belum dimulai (dijadwalkan pukul ${startTime} WIB). Presensi belum dibuka.`,
       };
     }
 
-    if (matchingSession.status === "completed") {
+    if (sessionStatus === "completed") {
       return {
         success: false,
         error: `Sesi "${matchingSession.title}" telah berakhir. Presensi ditutup.`,
