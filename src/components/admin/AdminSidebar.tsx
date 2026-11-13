@@ -17,6 +17,8 @@ import {
   Eye,
   EyeOff,
   LogOut,
+  Megaphone,
+  BookOpen,
 } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth";
 import { BdcDots } from "@/components/ui/BdcDots";
@@ -82,6 +84,18 @@ export function AdminSidebar() {
       href: "/admin/users",
       icon: Shield,
       code: "06",
+    },
+    {
+      name: "Info Lomba & Event",
+      href: "/admin/competitions",
+      icon: Megaphone,
+      code: "07",
+    },
+    {
+      name: "Manajemen Materi",
+      href: "/admin/courses",
+      icon: BookOpen,
+      code: "08",
     },
   ];
 

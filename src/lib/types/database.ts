@@ -194,3 +194,40 @@ export interface AssignmentSubmission {
   feedback: string | null;
   status: "pending" | "graded" | "late";
 }
+
+// Opsi kategori & level materi — WAJIB tetap cocok dengan CHECK constraint
+// pada tabel `public.courses` (courses_category_check / courses_level_check).
+export const COURSE_CATEGORIES = [
+  "Sesi Minggu Ini",
+  "Workshop & Hands-On",
+  "Proyek Bersama",
+  "Arsip Recording",
+] as const;
+
+export const COURSE_LEVELS = [
+  "Pemula (Beginner)",
+  "Menengah (Intermediate)",
+  "Lanjutan (Advanced)",
+  "Semua Tingkat (All Levels)",
+] as const;
+
+// 5. COMPETITION (Info Lomba / Event yang dipublikasikan admin)
+export interface Competition {
+  id: string;
+  title: string;
+  description: string;
+  /** Tautan lomba/event (wajib URL valid) */
+  url: string;
+  /** Gambar preview (auto dari OG link, bisa diganti manual) */
+  image_url?: string | null;
+  /** Nama file guidebook yang diunggah admin (opsional) */
+  guidebook_name?: string | null;
+  /** Path file di bucket Supabase Storage `guidebooks` (opsional) */
+  guidebook_path?: string | null;
+  /** Batas waktu lomba — status kadaluarsa diturunkan saat dibaca */
+  expires_at?: string | null;
+  created_at?: string;
+}
+
+/** Status lomba yang diturunkan dari `expires_at` vs waktu render (derive-on-read). */
+export type CompetitionStatus = "ongoing" | "expired";

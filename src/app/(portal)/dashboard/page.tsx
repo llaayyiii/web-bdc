@@ -32,6 +32,7 @@ export default async function DashboardPage() {
   const userSubmissions = user ? bdcStore.getSubmissionsByUser(user.id) : [];
   const liveSession = bdcStore.getLiveSession();
   const leaderboard = bdcStore.getLeaderboard();
+  const activeCompetitions = bdcStore.getActiveCompetitions().slice(0, 3);
 
   const userRankIndex = leaderboard.findIndex((p) => p.id === user?.id);
   const userRank = userRankIndex !== -1 ? userRankIndex + 1 : leaderboard.length + 1;
@@ -126,6 +127,66 @@ export default async function DashboardPage() {
           <ArrowRight className="w-4 h-4" />
         </span>
       </a>
+
+      {/* 2C. INFO LOMBA / EVENT MASIH DIBUKA */}
+      {activeCompetitions.length > 0 && (
+        <div className="bg-[#fffefa] rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#F7B500] p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-11 h-11 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0">
+                <Trophy className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-amber-600">
+                  Info Lomba &amp; Event
+                </span>
+                <h2 className="font-space font-bold text-sm sm:text-base text-bdc-midnight mt-0.5">
+                  {activeCompetitions.length} lomba masih dibuka
+                </h2>
+              </div>
+            </div>
+            <Link
+              href="/competitions"
+              className="retro-btn px-4 py-2 rounded-xl bg-[#fffefa] text-bdc-midnight border border-bdc-midnight text-xs font-bold transition-all flex items-center gap-2 shadow-retro-sm shrink-0 hover:bg-[#fff8e6]"
+            >
+              <span>Lihat Semua</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <ul className="space-y-2">
+            {activeCompetitions.map((c) => (
+              <li key={c.id}>
+                <a
+                  href={c.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-[#f4f3ea] border border-[#d9dfd7] hover:border-bdc-midnight hover:bg-[#fff8e6] transition-all group/item"
+                >
+                  <span className="min-w-0">
+                    <span className="block font-space font-bold text-xs text-bdc-midnight truncate group-hover/item:text-bdc-blue">
+                      {c.title}
+                    </span>
+                    {c.expires_at && (
+                      <span className="block font-mono text-[10px] text-slate-500 mt-0.5">
+                        Batas:{" "}
+                        {new Date(c.expires_at).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}{" "}
+                        WIB
+                      </span>
+                    )}
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-slate-400 shrink-0 group-hover/item:text-bdc-blue" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* 3. FOUR METRIC STATS CARDS WITH COLORED INSET TOP BARS (Exact GDGoC IPB dash-stats design) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

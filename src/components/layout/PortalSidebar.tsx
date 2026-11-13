@@ -16,6 +16,7 @@ import {
   X,
   ExternalLink,
   LogOut,
+  Megaphone,
 } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth";
 import { BdcDots } from "@/components/ui/BdcDots";
@@ -60,6 +61,12 @@ export function PortalSidebar({ userRole, userName, userNim }: PortalSidebarProp
       href: "/assignments",
       icon: FolderGit2,
       description: "Soal Essay, Proyek & Pengumpulan",
+    },
+    {
+      name: "Info Lomba",
+      href: "/competitions",
+      icon: Megaphone,
+      description: "Lomba, Event & Guidebook",
     },
     {
       name: "Sertifikat & Transkrip",

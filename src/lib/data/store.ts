@@ -10,6 +10,8 @@ import {
   AttendanceRecord,
   Assignment,
   AssignmentSubmission,
+  Competition,
+  CompetitionStatus,
 } from "../types/database";
 
 // Registered Accounts (Admin, Anggota & Instruktur Resmi UTDI - Synced with Supabase Auth)
@@ -266,6 +268,22 @@ export function deriveMeetSessionStatus(
   return "live";
 }
 
+/**
+ * Menurunkan status info lomba dari `expires_at` vs waktu render.
+ * - expires_at kosong        => "ongoing" (tanpa batas waktu)
+ * - Sekarang < expires_at    => "ongoing" (Masih Dibuka)
+ * - Sekarang >= expires_at   => "expired" (Kadaluarsa / Ditutup)
+ */
+export function deriveCompetitionStatus(
+  competition: { expires_at?: string | null },
+  nowMs: number = Date.now()
+): CompetitionStatus {
+  if (!competition.expires_at) return "ongoing";
+  const endMs = new Date(competition.expires_at).getTime();
+  if (isNaN(endMs)) return "ongoing";
+  return nowMs >= endMs ? "expired" : "ongoing";
+}
+
 class BdcDataStore {
   /**
    * Mengganti isi cache in-memory dengan data segar dari Supabase.
@@ -283,6 +301,7 @@ class BdcDataStore {
     attendances: AttendanceRecord[];
     assignments: Assignment[];
     submissions: AssignmentSubmission[];
+    competitions: Competition[];
   }>) {
     if (data.profiles) {
       // Pertahankan field password lokal yang tidak tersimpan di kolom DB
@@ -310,6 +329,7 @@ class BdcDataStore {
     if (data.attendances) this.attendances = data.attendances;
     if (data.assignments) this.assignments = data.assignments;
     if (data.submissions) this.submissions = data.submissions;
+    if (data.competitions) this.competitions = data.competitions;
   }
 
   private profiles = [...SEED_PROFILES];
@@ -323,6 +343,7 @@ class BdcDataStore {
   private attendances = [...SEED_ATTENDANCES];
   private assignments = [...SEED_ASSIGNMENTS];
   private submissions = [...SEED_SUBMISSIONS];
+  private competitions: Competition[] = [];
 
   // Profiles
   getProfiles() {
@@ -432,6 +453,28 @@ class BdcDataStore {
 
   getCourseById(id: string) {
     return this.courses.find((c) => c.id === id) || null;
+  }
+
+  createCourse(payload: Omit<Course, "id">) {
+    // Kode materi pendek untuk ditampilkan di kartu & URL (MTR-01, MTR-02, ...)
+    const existingNumbers = this.courses
+      .map((c) => (/^MTR-\d+$/.test(c.id) ? parseInt(c.id.slice(4), 10) : NaN))
+      .filter((n) => !isNaN(n));
+    const next = (existingNumbers.length ? Math.max(...existingNumbers) : 0) + 1;
+    const newCourse: Course = {
+      ...payload,
+      id: `MTR-${String(next).padStart(2, "0")}`,
+    };
+    this.courses.unshift(newCourse);
+    return newCourse;
+  }
+
+  deleteCourse(id: string) {
+    const index = this.courses.findIndex((c) => c.id === id);
+    if (index === -1) return false;
+    this.courses.splice(index, 1);
+    this.enrollments = this.enrollments.filter((e) => e.course_id !== id);
+    return true;
   }
 
   // Enrollments
@@ -787,6 +830,41 @@ class BdcDataStore {
     if (index === -1) return false;
     this.assignments.splice(index, 1);
     this.submissions = this.submissions.filter((s) => s.assignment_id !== id);
+    return true;
+  }
+
+  // Info Lomba / Event (dipublikasikan admin ke portal)
+  /** Seluruh lomba, terbaru di atas — status diturunkan saat dibaca (derive-on-read). */
+  getCompetitions() {
+    return [...this.competitions].sort(
+      (a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+    );
+  }
+
+  /** Lomba aktif saja (belum kadaluarsa) — untuk widget dashboard. */
+  getActiveCompetitions() {
+    const now = Date.now();
+    return this.getCompetitions().filter((c) => deriveCompetitionStatus(c, now) === "ongoing");
+  }
+
+  getCompetitionById(id: string) {
+    return this.competitions.find((c) => c.id === id) || null;
+  }
+
+  createCompetition(payload: Omit<Competition, "id" | "created_at">) {
+    const newCompetition: Competition = {
+      ...payload,
+      id: `comp-${Date.now()}`,
+      created_at: new Date().toISOString(),
+    };
+    this.competitions.unshift(newCompetition);
+    return newCompetition;
+  }
+
+  deleteCompetition(id: string) {
+    const index = this.competitions.findIndex((c) => c.id === id);
+    if (index === -1) return false;
+    this.competitions.splice(index, 1);
     return true;
   }
 

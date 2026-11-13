@@ -12,6 +12,7 @@ import {
   AttendanceRecord,
   Assignment,
   AssignmentSubmission,
+  Competition,
 } from "../types/database";
 
 /**
@@ -39,9 +40,10 @@ export async function hydrateFromDb(): Promise<void> {
       attendances,
       assignments,
       submissions,
+      competitions,
     ] = await Promise.all([
       supabase.from("profiles").select("*"),
-      supabase.from("courses").select("*"),
+      supabase.from("courses").select("*").order("created_at", { ascending: false }),
       supabase.from("quizzes").select("*"),
       supabase.from("quiz_questions").select("*").order("order_index", { ascending: true }),
       supabase.from("quiz_attempts").select("*").order("completed_at", { ascending: false }),
@@ -51,6 +53,7 @@ export async function hydrateFromDb(): Promise<void> {
       supabase.from("attendance_records").select("*").order("scanned_at", { ascending: false }),
       supabase.from("assignments").select("*"),
       supabase.from("assignment_submissions").select("*"),
+      supabase.from("competitions").select("*").order("created_at", { ascending: false }),
     ]);
 
     const data: Parameters<typeof bdcStore.hydrate>[0] = {};
@@ -66,6 +69,7 @@ export async function hydrateFromDb(): Promise<void> {
     if (!attendances.error && attendances.data) data.attendances = attendances.data as AttendanceRecord[];
     if (!assignments.error && assignments.data) data.assignments = assignments.data as Assignment[];
     if (!submissions.error && submissions.data) data.submissions = submissions.data as AssignmentSubmission[];
+    if (!competitions.error && competitions.data) data.competitions = competitions.data as Competition[];
 
     bdcStore.hydrate(data);
   } catch (err) {
