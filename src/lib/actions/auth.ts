@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { bdcStore } from "../data/store";
@@ -16,6 +16,12 @@ const PENDING_REG_COOKIE = "bdc_pending_reg";
 const PENDING_REG_TTL_MS = 10 * 60 * 1000;
 const OTP_MAX_ATTEMPTS = 5;
 const OTP_RESEND_COOLDOWN_MS = 60 * 1000;
+
+/** Batas server-side anti-spam request OTP (per jam), disimpan di tabel otp_send_log. */
+const OTP_SEND_LIMIT_PER_EMAIL = 5;
+const OTP_SEND_LIMIT_PER_IP = 10;
+const OTP_SEND_WINDOW_MS = 60 * 60 * 1000;
+const OTP_LOG_RETENTION_MS = 24 * 60 * 60 * 1000;
 
 interface PendingRegistration {
   fullName: string;
@@ -55,6 +61,86 @@ async function writePendingReg(pending: PendingRegistration) {
 async function clearPendingReg() {
   const cookieStore = await cookies();
   cookieStore.delete(PENDING_REG_COOKIE);
+}
+
+/** IP client dari header reverse proxy (Vercel) untuk limit per jaringan. */
+async function getClientIp(): Promise<string> {
+  try {
+    const h = await headers();
+    const forwarded = h.get("x-forwarded-for");
+    const ip = forwarded?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
+    return ip.slice(0, 64);
+  } catch {
+    return "unknown";
+  }
+}
+
+/**
+ * Cek kuota request OTP (server-side di tabel otp_send_log):
+ * maksimal 5 request per email dan 10 per IP dalam satu jam.
+ *
+ * Gagal-terbuka (fail-open): bila database tidak tersedia, request dibiarkan
+ * lewat — perlindungan cadangan tetap limit bawaan Supabase — agar pendaftaran
+ * tidak pernah terblokir oleh gangguan infrastruktur.
+ */
+async function checkOtpSendLimit(
+  email: string,
+  ip: string
+): Promise<{ allowed: boolean; error?: string }> {
+  const admin = createAdminClient();
+  if (!admin) return { allowed: true };
+
+  try {
+    const since = new Date(Date.now() - OTP_SEND_WINDOW_MS).toISOString();
+    const [byEmail, byIp] = await Promise.all([
+      admin
+        .from("otp_send_log")
+        .select("id", { count: "exact", head: true })
+        .eq("email", email)
+        .gte("created_at", since),
+      admin
+        .from("otp_send_log")
+        .select("id", { count: "exact", head: true })
+        .eq("ip", ip)
+        .gte("created_at", since),
+    ]);
+
+    if ((byEmail.count ?? 0) >= OTP_SEND_LIMIT_PER_EMAIL) {
+      return {
+        allowed: false,
+        error: `Terlalu banyak permintaan kode verifikasi untuk email ini (maksimal ${OTP_SEND_LIMIT_PER_EMAIL} per jam). Silakan coba lagi nanti.`,
+      };
+    }
+    if ((byIp.count ?? 0) >= OTP_SEND_LIMIT_PER_IP) {
+      return {
+        allowed: false,
+        error: `Terlalu banyak permintaan kode verifikasi dari jaringan Anda (maksimal ${OTP_SEND_LIMIT_PER_IP} per jam). Silakan coba lagi nanti.`,
+      };
+    }
+    return { allowed: true };
+  } catch (err) {
+    console.warn("Gagal memeriksa kuota request OTP:", err);
+    return { allowed: true };
+  }
+}
+
+/**
+ * Catat request OTP + bersihkan log tua (>24 jam).
+ * Dipanggil SEBELUM email dikirim dan SEBELUM akun auth dibuat,
+ * sehingga request yang melewati batas tidak lagi menghasilkan akun baru.
+ */
+async function recordOtpSend(email: string, ip: string): Promise<void> {
+  const admin = createAdminClient();
+  if (!admin) return;
+  try {
+    await admin.from("otp_send_log").insert({ email, ip });
+    await admin
+      .from("otp_send_log")
+      .delete()
+      .lt("created_at", new Date(Date.now() - OTP_LOG_RETENTION_MS).toISOString());
+  } catch (err) {
+    console.warn("Gagal mencatat log request OTP:", err);
+  }
 }
 
 /** Pesan error yang ramah untuk kegagalan pengiriman email OTP. */
@@ -334,6 +420,15 @@ export async function registerAction(
     };
   }
 
+  // Kuota anti-spam server-side: maks 5 request/email/jam & 10/IP/jam.
+  // Dicatat sebelum akun auth dibuat — request yang diblokir tidak menghasilkan akun.
+  const clientIp = await getClientIp();
+  const otpQuota = await checkOtpSendLimit(email, clientIp);
+  if (!otpQuota.allowed) {
+    return { success: false, error: otpQuota.error };
+  }
+  await recordOtpSend(email, clientIp);
+
   const supabaseAdmin = createAdminClient();
   if (!supabaseAdmin) {
     return { success: false, error: "Layanan pendaftaran belum terkonfigurasi. Silakan coba lagi nanti." };
@@ -589,6 +684,14 @@ export async function resendRegistrationOtpAction(): Promise<{ success: boolean;
       error: `Tunggu ${Math.ceil(waitMs / 1000)} detik sebelum meminta kode baru.`,
     };
   }
+
+  // Kuota server yang sama dengan pendaftaran (5/email/jam, 10/IP/jam)
+  const resendIp = await getClientIp();
+  const resendQuota = await checkOtpSendLimit(pending.email, resendIp);
+  if (!resendQuota.allowed) {
+    return { success: false, error: resendQuota.error };
+  }
+  await recordOtpSend(pending.email, resendIp);
 
   const anonClient = createAnonClient();
   if (!anonClient) {
