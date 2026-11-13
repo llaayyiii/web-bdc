@@ -178,6 +178,8 @@ export interface Assignment {
   submission_format: "github_or_drive" | "url" | "document";
   /** Tautan Google Drive materi/soal essay dari admin (opsional) */
   material_url?: string | null;
+  /** Waktu tugas diterbitkan — dasar hitung EXP berbasis hari (kalender WIB) */
+  created_at?: string;
 }
 
 // 4. ASSIGNMENT SUBMISSION (Pengumpulan & Penilaian Tugas)

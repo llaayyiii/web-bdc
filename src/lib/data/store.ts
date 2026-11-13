@@ -13,6 +13,7 @@ import {
   Competition,
   CompetitionStatus,
 } from "../types/database";
+import { computeAssignmentExp } from "../utils/assignment-exp";
 
 // Registered Accounts (Admin, Anggota & Instruktur Resmi UTDI - Synced with Supabase Auth)
 export const SEED_PROFILES: Profile[] = [
@@ -816,10 +817,11 @@ class BdcDataStore {
     return this.assignments.find((a) => a.id === id) || null;
   }
 
-  createAssignment(payload: Omit<Assignment, "id">) {
+  createAssignment(payload: Omit<Assignment, "id" | "created_at">) {
     const newAssignment: Assignment = {
       ...payload,
       id: `assign-${Date.now()}`,
+      created_at: new Date().toISOString(),
     };
     this.assignments.unshift(newAssignment);
     return newAssignment;
@@ -890,7 +892,13 @@ class BdcDataStore {
     userId: string,
     submissionUrl: string,
     notes: string
-  ) {
+  ): {
+    success: boolean;
+    error?: string;
+    submission?: AssignmentSubmission;
+    /** EXP pengumpulan pertama (linier hari WIB); hanya ada pada kirim pertama */
+    expAwarded?: number;
+  } {
     const user = this.getProfileById(userId);
     if (!user) return { success: false, error: "Pengguna tidak valid." };
 
@@ -919,8 +927,10 @@ class BdcDataStore {
       this.submissions[existingIndex] = submission;
     } else {
       this.submissions.unshift(submission);
-      // Award 150 XP for completing assignment submission
-      this.updateProfile(userId, { points: (user.points || 0) + 150 });
+      // EXP pengumpulan pertama: linier per hari kalender WIB (200 → 50, lewat tenggat 25)
+      const expAwarded = computeAssignmentExp(assignment, new Date(submission.submitted_at));
+      this.updateProfile(userId, { points: (user.points || 0) + expAwarded });
+      return { success: true, submission, expAwarded };
     }
 
     return { success: true, submission };

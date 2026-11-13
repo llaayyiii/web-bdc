@@ -62,7 +62,7 @@ export default async function LeaderboardPage() {
 
             <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
               Peringkat mahasiswa Business Dev Club UTDI sepanjang masa dan per sesi: dihitung otomatis
-              dari validasi presensi barcode (+100 XP), pengumpulan tugas proyek (+150 XP), dan evaluasi kuis mandiri.
+              dari validasi presensi barcode (+100 XP), pengumpulan tugas proyek (hingga +200 XP sesuai kecepatan pengiriman), dan evaluasi kuis mandiri.
             </p>
           </div>
 

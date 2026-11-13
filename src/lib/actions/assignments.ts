@@ -82,7 +82,7 @@ export async function submitAssignmentAction(
         status: sub.status,
       });
 
-      // Pengumpulan pertama memberi +150 XP (dihitung oleh store)
+      // Pengumpulan pertama memberi EXP sesuai hari pengiriman (dihitung oleh store)
       if (isNewSubmission) {
         const updatedProfile = bdcStore.getProfileById(currentUser.id);
         if (updatedProfile) {
@@ -102,9 +102,13 @@ export async function submitAssignmentAction(
   revalidatePath("/leaderboard");
   revalidatePath("/certificates");
 
+  const exp = result.expAwarded;
   return {
     success: true,
-    message: "Tugas berhasil dikumpulkan dan tercatat dalam sistem pangkalan data BDC.",
+    message:
+      exp !== undefined
+        ? `Tugas berhasil dikumpulkan. +${exp} EXP masuk ke poinmu (dihitung dari hari pengiriman).`
+        : "Tugas berhasil diperbarui. Pengumpulan ulang tidak menambah EXP.",
     submission: result.submission,
   };
 }
@@ -183,7 +187,7 @@ export async function adminGradeAssignmentAction(
  * Server action untuk Admin membuat penugasan baru
  */
 export async function adminCreateAssignmentAction(
-  assignmentData: Omit<Assignment, "id">
+  assignmentData: Omit<Assignment, "id" | "created_at">
 ): Promise<{ success: boolean; message: string; assignment?: Assignment }> {
   const currentUser = await getCurrentUser();
   if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "instructor")) {
@@ -227,6 +231,7 @@ export async function adminCreateAssignmentAction(
         max_score: newAssignment.max_score,
         submission_format: newAssignment.submission_format,
         material_url: newAssignment.material_url || null,
+        created_at: newAssignment.created_at ?? new Date().toISOString(),
       });
     } catch (err) {
       console.warn("Sinkronisasi tugas baru ke Supabase:", err);

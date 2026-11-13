@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Assignment, AssignmentSubmission } from "@/lib/types/database";
 import { submitAssignmentAction } from "@/lib/actions/assignments";
+import { computeAssignmentExp } from "@/lib/utils/assignment-exp";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 interface StudentAssignmentListProps {
@@ -30,6 +31,9 @@ export function StudentAssignmentList({
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  // Pratinjau EXP sesuai hari pengiriman (dihitung ulang oleh server saat kirim)
+  const previewExp = selectedAssignment ? computeAssignmentExp(selectedAssignment) : 0;
 
   const getSubmission = (assignmentId: string) => {
     return userSubmissions.find((s) => s.assignment_id === assignmentId);
@@ -223,6 +227,12 @@ export function StudentAssignmentList({
               </button>
             </div>
 
+            <p className="text-[11px] font-mono text-slate-500 -mt-1">
+              EXP saat ini:{" "}
+              <span className="font-bold text-bdc-blue">+{previewExp} XP</span> — makin cepat
+              dikirim, makin besar EXP (lewat tenggat tetap 25 XP).
+            </p>
+
             <form onSubmit={handleSubmit} className="space-y-4 text-xs font-sans">
               <div>
                 <label className="block font-space font-bold text-slate-800 mb-1">
@@ -292,7 +302,7 @@ export function StudentAssignmentList({
                   ) : (
                     <>
                       <Send className="w-4 h-4 text-bdc-yellow" />
-                      <span>Kirim Tugas (+150 XP)</span>
+                      <span>Kirim Tugas (+{previewExp} XP)</span>
                     </>
                   )}
                 </button>
