@@ -38,6 +38,118 @@ export async function adminGetAllProfilesAction(): Promise<Profile[]> {
 }
 
 /**
+ * Mengubah Nama Lengkap dan NIM Mahasiswa (dengan cascading update ke sertifikat, presensi, & tugas)
+ */
+export async function adminUpdateStudentIdentityAction(
+  userId: string,
+  fullName: string,
+  nimId: string
+): Promise<{ success: boolean; profile?: Profile; error?: string }> {
+  await requireAdmin();
+
+  const cleanName = (fullName || "").trim();
+  const cleanNim = (nimId || "").trim();
+
+  if (!cleanName || cleanName.length < 2) {
+    return { success: false, error: "Nama lengkap minimal harus 2 karakter." };
+  }
+
+  if (!cleanNim || cleanNim.length < 3) {
+    return { success: false, error: "NIM resmi kampus minimal harus 3 karakter." };
+  }
+
+  // 1. Cek duplikasi NIM (NIM tidak boleh dipakai oleh akun lain)
+  const supabaseAdmin = createAdminClient();
+  if (supabaseAdmin) {
+    try {
+      const { data: existingUser } = await supabaseAdmin
+        .from("profiles")
+        .select("id, full_name")
+        .eq("nim_id", cleanNim)
+        .neq("id", userId)
+        .maybeSingle();
+
+      if (existingUser) {
+        return {
+          success: false,
+          error: `NIM "${cleanNim}" telah digunakan oleh mahasiswa lain (${existingUser.full_name}).`,
+        };
+      }
+    } catch (err) {
+      console.warn("Gagal cek duplikasi NIM:", err);
+    }
+  }
+
+  // 2. Update store in-memory & data relasi
+  const updated = bdcStore.updateStudentIdentity(userId, cleanName, cleanNim);
+  if (!updated) {
+    return { success: false, error: "Mahasiswa tidak ditemukan di sistem." };
+  }
+
+  // 3. Update live ke Supabase Profiles, Certificates, Attendances, Submissions, dan Auth Metadata
+  if (supabaseAdmin) {
+    try {
+      // Update profiles
+      await supabaseAdmin
+        .from("profiles")
+        .update({
+          full_name: cleanName,
+          nim_id: cleanNim,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", userId);
+
+      // Cascading update ke certificates
+      await supabaseAdmin
+        .from("certificates")
+        .update({
+          recipient_name: cleanName,
+          nim_id: cleanNim,
+        })
+        .eq("user_id", userId);
+
+      // Cascading update ke attendance_records
+      await supabaseAdmin
+        .from("attendance_records")
+        .update({
+          user_name: cleanName,
+          nim_id: cleanNim,
+        })
+        .eq("user_id", userId);
+
+      // Cascading update ke assignment_submissions
+      await supabaseAdmin
+        .from("assignment_submissions")
+        .update({
+          user_name: cleanName,
+          nim_id: cleanNim,
+        })
+        .eq("user_id", userId);
+
+      // Sinkronkan ke Supabase Auth User Metadata
+      await supabaseAdmin.auth.admin.updateUserById(userId, {
+        user_metadata: {
+          full_name: cleanName,
+          nim_id: cleanNim,
+        },
+      });
+    } catch (err) {
+      console.warn("Gagal sinkronisasi pembaruan identitas mahasiswa ke Supabase:", err);
+    }
+  }
+
+  revalidatePath("/admin/students");
+  revalidatePath("/admin/users");
+  revalidatePath("/admin/certificates");
+  revalidatePath("/certificates");
+  revalidatePath("/leaderboard");
+  revalidatePath("/dashboard");
+  revalidatePath("/attendance");
+
+  return { success: true, profile: updated };
+}
+
+/**
  * Mengubah kata sandi pengguna dari panel admin
  */
 export async function adminUpdateUserPasswordAction(

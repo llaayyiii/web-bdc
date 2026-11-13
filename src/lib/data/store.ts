@@ -403,6 +403,28 @@ class BdcDataStore {
     return this.updateProfile(id, { role: newRole, role_title: defaultTitle });
   }
 
+  updateStudentIdentity(id: string, fullName: string, nimId: string) {
+    const profile = this.updateProfile(id, { full_name: fullName, nim_id: nimId });
+    if (!profile) return null;
+
+    // Sinkronkan ke data sertifikat
+    this.certificates = this.certificates.map((c) =>
+      c.user_id === id ? { ...c, recipient_name: fullName, nim_id: nimId } : c
+    );
+
+    // Sinkronkan ke riwayat presensi
+    this.attendances = this.attendances.map((a) =>
+      a.user_id === id ? { ...a, user_name: fullName, nim_id: nimId } : a
+    );
+
+    // Sinkronkan ke submission tugas
+    this.submissions = this.submissions.map((s) =>
+      s.user_id === id ? { ...s, user_name: fullName, nim_id: nimId } : s
+    );
+
+    return profile;
+  }
+
   // Courses
   getCourses() {
     return this.courses;

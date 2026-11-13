@@ -19,12 +19,14 @@ import {
   X,
   Lock,
   Trash2,
+  Pencil,
 } from "lucide-react";
 import { Profile, UserRole } from "@/lib/types/database";
 import {
   adminUpdateUserPasswordAction,
   adminUpdateUserRoleAction,
   adminDeleteUserAction,
+  adminUpdateStudentIdentityAction,
 } from "@/lib/actions/admin";
 import { useToast } from "@/components/ui/Toast";
 import { BdcDots } from "@/components/ui/BdcDots";
@@ -63,6 +65,13 @@ export function AdminUsersManager({
   const [deleteModalUser, setDeleteModalUser] = useState<Profile | null>(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  // State Edit User Modal
+  const [editModalUser, setEditModalUser] = useState<Profile | null>(null);
+  const [editFullName, setEditFullName] = useState("");
+  const [editNimId, setEditNimId] = useState("");
+  const [isEditLoading, setIsEditLoading] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
 
   // Filter profiles
   const filteredProfiles = profiles.filter((p) => {
@@ -213,6 +222,55 @@ export function AdminUsersManager({
     } catch {
       setDeleteError("Terjadi kendala sistem saat menghapus akun.");
       setIsDeleteLoading(false);
+    }
+  };
+
+  // Submit Edit Nama & NIM Pengguna
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editModalUser) return;
+    setEditError(null);
+
+    if (!editFullName.trim() || editFullName.trim().length < 2) {
+      setEditError("Nama lengkap minimal harus 2 karakter.");
+      return;
+    }
+
+    if (!editNimId.trim() || editNimId.trim().length < 3) {
+      setEditError("NIM resmi kampus minimal harus 3 karakter.");
+      return;
+    }
+
+    setIsEditLoading(true);
+    try {
+      const res = await adminUpdateStudentIdentityAction(
+        editModalUser.id,
+        editFullName.trim(),
+        editNimId.trim()
+      );
+
+      if (!res.success) {
+        setEditError(res.error || "Gagal memperbarui data pengguna.");
+        setIsEditLoading(false);
+        return;
+      }
+
+      // Update state lokal
+      setProfiles((prev) =>
+        prev.map((p) =>
+          p.id === editModalUser.id
+            ? { ...p, full_name: editFullName.trim(), nim_id: editNimId.trim() }
+            : p
+        )
+      );
+
+      showToast(`Data ${editFullName.trim()} (${editNimId.trim()}) berhasil diperbarui!`, "success");
+      setEditModalUser(null);
+      setIsEditLoading(false);
+      router.refresh();
+    } catch (err: unknown) {
+      setEditError(err instanceof Error ? err.message : "Terjadi kesalahan sistem.");
+      setIsEditLoading(false);
     }
   };
 
@@ -429,6 +487,22 @@ export function AdminUsersManager({
                       {/* Action Buttons */}
                       <td className="px-5 py-4 text-right">
                         <div className="inline-flex items-center gap-2">
+                          {/* Tombol Edit Nama & NIM */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditModalUser(user);
+                              setEditFullName(user.full_name);
+                              setEditNimId(user.nim_id);
+                              setEditError(null);
+                            }}
+                            className="retro-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-bdc-midnight text-xs font-bold border border-slate-300 shadow-retro-sm transition-all cursor-pointer"
+                            title="Koreksi nama lengkap atau NIM"
+                          >
+                            <Pencil className="w-3.5 h-3.5 text-bdc-blue" />
+                            <span>Edit</span>
+                          </button>
+
                           {/* Tombol Ubah Sandi */}
                           <button
                             type="button"
@@ -897,6 +971,104 @@ export function AdminUsersManager({
                     <>
                       <Trash2 className="w-4 h-4 text-white" />
                       <span>Hapus Akun Permanen</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 6. MODAL: KOREKSI IDENTITAS PENGGUNA (NAMA & NIM) */}
+      {editModalUser && (
+        <div className="fixed inset-0 z-50 bg-bdc-midnight/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full border-2 border-bdc-midnight shadow-retro-lg overflow-hidden animate-in fade-in zoom-in-95 font-sans">
+            <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-bdc-navy text-bdc-yellow flex items-center justify-center border border-bdc-midnight shadow-retro-sm">
+                  <Pencil className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-space font-bold text-sm text-bdc-midnight">
+                    Koreksi Data Pengguna
+                  </h3>
+                  <p className="font-mono text-[10px] text-slate-500 font-bold uppercase">
+                    Perbarui Nama Resmi &amp; NIM Kampus
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditModalUser(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-bdc-midnight hover:bg-slate-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="p-6 space-y-4 text-xs">
+              {editError && (
+                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                  <span>{editError}</span>
+                </div>
+              )}
+
+              <div>
+                <label className="block font-space font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Nama Lengkap</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editFullName}
+                  onChange={(e) => setEditFullName(e.target.value)}
+                  placeholder="Contoh: Arrafi Nur Hafiz"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm bg-white font-sans text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block font-space font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                  <GraduationCap className="w-3.5 h-3.5 text-slate-500" />
+                  <span>NIM Kampus (Nomor Induk)</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editNimId}
+                  onChange={(e) => setEditNimId(e.target.value)}
+                  placeholder="Contoh: 245720024"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm bg-white font-mono text-xs font-bold text-bdc-blue"
+                />
+              </div>
+
+              <div className="p-3 rounded-2xl bg-[#EFF0F0] border border-slate-300 text-[11px] text-slate-600 leading-relaxed">
+                ℹ️ <strong>Sinkronisasi Menyeluruh:</strong> Nama &amp; NIM yang diperbarui akan otomatis disinkronkan ke <strong>sertifikat resmi</strong>, <strong>catatan presensi</strong>, <strong>berkas tugas</strong>, dan <strong>Supabase Auth</strong>.
+              </div>
+
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  disabled={isEditLoading}
+                  onClick={() => setEditModalUser(null)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={isEditLoading}
+                  className="retro-btn px-5 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold shadow-retro-sm transition-all border border-bdc-midnight flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  {isEditLoading ? (
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-bdc-yellow" />
+                      <span>Simpan Perubahan</span>
                     </>
                   )}
                 </button>
