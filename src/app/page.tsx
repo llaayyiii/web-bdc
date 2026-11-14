@@ -232,8 +232,19 @@ export default async function HomePage() {
       </div>
 
       {/* ==================== HERO: DASH INTRO + PANEL PRATINJAU ==================== */}
-      <section id="hero" className="scroll-mt-24 px-6 lg:px-16 pt-12 pb-14 bg-voxel-grid">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <section
+        id="hero"
+        className="relative scroll-mt-24 px-6 lg:px-16 pt-12 pb-14 bg-voxel-grid overflow-hidden"
+      >
+        {/* Latar belakang gambar header */}
+        <div
+          className="absolute inset-0 bg-cover bg-center pointer-events-none"
+          style={{ backgroundImage: "url('/hero-bg.svg')" }}
+          aria-hidden="true"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-bdc-surface/90 via-bdc-surface/55 to-bdc-surface/25" />
+        </div>
+        <div className="relative max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Kolom Kiri — Intro */}
           <div className="lg:col-span-7 space-y-5">
             <div className="flex items-center gap-2">
