@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
 import { hydrateFromDb } from "@/lib/data/db";
+import { Competition } from "@/lib/types/database";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
   ArrowRight,
@@ -16,7 +17,93 @@ import {
   Zap,
   Monitor,
   GraduationCap,
+  CalendarDays,
+  ExternalLink,
+  FileDown,
 } from "lucide-react";
+
+function guidebookUrl(path: string) {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  return `${base}/storage/v1/object/public/guidebooks/${encodeURIComponent(path)}`;
+}
+
+function CompetitionCard({ competition }: { competition: Competition }) {
+  const deadlineText = competition.expires_at
+    ? new Date(competition.expires_at).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Asia/Jakarta",
+      }) + " WIB"
+    : null;
+
+  return (
+    <div className="bg-[#fffefa] rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#F7B500] overflow-hidden flex flex-col group">
+      {competition.image_url ? (
+        <div className="h-36 bg-slate-100 overflow-hidden border-b border-slate-200">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={competition.image_url}
+            alt={competition.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+      ) : (
+        <div className="h-36 bg-bdc-navy flex items-center justify-center border-b border-bdc-midnight">
+          <Trophy className="w-12 h-12 text-bdc-yellow" />
+        </div>
+      )}
+
+      <div className="p-5 space-y-3 flex-1 flex flex-col">
+        <div className="flex items-center justify-between gap-2">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wide border bg-emerald-50 border-emerald-300 text-emerald-700">
+            Masih Dibuka
+          </span>
+          {deadlineText && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-mono text-slate-500">
+              <CalendarDays className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate max-w-[150px]">{deadlineText}</span>
+            </span>
+          )}
+        </div>
+
+        <h3 className="font-space text-base font-bold text-bdc-midnight group-hover:text-bdc-blue transition-colors leading-snug">
+          {competition.title}
+        </h3>
+        {competition.description && (
+          <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed flex-1">
+            {competition.description}
+          </p>
+        )}
+
+        <div className="pt-3 border-t border-slate-200 flex flex-wrap items-center gap-2">
+          <a
+            href={competition.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="retro-btn px-3.5 py-1.5 rounded-xl bg-bdc-navy hover:bg-bdc-midnight text-white text-xs font-bold transition-all shadow-retro-sm flex items-center gap-1.5 font-space"
+          >
+            <span>Buka Lomba</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+          {competition.guidebook_path && (
+            <a
+              href={guidebookUrl(competition.guidebook_path)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="retro-btn px-3.5 py-1.5 rounded-xl bg-[#fffefa] text-bdc-midnight border border-bdc-midnight text-xs font-bold transition-all shadow-retro-sm flex items-center gap-1.5 font-space hover:bg-[#fff8e6]"
+            >
+              <FileDown className="w-3.5 h-3.5 text-bdc-blue" />
+              <span>Guidebook</span>
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default async function HomePage() {
   await hydrateFromDb();
@@ -70,8 +157,8 @@ export default async function HomePage() {
             <a href="#pilar" className="text-bdc-muted hover:text-bdc-blue transition-colors">
               Program
             </a>
-            <a href="#modul" className="text-bdc-muted hover:text-bdc-blue transition-colors">
-              Modul
+            <a href="#lomba" className="text-bdc-muted hover:text-bdc-blue transition-colors">
+              Lomba
             </a>
             <Link href="/verify" className="text-bdc-muted hover:text-bdc-blue transition-colors">
               Sertifikasi
@@ -399,65 +486,67 @@ export default async function HomePage() {
 
       {/* ==================== KARTU INFO LOMBA + METRIK (Inset Bar Berwarna) ==================== */}
       <section className="max-w-7xl mx-auto px-6 lg:px-16 pt-6 pb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Kartu Info Lomba & Event (lebar 2 kolom) — lomba terbitan admin */}
-          <div className="sm:col-span-2 bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#F7B500] flex flex-col justify-between gap-3">
-            <div className="flex items-center justify-between gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Kartu Info Lomba & Event — lebar sama dengan kartu Anggota & XP */}
+          <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#F7B500] flex flex-col justify-between">
+            <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 Info Lomba &amp; Event
               </span>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="px-2 py-0.5 rounded-lg bg-amber-50 border border-amber-200 font-mono text-[10px] font-black text-amber-600">
-                  {activeCompetitions.length} DIBUKA
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                  <Trophy className="w-4 h-4" />
-                </div>
+              <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                <Trophy className="w-4 h-4" />
               </div>
             </div>
-
-            {activeCompetitions.length === 0 ? (
-              <div className="p-4 rounded-xl bg-white border border-dashed border-slate-300 font-mono text-[11px] text-slate-500 text-center">
-                Belum ada lomba/event yang dibuka — nanti muncul di sini ya.
+            <div className="mt-2 space-y-2.5">
+              <div className="flex items-baseline gap-1.5">
+                <span className="font-pixel text-3xl font-black text-bdc-midnight">
+                  {activeCompetitions.length}
+                </span>
+                <span className="font-mono text-xs font-bold text-slate-500">Dibuka</span>
               </div>
-            ) : (
-              <ul className="space-y-2">
-                {activeCompetitions.slice(0, 2).map((c) => (
-                  <li key={c.id}>
-                    <a
-                      href={c.url || portalHref}
-                      target={c.url ? "_blank" : undefined}
-                      rel={c.url ? "noopener noreferrer" : undefined}
-                      className="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-[#f4f3ea] border border-[#d9dfd7] hover:border-bdc-midnight hover:bg-[#fff8e6] transition-all group/item"
-                    >
-                      <span className="min-w-0">
-                        <span className="block font-space font-bold text-xs text-bdc-midnight truncate group-hover/item:text-bdc-blue">
-                          {c.title}
+              {activeCompetitions.length === 0 ? (
+                <div className="p-4 rounded-xl bg-white border border-dashed border-slate-300 font-mono text-[11px] text-slate-500 text-center">
+                  Belum ada lomba/event yang dibuka — nanti muncul di sini ya.
+                </div>
+              ) : (
+                <ul className="space-y-2">
+                  {activeCompetitions.slice(0, 2).map((c) => (
+                    <li key={c.id}>
+                      <a
+                        href={c.url || portalHref}
+                        target={c.url ? "_blank" : undefined}
+                        rel={c.url ? "noopener noreferrer" : undefined}
+                        className="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-[#f4f3ea] border border-[#d9dfd7] hover:border-bdc-midnight hover:bg-[#fff8e6] transition-all group/item"
+                      >
+                        <span className="min-w-0">
+                          <span className="block font-space font-bold text-xs text-bdc-midnight truncate group-hover/item:text-bdc-blue">
+                            {c.title}
+                          </span>
+                          <span className="block font-mono text-[10px] text-slate-500 mt-0.5 truncate">
+                            {c.expires_at
+                              ? `Batas: ${new Date(c.expires_at).toLocaleDateString("id-ID", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  timeZone: "Asia/Jakarta",
+                                })} WIB`
+                              : "Terbuka tanpa batas waktu"}
+                          </span>
                         </span>
-                        <span className="block font-mono text-[10px] text-slate-500 mt-0.5 truncate">
-                          {c.expires_at
-                            ? `Batas: ${new Date(c.expires_at).toLocaleDateString("id-ID", {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                timeZone: "Asia/Jakarta",
-                              })} WIB`
-                            : "Terbuka tanpa batas waktu"}
-                        </span>
-                      </span>
-                      <ArrowRight className="w-4 h-4 text-slate-400 shrink-0 group-hover/item:text-bdc-blue" />
-                    </a>
-                  </li>
-                ))}
-                {activeCompetitions.length > 2 && (
-                  <li className="text-center font-mono text-[10px] font-bold text-bdc-blue">
-                    +{activeCompetitions.length - 2} lomba &amp; event lainnya
-                  </li>
-                )}
-              </ul>
-            )}
+                        <ArrowRight className="w-4 h-4 text-slate-400 shrink-0 group-hover/item:text-bdc-blue" />
+                      </a>
+                    </li>
+                  ))}
+                  {activeCompetitions.length > 2 && (
+                    <li className="text-center font-mono text-[10px] font-bold text-bdc-blue">
+                      +{activeCompetitions.length - 2} lomba &amp; event lainnya
+                    </li>
+                  )}
+                </ul>
+              )}
+            </div>
           </div>
 
           {/* Metrik 2: Anggota Terdaftar */}
@@ -721,75 +810,50 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ==================== MODUL PEMBELAJARAN (DATA REAL) ==================== */}
-      <section id="modul" className="scroll-mt-24 border-t border-[#d9dfd7]">
+      {/* ==================== INFO LOMBA & EVENT (TAMPILAN LENGKAP) ==================== */}
+      <section id="lomba" className="scroll-mt-24 border-t border-[#d9dfd7]">
         <div className="max-w-7xl mx-auto px-6 lg:px-16 py-14 space-y-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-5">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-emerald-600">
-                  [ 03 // Kurikulum Cohort Aktif ]
+                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-amber-600">
+                  [ 03 // Info Lomba &amp; Event ]
                 </span>
                 <BdcDots size="sm" />
               </div>
               <h2 className="font-pixel text-3xl font-black text-bdc-midnight tracking-tight">
-                Modul Kompetensi Terstruktur
+                Info Lomba &amp; Event Terbaru
               </h2>
             </div>
             <div className="flex flex-col items-start md:items-end gap-2">
               <p className="text-xs text-slate-600 max-w-md md:text-right">
-                Materi disusun bertahap mulai dari fondasi fundamental hingga pembuatan capstone
-                project skala industri siap uji.
+                Kurasi lomba, kompetisi, dan event pilihan Business Dev Club UTDI — lengkap
+                dengan tautan resmi, batas waktu pendaftaran, dan guidebook yang bisa diunduh.
               </p>
               <Link
-                href={portalHref}
+                href="/competitions"
                 className="font-mono text-[11px] font-bold text-bdc-blue hover:text-bdc-navy flex items-center gap-1"
               >
-                <span>Semua Modul</span>
+                <span>Semua Info Lomba</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
 
-          {courses.length === 0 ? (
-            <div className="p-10 text-center text-xs text-slate-500 font-mono bg-[#fffefa] rounded-2xl border border-dashed border-slate-300">
-              Belum ada modul pelatihan yang dipublikasikan saat ini.
+          {activeCompetitions.length === 0 ? (
+            <div className="p-12 text-center bg-[#fffefa] rounded-2xl border border-dashed border-slate-300">
+              <Trophy className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+              <h3 className="font-space text-base font-bold text-bdc-midnight">
+                Belum ada info lomba
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Admin BDC sedang mengkurasi lomba &amp; event terbaru. Silakan cek kembali nanti.
+              </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {courses.slice(0, 3).map((c, idx) => (
-                <Link
-                  key={c.id}
-                  href={`/courses/${c.id}`}
-                  className="p-5 rounded-2xl bg-[#fffefa] border border-[#d9dfd7] hover:border-bdc-midnight hover:shadow-retro-sm transition-all group flex flex-col justify-between"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#EFF0F0] text-bdc-blue border border-slate-300 uppercase">
-                        {c.level}
-                      </span>
-                      <span className="font-mono text-[10px] text-slate-400">
-                        Modul 0{idx + 1}
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-space font-bold text-sm text-bdc-midnight group-hover:text-bdc-blue transition-colors line-clamp-2">
-                        {c.title}
-                      </h4>
-                      <p className="text-[11px] text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">
-                        {c.description}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-[#d9dfd7] flex items-center justify-between text-[11px] text-slate-500 font-mono">
-                    <span>
-                      {c.syllabus?.length || 4} Sesi &bull; {c.duration}
-                    </span>
-                    <span className="font-bold text-bdc-blue group-hover:underline">
-                      Pelajari &rarr;
-                    </span>
-                  </div>
-                </Link>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {activeCompetitions.map((c) => (
+                <CompetitionCard key={c.id} competition={c} />
               ))}
             </div>
           )}
@@ -876,8 +940,8 @@ export default async function HomePage() {
                 </a>
               </li>
               <li>
-                <a href="#modul" className="hover:text-bdc-blue transition-colors">
-                  Modul Materi
+                <a href="#lomba" className="hover:text-bdc-blue transition-colors">
+                  Info Lomba
                 </a>
               </li>
               <li>
