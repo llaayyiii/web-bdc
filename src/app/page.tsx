@@ -26,52 +26,6 @@ function guidebookUrl(path: string) {
   return `${base}/storage/v1/object/public/guidebooks/${encodeURIComponent(path)}`;
 }
 
-type SectionAssetVariant = "network" | "growth" | "event" | "join";
-
-function SectionAsset({
-  variant,
-  label,
-}: {
-  variant: SectionAssetVariant;
-  label: string;
-}) {
-  const bars =
-    variant === "growth"
-      ? [34, 48, 62, 76, 94]
-      : variant === "event"
-        ? [58, 36, 78, 48, 68]
-        : [42, 58, 46, 70, 54];
-
-  return (
-    <div
-      aria-hidden="true"
-      className={`bdc-section-asset bdc-section-asset-${variant} relative h-24 w-full max-w-sm overflow-hidden rounded-2xl border border-bdc-blue/15 bg-white/65 p-4 backdrop-blur-sm`}
-    >
-      <div className="relative z-10 flex items-center justify-between font-mono text-[9px] font-bold uppercase tracking-widest text-bdc-blue">
-        <span>{label}</span>
-        <span className="flex gap-1">
-          <i className="h-1.5 w-1.5 rounded-full bg-bdc-blue" />
-          <i className="h-1.5 w-1.5 rounded-full bg-bdc-yellow" />
-          <i className="h-1.5 w-1.5 rounded-full bg-bdc-green" />
-        </span>
-      </div>
-      <div className="absolute inset-x-4 bottom-4 flex items-end gap-2">
-        {bars.map((height, index) => (
-          <span
-            key={`${variant}-${index}`}
-            className={`bdc-asset-bar flex-1 rounded-t-md ${
-              index === bars.length - 1 ? "bg-bdc-blue" : "bg-bdc-blue/20"
-            }`}
-            style={{ height: `${height}%` }}
-          />
-        ))}
-      </div>
-      <span className="bdc-asset-dot absolute left-[28%] top-[45%] h-2.5 w-2.5 rounded-full bg-bdc-yellow" />
-      <span className="bdc-asset-dot absolute right-[22%] top-[32%] h-2 w-2 rounded-full bg-bdc-green" />
-    </div>
-  );
-}
-
 function CompetitionCard({ competition }: { competition: Competition }) {
   const deadlineText = competition.expires_at
     ? new Date(competition.expires_at).toLocaleDateString("id-ID", {
@@ -319,8 +273,6 @@ export default async function HomePage() {
               memahami pasar, membangun jejaring, dan mengubah peluang menjadi usaha yang
               memiliki arah pertumbuhan yang jelas.
             </p>
-
-            <SectionAsset variant="network" label="Peluang & Jejaring" />
 
             {/* CTA */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -634,7 +586,6 @@ export default async function HomePage() {
             </div>
 
             <div className="max-w-xs space-y-3">
-              <SectionAsset variant="growth" label="Arah Tumbuh" />
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
                 Rangkaian program BDC membantu Anda memahami peluang, menguji ide, menyusun
                 strategi, dan membangun relasi untuk pertumbuhan usaha.
@@ -782,16 +733,12 @@ export default async function HomePage() {
               ))}
             </div>
           )}
-          <SectionAsset variant="event" label="Ruang Kompetisi" />
         </div>
       </section>
 
       {/* ==================== CALL TO ACTION ==================== */}
       <section id="gabung" className="scroll-mt-24 max-w-7xl mx-auto px-6 lg:px-16 pb-14">
         <div className="bg-[#fffefa] border border-[#d9dfd7] shadow-[inset_0_4px_0_#EEDD55] rounded-2xl px-6 py-12 md:py-14 text-center relative overflow-hidden">
-          <div className="flex justify-center mb-6">
-            <SectionAsset variant="join" label="Langkah Berikutnya" />
-          </div>
           <div className="absolute -top-20 -right-20 w-56 h-56 bg-bdc-yellow/20 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-bdc-blue/10 rounded-full blur-2xl pointer-events-none" />
 
