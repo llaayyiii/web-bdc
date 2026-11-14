@@ -11,8 +11,6 @@ import {
   Trophy,
   QrCode,
   Award,
-  BookCheck,
-  FileText,
   Users,
   Zap,
   Monitor,
@@ -111,7 +109,6 @@ export default async function HomePage() {
   const liveSession = bdcStore.getLiveSession();
   const topLearners = bdcStore.getLeaderboard().slice(0, 3);
   const courses = bdcStore.getCourses();
-  const assignments = bdcStore.getAssignments();
   const learners = bdcStore.getProfiles().filter((p) => p.role === "learner");
   const activeCompetitions = bdcStore.getActiveCompetitions();
   const certificates = bdcStore.getCertificates();
@@ -331,139 +328,6 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Kolom Kanan — Panel Pratinjau Dasbor */}
-          <div className="lg:col-span-5 space-y-4">
-            {/* Panel Papan Skor */}
-            <div className="bg-[#fffefa] rounded-2xl border border-[#d9dfd7] shadow-retro p-5 space-y-3">
-              <div className="flex items-center justify-between pb-2.5 border-b border-[#d9dfd7]">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-bdc-blue">
-                      Dasbor Pratinjau
-                    </span>
-                    <BdcDots size="sm" />
-                  </div>
-                  <h2 className="font-space font-bold text-sm text-bdc-midnight mt-0.5">
-                    Papan Skor Mahasiswa
-                  </h2>
-                </div>
-                <div className="w-9 h-9 rounded-lg bg-amber-50 border border-amber-200 text-bdc-gold flex items-center justify-center">
-                  <Trophy className="w-4 h-4" />
-                </div>
-              </div>
-
-              {topLearners.length === 0 ? (
-                <div className="p-6 text-center text-xs text-slate-500 font-mono bg-white rounded-xl border border-dashed border-slate-300">
-                  Belum ada data keaktifan mahasiswa di papan skor.
-                </div>
-              ) : (
-                <div className="space-y-2.5">
-                  {topLearners.map((stu, idx) => {
-                    const rank = idx + 1;
-                    return (
-                      <div
-                        key={stu.id}
-                        className="p-3 rounded-xl border bg-white border-slate-200 hover:border-bdc-midnight transition-all flex items-center justify-between"
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div
-                            className={`w-7 h-7 rounded-lg font-pixel flex items-center justify-center text-xs font-black border shrink-0 ${
-                              rank === 1
-                                ? "bg-bdc-gold text-bdc-midnight border-amber-600"
-                                : rank === 2
-                                ? "bg-slate-200 text-slate-800 border-slate-300"
-                                : "bg-amber-400 text-bdc-midnight border-amber-600"
-                            }`}
-                          >
-                            {rank}
-                          </div>
-                          <div className="w-8 h-8 font-pixel bg-[#e6eddc] border border-[#c9d7bc] text-bdc-midnight font-bold text-xs flex items-center justify-center shrink-0">
-                            {stu.full_name.charAt(0)}
-                          </div>
-                          <div className="min-w-0">
-                            <span className="block font-bold text-xs text-bdc-midnight truncate">
-                              {stu.full_name}
-                            </span>
-                            <span className="block font-mono text-[10px] text-slate-500 truncate">
-                              {stu.attendance_rate}% Hadir
-                            </span>
-                          </div>
-                        </div>
-                        <span className="font-mono font-black text-xs text-bdc-navy shrink-0 pl-2">
-                          {stu.points} XP
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              <div className="p-2.5 rounded-xl bg-[#EFF0F0] border border-[#d9dfd7] font-mono text-[11px] flex items-center justify-between gap-2">
-                <span className="text-slate-600 truncate">
-                  Top XP:{" "}
-                  <strong className="text-bdc-midnight">
-                    {topLearners[0]?.full_name || "—"}
-                  </strong>
-                </span>
-                <Link
-                  href="/leaderboard"
-                  className="font-bold text-bdc-blue hover:text-bdc-navy flex items-center gap-1 shrink-0"
-                >
-                  <span>Lihat Semua</span>
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Panel Status Sistem */}
-            <div className="bg-[#fffefa] rounded-2xl border border-[#d9dfd7] shadow-retro-sm p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                  [ Status Sistem ]
-                </span>
-                <BdcDots size="sm" />
-              </div>
-
-              <div className="grid grid-cols-2 gap-2.5">
-                <div className="p-3 rounded-xl bg-white border border-slate-200">
-                  <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <QrCode className="w-3 h-3" /> Presensi
-                  </span>
-                  <span
-                    className={`block font-mono text-[11px] font-black mt-1 ${
-                      liveSession ? "text-emerald-600" : "text-slate-500"
-                    }`}
-                  >
-                    {liveSession ? "AKTIF" : "SIAP"}
-                  </span>
-                </div>
-                <div className="p-3 rounded-xl bg-white border border-slate-200">
-                  <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <Award className="w-3 h-3" /> Sertifikat
-                  </span>
-                  <span className="block font-mono text-[11px] font-black text-bdc-blue mt-1">
-                    {certificates.length} TERBIT
-                  </span>
-                </div>
-                <div className="p-3 rounded-xl bg-white border border-slate-200">
-                  <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <FileText className="w-3 h-3" /> Tugas
-                  </span>
-                  <span className="block font-mono text-[11px] font-black text-bdc-gold mt-1">
-                    {assignments.length} TERBIT
-                  </span>
-                </div>
-                <div className="p-3 rounded-xl bg-white border border-slate-200">
-                  <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <BookCheck className="w-3 h-3" /> Materi
-                  </span>
-                  <span className="block font-mono text-[11px] font-black text-bdc-midnight mt-1">
-                    {courses.length} MODUL
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
