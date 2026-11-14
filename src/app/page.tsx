@@ -349,10 +349,10 @@ export default async function HomePage() {
                 </div>
                 <div className="p-3 rounded-xl bg-white border border-slate-200">
                   <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                    <Trophy className="w-3 h-3" /> Lomba
+                    <FileText className="w-3 h-3" /> Tugas
                   </span>
                   <span className="block font-mono text-[11px] font-black text-bdc-gold mt-1">
-                    {activeCompetitions.length} DIBUKA
+                    {assignments.length} TERBIT
                   </span>
                 </div>
                 <div className="p-3 rounded-xl bg-white border border-slate-200">
@@ -397,56 +397,70 @@ export default async function HomePage() {
         </div>
       )}
 
-      {/* ==================== 4 KARTU METRIK (Inset Bar Berwarna) ==================== */}
+      {/* ==================== KARTU INFO LOMBA + METRIK (Inset Bar Berwarna) ==================== */}
       <section className="max-w-7xl mx-auto px-6 lg:px-16 pt-6 pb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Metrik 1: Modul Materi */}
-          <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#095BAF] flex flex-col justify-between">
-            <div className="flex items-center justify-between">
+          {/* Kartu Info Lomba & Event (lebar 2 kolom) — lomba terbitan admin */}
+          <div className="sm:col-span-2 bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#F7B500] flex flex-col justify-between gap-3">
+            <div className="flex items-center justify-between gap-3">
               <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                Modul Materi
+                Info Lomba &amp; Event
               </span>
-              <div className="w-8 h-8 rounded-lg bg-blue-50 text-bdc-blue flex items-center justify-center">
-                <BookCheck className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="mt-2">
-              <div className="flex items-baseline gap-1.5">
-                <span className="font-pixel text-3xl font-black text-bdc-midnight">
-                  {courses.length}
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="px-2 py-0.5 rounded-lg bg-amber-50 border border-amber-200 font-mono text-[10px] font-black text-amber-600">
+                  {activeCompetitions.length} DIBUKA
                 </span>
-                <span className="font-mono text-xs font-bold text-slate-500">Terbit</span>
+                <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                  <Trophy className="w-4 h-4" />
+                </div>
               </div>
-              <p className="text-[11px] text-slate-500 mt-1 font-mono">
-                Silabus kompetensi terstruktur
-              </p>
             </div>
+
+            {activeCompetitions.length === 0 ? (
+              <div className="p-4 rounded-xl bg-white border border-dashed border-slate-300 font-mono text-[11px] text-slate-500 text-center">
+                Belum ada lomba/event yang dibuka — nanti muncul di sini ya.
+              </div>
+            ) : (
+              <ul className="space-y-2">
+                {activeCompetitions.slice(0, 2).map((c) => (
+                  <li key={c.id}>
+                    <a
+                      href={c.url || portalHref}
+                      target={c.url ? "_blank" : undefined}
+                      rel={c.url ? "noopener noreferrer" : undefined}
+                      className="flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-xl bg-[#f4f3ea] border border-[#d9dfd7] hover:border-bdc-midnight hover:bg-[#fff8e6] transition-all group/item"
+                    >
+                      <span className="min-w-0">
+                        <span className="block font-space font-bold text-xs text-bdc-midnight truncate group-hover/item:text-bdc-blue">
+                          {c.title}
+                        </span>
+                        <span className="block font-mono text-[10px] text-slate-500 mt-0.5 truncate">
+                          {c.expires_at
+                            ? `Batas: ${new Date(c.expires_at).toLocaleDateString("id-ID", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                timeZone: "Asia/Jakarta",
+                              })} WIB`
+                            : "Terbuka tanpa batas waktu"}
+                        </span>
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-slate-400 shrink-0 group-hover/item:text-bdc-blue" />
+                    </a>
+                  </li>
+                ))}
+                {activeCompetitions.length > 2 && (
+                  <li className="text-center font-mono text-[10px] font-bold text-bdc-blue">
+                    +{activeCompetitions.length - 2} lomba &amp; event lainnya
+                  </li>
+                )}
+              </ul>
+            )}
           </div>
 
-          {/* Metrik 2: Tugas Terbit */}
-          <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#E9AD17] flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                Tugas &amp; Essay
-              </span>
-              <div className="w-8 h-8 rounded-lg bg-amber-50 text-bdc-gold flex items-center justify-center">
-                <FileText className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="mt-2">
-              <div className="flex items-baseline gap-1.5">
-                <span className="font-pixel text-3xl font-black text-bdc-midnight">
-                  {assignments.length}
-                </span>
-                <span className="font-mono text-xs font-bold text-slate-500">Aktif</span>
-              </div>
-              <p className="text-[11px] text-slate-500 mt-1 font-mono">
-                Dinilai kurator BDC UTDI
-              </p>
-            </div>
-          </div>
-
-          {/* Metrik 3: Anggota Terdaftar */}
+          {/* Metrik 2: Anggota Terdaftar */}
           <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#34A853] flex flex-col justify-between">
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -469,7 +483,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Metrik 4: XP Teratas */}
+          {/* Metrik 3: XP Teratas */}
           <div className="bg-[#fffefa] p-5 rounded-2xl border border-[#d9dfd7] shadow-[inset_0_4px_0_#EA4335] flex flex-col justify-between">
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500">
