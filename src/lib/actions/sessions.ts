@@ -56,6 +56,14 @@ export async function adminUpdateMeetSessionAction(
     return { success: false, message: "Penyimpanan sesi tidak tersedia. Silakan coba lagi." };
   }
 
+  const operation = updates.scheduled_at ? "start-or-reschedule" : updates.expires_at ? "end-or-reschedule" : "edit";
+  console.info("[meet-session:update]", JSON.stringify({
+    operation,
+    sessionId,
+    previous: { scheduled_at: session.scheduled_at, expires_at: session.expires_at, status: session.status },
+    requested: { scheduled_at: updates.scheduled_at, expires_at: updates.expires_at, status: merged.status },
+  }));
+
   let savedSession: MeetSession;
   try {
     const { data, error } = await supabaseAdmin
@@ -70,6 +78,13 @@ export async function adminUpdateMeetSessionAction(
       return { success: false, message: "Perubahan sesi belum tersimpan. Silakan coba lagi." };
     }
     savedSession = data as MeetSession;
+    console.info("[meet-session:saved]", JSON.stringify({
+      operation,
+      sessionId,
+      scheduled_at: savedSession.scheduled_at,
+      expires_at: savedSession.expires_at,
+      status: savedSession.status,
+    }));
   } catch (err) {
     console.warn("Sinkronisasi update sesi ke Supabase:", err);
     return { success: false, message: "Gagal terhubung ke penyimpanan sesi. Silakan coba lagi." };
