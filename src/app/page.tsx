@@ -246,29 +246,29 @@ export default async function HomePage() {
           <div className="lg:col-span-7 space-y-5">
             <div className="flex items-center gap-2">
               <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-bdc-blue">
-                [ 00 // Platform Akademik BDC UTDI ]
+                [ 00 // Pengembangan Bisnis BDC UTDI ]
               </span>
               <BdcDots size="sm" />
             </div>
 
             <h1 className="font-pixel text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-[1.05] text-bdc-midnight">
-              Simplify.
+              Build.
               <br />
-              Automate.
+              Connect.
               <br />
-              <span className="text-bdc-blue">Scale Your</span>
+              <span className="text-bdc-blue">Grow Your</span>
               <br />
-              Future.
+              Business.
             </h1>
 
             <p className="font-space text-xl sm:text-2xl font-bold text-bdc-muted tracking-tight">
-              All in One Platform BDC UTDI.
+              Platform Pengembangan Bisnis BDC UTDI.
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed max-w-xl">
-              Business Development Club (BDC) UTDI membantu para mahasiswa berkolaborasi secara
-              real-time, mengakses inkubator bisnis, dan mengasah keterampilan digital siap kerja
-              lebih cepat dari sebelumnya.
+              Business Development Club (BDC) UTDI membantu mahasiswa mengembangkan ide,
+              memahami pasar, membangun jejaring, dan mengubah peluang menjadi usaha yang
+              memiliki arah pertumbuhan yang jelas.
             </p>
 
             {/* CTA */}
@@ -322,7 +322,7 @@ export default async function HomePage() {
                 href="#pilar"
                 className="font-mono text-[11px] font-bold text-bdc-blue hover:text-bdc-navy flex items-center gap-1.5 group"
               >
-                <span>Jelajahi Platform</span>
+                <span>Jelajahi Program BDC</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </a>
             </div>
@@ -495,11 +495,11 @@ export default async function HomePage() {
               </div>
               <div>
                 <p className="text-sm text-slate-700 font-medium leading-relaxed">
-                  &ldquo;Semua yang Anda butuhkan untuk mengelola dan mengembangkan portofolio
-                  bisnis dan karir teknologi dalam satu atap.&rdquo;
+                  &ldquo;Ruang belajar dan kolaborasi untuk memahami pasar, membangun strategi,
+                  dan mengembangkan bisnis dengan lebih terarah.&rdquo;
                 </p>
                 <p className="font-mono text-[10px] font-bold text-bdc-blue mt-2">
-                  Arrafi Nur Hafiz &bull; Mahasiswa Web Development BDC UTDI
+                  Arrafi Nur Hafiz &bull; Anggota Business Development BDC UTDI
                 </p>
               </div>
             </div>
@@ -508,9 +508,8 @@ export default async function HomePage() {
           {/* Kanan: Panel penjelasan */}
           <div className="space-y-5">
             <p className="text-sm text-slate-600 font-medium leading-relaxed">
-              Kami memberdayakan mahasiswa dengan seperangkat program intensif untuk merampingkan
-              operasional, meningkatkan produktivitas, serta mempercepat pertumbuhan bisnis dan
-              kompetensi di era digital.
+              Kami memberdayakan mahasiswa dengan program praktis untuk menemukan peluang pasar,
+              menyusun strategi bisnis, memperkuat pemasaran, dan memperluas jejaring profesional.
             </p>
 
             <div className="bg-[#fffefa] rounded-2xl border border-[#d9dfd7] shadow-retro-sm overflow-hidden">
@@ -522,10 +521,9 @@ export default async function HomePage() {
               </div>
 
               <p className="px-5 py-4 text-xs text-slate-600 leading-relaxed border-b border-[#d9dfd7]">
-                Mulai dari otomatisasi tugas, pembelajaran intensif, hingga analisis data dan
-                pelaporan perkembangan, BDC UTDI menyediakan modul lengkap yang dirancang khusus
-                untuk mahasiswa modern. Fokus pada apa yang penting, sementara kami membantu
-                persiapan kompetensi karir dan bisnis digital Anda.
+                Mulai dari validasi ide, riset pasar, penyusunan model bisnis, hingga pengembangan
+                strategi pemasaran dan penjualan, BDC UTDI menyediakan pembelajaran yang dirancang
+                untuk membantu mahasiswa membangun usaha secara bertahap dan terukur.
               </p>
 
               <ul>
@@ -533,17 +531,17 @@ export default async function HomePage() {
                   {
                     idx: "01",
                     title: "Real-time",
-                    desc: "Presensi Barcode Proyektor otomatis",
+                    desc: "Kegiatan dan jejaring bisnis yang terarah",
                   },
                   {
                     idx: "02",
                     title: "Gamified",
-                    desc: "Leaderboard XP & Capstone portofolio",
+                    desc: "Tantangan strategi & proyek pengembangan usaha",
                   },
                   {
                     idx: "03",
                     title: "Akreditasi",
-                    desc: "Sertifikat resmi ber-QR Code valid",
+                    desc: "Bukti kompetensi pengembangan bisnis",
                   },
                 ].map((item) => (
                   <li
@@ -579,15 +577,15 @@ export default async function HomePage() {
                 <BdcDots size="sm" />
               </div>
               <h2 className="font-pixel text-3xl md:text-4xl font-black tracking-tight text-bdc-midnight leading-tight">
-                Powerful Tools Built for{" "}
-                <span className="text-bdc-blue">Your Business &amp; Career</span>
+                Program Praktis untuk{" "}
+                <span className="text-bdc-blue">Mengembangkan Bisnis Anda</span>
               </h2>
             </div>
 
             <div className="max-w-xs space-y-3">
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Rangkaian program terbaik kami dirancang khusus untuk mempermudah alur kerja,
-                meningkatkan kolaborasi tim, dan menghasilkan pencapaian yang nyata.
+                Rangkaian program BDC membantu Anda memahami peluang, menguji ide, menyusun
+                strategi, dan membangun relasi untuk pertumbuhan usaha.
               </p>
               <Link
                 href={portalHref}
@@ -611,13 +609,13 @@ export default async function HomePage() {
                   Inkubasi Bisnis
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Kami membimbing ide bisnis mahasiswa dari konsep awal, pembuatan prototype, hingga
-                  peluncuran nyata dan siap pasar dengan pendampingan mentor.
+                  Kami membimbing mahasiswa memvalidasi masalah, mengenali target pasar, menyusun
+                  model bisnis, dan menguji solusi bersama mentor.
                 </p>
               </div>
               <div className="pt-4 mt-auto border-t border-[#d9dfd7] flex justify-between items-center gap-2">
                 <span className="font-mono text-[10px] text-slate-400 font-bold">
-                  01 &mdash; Rintisan Digital
+                  01 &mdash; Rintisan Bisnis
                 </span>
                 <Link
                   href={portalHref}
@@ -628,18 +626,18 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Kartu 2 — Pelatihan & Workshop */}
+            {/* Kartu 2 — Strategi Bisnis & Pemasaran */}
             <div className="bg-[#fffefa] border border-[#d9dfd7] hover:border-bdc-midnight shadow-retro-sm hover:shadow-retro rounded-2xl p-6 transition-all group flex flex-col hover:-translate-y-1">
               <div className="space-y-3.5">
                 <div className="w-11 h-11 bg-purple-50 border border-purple-100 rounded-xl flex items-center justify-center text-bdc-navy">
                   <Monitor className="w-5 h-5" />
                 </div>
                 <h3 className="font-space font-bold text-lg text-bdc-midnight group-hover:text-bdc-blue transition-colors">
-                  Pelatihan &amp; Workshop
+                  Strategi Bisnis &amp; Pemasaran
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Asah kemampuan digital, cloud engineering, UI/UX, dan strategi tech terkini lewat
-                  program workshop interaktif secara berkala bersama praktisi industri.
+                  Pelajari riset pasar, penentuan posisi merek, pemasaran, penjualan, dan perencanaan
+                  keuangan melalui sesi praktis bersama pelaku usaha dan mentor.
                 </p>
               </div>
               <div className="pt-4 mt-auto border-t border-[#d9dfd7] flex justify-between items-center gap-2">
@@ -655,18 +653,18 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Kartu 3 — Sertifikasi Kompetensi */}
+            {/* Kartu 3 — Jejaring & Sertifikasi */}
             <div className="bg-[#fffefa] border border-[#d9dfd7] hover:border-bdc-midnight shadow-retro-sm hover:shadow-retro rounded-2xl p-6 transition-all group flex flex-col hover:-translate-y-1">
               <div className="space-y-3.5">
                 <div className="w-11 h-11 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-center text-bdc-green">
                   <GraduationCap className="w-5 h-5" />
                 </div>
                 <h3 className="font-space font-bold text-lg text-bdc-midnight group-hover:text-bdc-blue transition-colors">
-                  Sertifikasi Kompetensi
+                  Jejaring &amp; Sertifikasi
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  Dapatkan validasi keahlianmu lewat beragam sertifikasi nasional dan internasional
-                  untuk pengakuan karir profesional dengan nomor registrasi UTDI resmi.
+                  Bangun relasi dengan komunitas dan mitra, lalu dapatkan pengakuan kompetensi
+                  melalui sertifikasi resmi BDC UTDI.
                 </p>
               </div>
               <div className="pt-4 mt-auto border-t border-[#d9dfd7] flex justify-between items-center gap-2">
@@ -702,8 +700,8 @@ export default async function HomePage() {
             </div>
             <div className="flex flex-col items-start md:items-end gap-2">
               <p className="text-xs text-slate-600 max-w-md md:text-right">
-                Kurasi lomba, kompetisi, dan event pilihan Business Dev Club UTDI — lengkap
-                dengan tautan resmi, batas waktu pendaftaran, dan guidebook yang bisa diunduh.
+                Temukan lomba, kompetisi, dan event yang melatih strategi, kreativitas, pitching,
+                serta kemampuan memecahkan masalah bisnis.
               </p>
               <Link
                 href="/competitions"
@@ -746,11 +744,11 @@ export default async function HomePage() {
               [ 04 // Gabung Sekarang ]
             </span>
             <h2 className="font-pixel text-2xl md:text-4xl font-black tracking-tight text-bdc-midnight leading-tight">
-              Siap Memulai Perjalanan Bisnis Digital Anda?
+              Siap Memulai Perjalanan Bisnis Anda?
             </h2>
             <p className="text-sm text-slate-600 leading-relaxed font-medium">
-              Mari bergabung di Business Development Club UTDI sekarang juga. Kembangkan kompetensi
-              digital, perluas jaringan profesional, dan mulailah berinovasi.
+              Mari bergabung di Business Development Club UTDI. Temukan peluang, kembangkan ide
+              bisnis, perluas jejaring, dan mulai membangun langkah usaha Anda.
             </p>
             <div className="flex justify-center flex-wrap gap-3 pt-1">
               <Link
@@ -790,8 +788,8 @@ export default async function HomePage() {
               <span className="font-space font-bold text-base text-bdc-midnight">BDC UTDI</span>
             </div>
             <p className="leading-relaxed text-slate-500">
-              Wadah kolaborasi akademis, inkubator, dan sertifikasi untuk mencetak wirausaha
-              tangguh di era digital.
+              Wadah kolaborasi, pembelajaran, dan pengembangan usaha untuk membentuk mahasiswa
+              yang siap menciptakan serta mengembangkan peluang bisnis.
             </p>
           </div>
 
