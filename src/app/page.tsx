@@ -5,6 +5,7 @@ import { bdcStore } from "@/lib/data/store";
 import { hydrateFromDb } from "@/lib/data/db";
 import { Competition } from "@/lib/types/database";
 import { BdcDots } from "@/components/ui/BdcDots";
+import { SmartNavbar } from "@/components/layout/SmartNavbar";
 import {
   ArrowRight,
   ShieldCheck,
@@ -123,7 +124,8 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-bdc-surface text-bdc-midnight font-sans selection:bg-bdc-yellow selection:text-bdc-midnight overflow-x-hidden">
       {/* ==================== NAVIGATION BAR ==================== */}
-      <header className="fixed inset-x-0 top-0 z-50 bg-[#fffefa]/95 backdrop-blur-md border-b border-[#d9dfd7] px-6 py-3 lg:px-16 transition-colors">
+      <SmartNavbar>
+      <header className="bg-[#fffefa]/95 backdrop-blur-md border-b border-[#d9dfd7] px-6 py-3 lg:px-16 transition-colors">
         <div className="max-w-7xl mx-auto flex justify-between items-center gap-4">
           <Link href="/" className="flex items-center gap-2.5 group shrink-0">
             <Image
@@ -184,6 +186,7 @@ export default async function HomePage() {
           </div>
         </div>
       </header>
+      </SmartNavbar>
 
       {/* ==================== STATUS TICKER ==================== */}
       <div className="mt-[61px] bg-bdc-midnight py-2 overflow-hidden relative z-10 font-mono text-[11px] text-slate-300">
