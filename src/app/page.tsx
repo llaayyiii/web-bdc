@@ -494,7 +494,7 @@ export default async function HomePage() {
 
             <div className="retro-card rounded-2xl p-5 flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-[#e6eddc] border border-[#c9d7bc] font-pixel font-bold text-bdc-midnight flex items-center justify-center shrink-0">
-                A
+                R
               </div>
               <div>
                 <p className="text-sm text-slate-700 font-medium leading-relaxed">
