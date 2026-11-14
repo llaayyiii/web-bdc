@@ -502,7 +502,7 @@ export default async function HomePage() {
                   dan mengembangkan bisnis dengan lebih terarah.&rdquo;
                 </p>
                 <p className="font-mono text-[10px] font-bold text-bdc-blue mt-2">
-                  Arrafi Nur Hafiz &bull; Anggota Business Development BDC UTDI
+                  Raden Wirantashena &bull; Anggota Business Development BDC UTDI
                 </p>
               </div>
             </div>
