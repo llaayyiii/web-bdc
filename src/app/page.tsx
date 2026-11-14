@@ -239,7 +239,7 @@ export default async function HomePage() {
         {/* Latar belakang gambar header */}
         <div
           className="absolute inset-0 bg-cover bg-center pointer-events-none"
-          style={{ backgroundImage: "url('/hero-bg.svg')" }}
+          style={{ backgroundImage: "url('/hero-bg.png')" }}
           aria-hidden="true"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-bdc-surface/90 via-bdc-surface/55 to-bdc-surface/25" />
