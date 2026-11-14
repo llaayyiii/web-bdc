@@ -25,7 +25,7 @@ export function ScrollVideoSections({ children }: { children: ReactNode }) {
       videoLayer.dataset.scrollVisible = String(isInStage);
 
       if (video.readyState >= 1 && Number.isFinite(video.duration)) {
-        video.currentTime = progress * video.duration;
+        video.currentTime = progress === 0 ? 0 : progress * video.duration;
       }
 
       const sections = Array.from(stage.querySelectorAll<HTMLElement>(".scroll-act"));
@@ -44,13 +44,18 @@ export function ScrollVideoSections({ children }: { children: ReactNode }) {
       if (!frame) frame = window.requestAnimationFrame(update);
     };
 
-    video.addEventListener("loadedmetadata", requestUpdate);
+    const resetToFirstFrame = () => {
+      video.currentTime = 0;
+      requestUpdate();
+    };
+
+    video.addEventListener("loadedmetadata", resetToFirstFrame);
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
     requestUpdate();
 
     return () => {
-      video.removeEventListener("loadedmetadata", requestUpdate);
+      video.removeEventListener("loadedmetadata", resetToFirstFrame);
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
       if (frame) window.cancelAnimationFrame(frame);
@@ -62,7 +67,7 @@ export function ScrollVideoSections({ children }: { children: ReactNode }) {
       <div
         ref={videoLayerRef}
         data-scroll-visible="false"
-        className="fixed inset-0 z-0 h-[100svh] overflow-hidden pointer-events-none opacity-0 transition-opacity duration-300 data-[scroll-visible=true]:opacity-100"
+        className="fixed inset-0 z-0 h-[100svh] overflow-hidden pointer-events-none opacity-0 data-[scroll-visible=true]:opacity-100"
       >
         <video
           ref={videoRef}
