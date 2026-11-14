@@ -66,14 +66,14 @@ export function ScrollVideoSections({ children }: { children: ReactNode }) {
       >
         <video
           ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover opacity-70"
+          className="absolute inset-0 h-full w-full object-cover opacity-100"
           src="/videos/bdc-scroll.mp4"
           muted
           playsInline
           preload="auto"
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-bdc-surface/25" />
+        <div className="absolute inset-0 bg-bdc-surface/5" />
       </div>
       <div className="relative z-10">{children}</div>
     </div>

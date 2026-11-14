@@ -605,7 +605,7 @@ export default async function HomePage() {
           {/* 3 Kartu Program */}
           <div data-scroll-reveal className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Kartu 1 — Inkubasi Bisnis */}
-            <div className="bg-[#fffefa] border border-[#d9dfd7] hover:border-bdc-midnight shadow-retro-sm hover:shadow-retro rounded-2xl p-6 transition-all group flex flex-col hover:-translate-y-1">
+            <div className="bg-[#fffefa]/75 backdrop-blur-md border border-[#d9dfd7] hover:border-bdc-midnight shadow-retro-sm hover:shadow-retro rounded-2xl p-6 transition-all group flex flex-col hover:-translate-y-1">
               <div className="space-y-3.5">
                 <div className="w-11 h-11 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center text-bdc-blue">
                   <Zap className="w-5 h-5" />
@@ -632,7 +632,7 @@ export default async function HomePage() {
             </div>
 
             {/* Kartu 2 — Strategi Bisnis & Pemasaran */}
-            <div className="bg-[#fffefa] border border-[#d9dfd7] hover:border-bdc-midnight shadow-retro-sm hover:shadow-retro rounded-2xl p-6 transition-all group flex flex-col hover:-translate-y-1">
+            <div className="bg-[#fffefa]/75 backdrop-blur-md border border-[#d9dfd7] hover:border-bdc-midnight shadow-retro-sm hover:shadow-retro rounded-2xl p-6 transition-all group flex flex-col hover:-translate-y-1">
               <div className="space-y-3.5">
                 <div className="w-11 h-11 bg-purple-50 border border-purple-100 rounded-xl flex items-center justify-center text-bdc-navy">
                   <Monitor className="w-5 h-5" />
@@ -659,7 +659,7 @@ export default async function HomePage() {
             </div>
 
             {/* Kartu 3 — Jejaring & Sertifikasi */}
-            <div className="bg-[#fffefa] border border-[#d9dfd7] hover:border-bdc-midnight shadow-retro-sm hover:shadow-retro rounded-2xl p-6 transition-all group flex flex-col hover:-translate-y-1">
+            <div className="bg-[#fffefa]/75 backdrop-blur-md border border-[#d9dfd7] hover:border-bdc-midnight shadow-retro-sm hover:shadow-retro rounded-2xl p-6 transition-all group flex flex-col hover:-translate-y-1">
               <div className="space-y-3.5">
                 <div className="w-11 h-11 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-center text-bdc-green">
                   <GraduationCap className="w-5 h-5" />
@@ -719,7 +719,7 @@ export default async function HomePage() {
           </div>
 
           {activeCompetitions.length === 0 ? (
-            <div className="p-12 text-center bg-[#fffefa] rounded-2xl border border-dashed border-slate-300">
+            <div className="p-12 text-center bg-[#fffefa]/75 backdrop-blur-md rounded-2xl border border-dashed border-slate-300">
               <Trophy className="w-10 h-10 text-slate-400 mx-auto mb-3" />
               <h3 className="font-space text-base font-bold text-bdc-midnight">
                 Belum ada info lomba
@@ -740,7 +740,7 @@ export default async function HomePage() {
 
       {/* ==================== CALL TO ACTION ==================== */}
       <section id="gabung" className="scroll-act scroll-mt-24 max-w-7xl mx-auto px-6 lg:px-16 pb-14">
-        <div data-scroll-reveal className="bg-[#fffefa] border border-[#d9dfd7] shadow-[inset_0_4px_0_#EEDD55] rounded-2xl px-6 py-12 md:py-14 text-center relative overflow-hidden">
+        <div data-scroll-reveal className="bg-[#fffefa]/75 backdrop-blur-md border border-[#d9dfd7] shadow-[inset_0_4px_0_#EEDD55] rounded-2xl px-6 py-12 md:py-14 text-center relative overflow-hidden">
           <div className="absolute -top-20 -right-20 w-56 h-56 bg-bdc-yellow/20 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-bdc-blue/10 rounded-full blur-2xl pointer-events-none" />
 
