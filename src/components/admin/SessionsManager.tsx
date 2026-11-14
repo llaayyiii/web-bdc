@@ -55,6 +55,7 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   // New session form state
   const [title, setTitle] = useState("");
@@ -70,10 +71,12 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
 
   // Polling data sesi setiap 30 detik agar perubahan waktu otomatis berganti live/selesai
   useEffect(() => {
+    if (actionLoadingId) return;
+    let active = true;
     const timer = setInterval(async () => {
       try {
         const fresh = await getAllMeetSessionsAction();
-        if (fresh && Array.isArray(fresh)) {
+        if (active && fresh && Array.isArray(fresh)) {
           setSessions(fresh);
         }
       } catch (err) {
@@ -81,8 +84,11 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
       }
     }, 30000);
 
-    return () => clearInterval(timer);
-  }, []);
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
+  }, [actionLoadingId]);
 
   const handleCopyLink = (url: string, id: string) => {
     navigator.clipboard.writeText(url);
@@ -92,13 +98,17 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
 
   const handleStartNow = async (sessionId: string) => {
     setActionLoadingId(sessionId);
+    setActionError(null);
     try {
       const res = await adminStartSessionNowAction(sessionId);
       if (res.success && res.session) {
         setSessions((prev) => prev.map((s) => (s.id === sessionId ? res.session! : s)));
+      } else {
+        setActionError(res.message);
       }
     } catch (err) {
       console.error(err);
+      setActionError("Gagal memulai sesi. Silakan coba lagi.");
     } finally {
       setActionLoadingId(null);
     }
@@ -106,13 +116,17 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
 
   const handleEndNow = async (sessionId: string) => {
     setActionLoadingId(sessionId);
+    setActionError(null);
     try {
       const res = await adminEndSessionNowAction(sessionId);
       if (res.success && res.session) {
         setSessions((prev) => prev.map((s) => (s.id === sessionId ? res.session! : s)));
+      } else {
+        setActionError(res.message);
       }
     } catch (err) {
       console.error(err);
+      setActionError("Gagal mengakhiri sesi. Silakan coba lagi.");
     } finally {
       setActionLoadingId(null);
     }
@@ -209,6 +223,12 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
           <span>Jadwalkan Sesi Baru</span>
         </button>
       </div>
+
+      {actionError && (
+        <p role="alert" className="rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          {actionError}
+        </p>
+      )}
 
       {/* Sessions Grid */}
       <div className="grid grid-cols-1 gap-4">
