@@ -50,22 +50,39 @@ export async function adminUpdateMeetSessionAction(
   merged.status = deriveMeetSessionStatus(merged);
   const finalUpdates: Partial<MeetSession> = { ...updates, status: merged.status };
 
-  const updatedSession = bdcStore.setMeetSession({ id: sessionId, ...finalUpdates });
-
-  // Sinkronisasi ke Supabase
+  // Pastikan perubahan tersimpan sebelum memperbarui cache atau melaporkan sukses.
   const supabaseAdmin = createAdminClient();
-  if (supabaseAdmin) {
-    try {
-      await supabaseAdmin.from("meet_sessions").update(finalUpdates).eq("id", sessionId);
-    } catch (err) {
-      console.warn("Sinkronisasi update sesi ke Supabase:", err);
-    }
+  if (!supabaseAdmin) {
+    return { success: false, message: "Penyimpanan sesi tidak tersedia. Silakan coba lagi." };
   }
 
+  let savedSession: MeetSession;
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("meet_sessions")
+      .update(finalUpdates)
+      .eq("id", sessionId)
+      .select("*")
+      .single();
+
+    if (error || !data) {
+      console.warn("Gagal menyimpan perubahan sesi ke Supabase:", error);
+      return { success: false, message: "Perubahan sesi belum tersimpan. Silakan coba lagi." };
+    }
+    savedSession = data as MeetSession;
+  } catch (err) {
+    console.warn("Sinkronisasi update sesi ke Supabase:", err);
+    return { success: false, message: "Gagal terhubung ke penyimpanan sesi. Silakan coba lagi." };
+  }
+
+  const updatedSession = bdcStore.setMeetSession(savedSession);
+
+  revalidatePath("/");
   revalidatePath("/dashboard");
   revalidatePath("/courses");
   revalidatePath("/attendance");
   revalidatePath("/admin/sessions");
+  revalidatePath(`/admin/sessions/${sessionId}/presenter`);
   revalidatePath("/admin");
 
   return {
