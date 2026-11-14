@@ -123,7 +123,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-bdc-surface text-bdc-midnight font-sans selection:bg-bdc-yellow selection:text-bdc-midnight overflow-x-hidden">
       {/* ==================== NAVIGATION BAR ==================== */}
-      <header className="sticky top-0 z-50 bg-[#fffefa]/95 backdrop-blur-md border-b border-[#d9dfd7] px-6 py-3 lg:px-16 transition-colors">
+      <header className="fixed inset-x-0 top-0 z-50 bg-[#fffefa]/95 backdrop-blur-md border-b border-[#d9dfd7] px-6 py-3 lg:px-16 transition-colors">
         <div className="max-w-7xl mx-auto flex justify-between items-center gap-4">
           <Link href="/" className="flex items-center gap-2.5 group shrink-0">
             <Image
@@ -186,7 +186,7 @@ export default async function HomePage() {
       </header>
 
       {/* ==================== STATUS TICKER ==================== */}
-      <div className="bg-bdc-midnight py-2 overflow-hidden relative z-10 font-mono text-[11px] text-slate-300">
+      <div className="mt-[61px] bg-bdc-midnight py-2 overflow-hidden relative z-10 font-mono text-[11px] text-slate-300">
         <div className="flex items-center whitespace-nowrap animate-marquee">
           {[0, 1].map((copy) => (
             <div
