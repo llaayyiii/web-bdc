@@ -35,29 +35,47 @@
     linear-gradient(180deg, #eff4f7 0%, #eff0f0 46%, #fffefa 100%);
 }
 
-.bdc-hero-gradient {
-  background:
-    radial-gradient(circle at 78% 30%, rgba(255, 255, 255, 0.82), transparent 21rem),
-    radial-gradient(circle at 58% 92%, rgba(247, 181, 0, 0.2), transparent 20rem),
-    linear-gradient(125deg, #fffefa 0%, #e8f2ff 48%, #dceaff 72%, #fff8dc 100%);
+.bdc-section-asset {
+  box-shadow: 3px 3px 0 rgba(0, 7, 65, 0.12);
 }
 
-.bdc-orb {
-  border-radius: 999px;
-  filter: blur(1px);
-  opacity: 0.75;
+.bdc-section-asset::before {
+  content: "";
+  position: absolute;
+  inset: auto 1rem 1rem;
+  height: 1px;
+  background: rgba(0, 7, 65, 0.12);
 }
 
-.bdc-orb-blue {
-  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.95), rgba(54, 126, 224, 0.35) 48%, transparent 72%);
+.bdc-asset-bar {
+  min-height: 0.8rem;
+  animation: asset-rise 700ms ease-out both;
 }
 
-.bdc-orb-yellow {
-  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9), rgba(247, 181, 0, 0.42) 48%, transparent 72%);
+.bdc-asset-bar:nth-child(2) { animation-delay: 80ms; }
+.bdc-asset-bar:nth-child(3) { animation-delay: 160ms; }
+.bdc-asset-bar:nth-child(4) { animation-delay: 240ms; }
+.bdc-asset-bar:nth-child(5) { animation-delay: 320ms; }
+
+.bdc-asset-dot {
+  animation: asset-pulse 3s ease-in-out infinite;
 }
 
-.bdc-mini-bar {
-  min-height: 2rem;
+@keyframes asset-rise {
+  from { transform: scaleY(0); transform-origin: bottom; }
+  to { transform: scaleY(1); transform-origin: bottom; }
+}
+
+@keyframes asset-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50% { transform: scale(1.35); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bdc-asset-bar,
+  .bdc-asset-dot {
+    animation: none;
+  }
 }
 
 /* Cosmic Dark Glassmorphism Styles (Reference: gemini-code) */

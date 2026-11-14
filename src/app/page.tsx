@@ -26,6 +26,52 @@ function guidebookUrl(path: string) {
   return `${base}/storage/v1/object/public/guidebooks/${encodeURIComponent(path)}`;
 }
 
+type SectionAssetVariant = "network" | "growth" | "event" | "join";
+
+function SectionAsset({
+  variant,
+  label,
+}: {
+  variant: SectionAssetVariant;
+  label: string;
+}) {
+  const bars =
+    variant === "growth"
+      ? [34, 48, 62, 76, 94]
+      : variant === "event"
+        ? [58, 36, 78, 48, 68]
+        : [42, 58, 46, 70, 54];
+
+  return (
+    <div
+      aria-hidden="true"
+      className={`bdc-section-asset bdc-section-asset-${variant} relative h-24 w-full max-w-sm overflow-hidden rounded-2xl border border-bdc-blue/15 bg-white/65 p-4 backdrop-blur-sm`}
+    >
+      <div className="relative z-10 flex items-center justify-between font-mono text-[9px] font-bold uppercase tracking-widest text-bdc-blue">
+        <span>{label}</span>
+        <span className="flex gap-1">
+          <i className="h-1.5 w-1.5 rounded-full bg-bdc-blue" />
+          <i className="h-1.5 w-1.5 rounded-full bg-bdc-yellow" />
+          <i className="h-1.5 w-1.5 rounded-full bg-bdc-green" />
+        </span>
+      </div>
+      <div className="absolute inset-x-4 bottom-4 flex items-end gap-2">
+        {bars.map((height, index) => (
+          <span
+            key={`${variant}-${index}`}
+            className={`bdc-asset-bar flex-1 rounded-t-md ${
+              index === bars.length - 1 ? "bg-bdc-blue" : "bg-bdc-blue/20"
+            }`}
+            style={{ height: `${height}%` }}
+          />
+        ))}
+      </div>
+      <span className="bdc-asset-dot absolute left-[28%] top-[45%] h-2.5 w-2.5 rounded-full bg-bdc-yellow" />
+      <span className="bdc-asset-dot absolute right-[22%] top-[32%] h-2 w-2 rounded-full bg-bdc-green" />
+    </div>
+  );
+}
+
 function CompetitionCard({ competition }: { competition: Competition }) {
   const deadlineText = competition.expires_at
     ? new Date(competition.expires_at).toLocaleDateString("id-ID", {
@@ -236,35 +282,13 @@ export default async function HomePage() {
         id="hero"
         className="relative scroll-mt-24 min-h-[calc(100svh-6rem)] flex items-center px-6 lg:px-16 py-8 lg:py-10 overflow-hidden"
       >
-        {/* Latar gradient + ornamen kecil */}
-        <div className="absolute inset-0 bdc-hero-gradient pointer-events-none" aria-hidden="true">
-          <span className="bdc-orb bdc-orb-blue absolute -right-16 top-16 h-56 w-56" />
-          <span className="bdc-orb bdc-orb-yellow absolute right-[30%] bottom-10 h-28 w-28" />
-          <div className="absolute right-[8%] top-[18%] hidden h-64 w-80 rounded-[2rem] border border-bdc-blue/20 bg-white/20 p-5 backdrop-blur-sm lg:block">
-            <div className="flex items-center justify-between font-mono text-[10px] font-bold uppercase tracking-widest text-bdc-blue">
-              <span>Peluang Pasar</span>
-              <span className="flex gap-1">
-                <i className="h-2 w-2 rounded-full bg-bdc-blue" />
-                <i className="h-2 w-2 rounded-full bg-bdc-yellow" />
-                <i className="h-2 w-2 rounded-full bg-bdc-green" />
-              </span>
-            </div>
-            <div className="mt-8 flex items-end gap-3">
-              {[42, 68, 54, 82, 96].map((height, index) => (
-                <span
-                  key={height}
-                  className={`bdc-mini-bar flex-1 rounded-t-lg ${
-                    index === 4 ? "bg-bdc-blue" : "bg-bdc-blue/25"
-                  }`}
-                  style={{ height: `${height}%` }}
-                />
-              ))}
-            </div>
-            <div className="mt-5 flex items-center justify-between border-t border-bdc-blue/15 pt-3 font-mono text-[10px] text-bdc-muted">
-              <span>Validasi</span>
-              <span className="font-bold text-bdc-green">+32% arah tumbuh</span>
-            </div>
-          </div>
+        {/* Latar hero bergambar dengan gradient penyeimbang */}
+        <div
+          className="absolute inset-0 bg-cover bg-center pointer-events-none"
+          style={{ backgroundImage: "url('/hero-bg.png')" }}
+          aria-hidden="true"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-bdc-surface/90 via-bdc-surface/55 to-bdc-surface/20" />
         </div>
         <div className="relative w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Kolom Kiri — Intro */}
@@ -295,6 +319,8 @@ export default async function HomePage() {
               memahami pasar, membangun jejaring, dan mengubah peluang menjadi usaha yang
               memiliki arah pertumbuhan yang jelas.
             </p>
+
+            <SectionAsset variant="network" label="Peluang & Jejaring" />
 
             {/* CTA */}
             <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -608,6 +634,7 @@ export default async function HomePage() {
             </div>
 
             <div className="max-w-xs space-y-3">
+              <SectionAsset variant="growth" label="Arah Tumbuh" />
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
                 Rangkaian program BDC membantu Anda memahami peluang, menguji ide, menyusun
                 strategi, dan membangun relasi untuk pertumbuhan usaha.
@@ -755,12 +782,16 @@ export default async function HomePage() {
               ))}
             </div>
           )}
+          <SectionAsset variant="event" label="Ruang Kompetisi" />
         </div>
       </section>
 
       {/* ==================== CALL TO ACTION ==================== */}
       <section id="gabung" className="scroll-mt-24 max-w-7xl mx-auto px-6 lg:px-16 pb-14">
         <div className="bg-[#fffefa] border border-[#d9dfd7] shadow-[inset_0_4px_0_#EEDD55] rounded-2xl px-6 py-12 md:py-14 text-center relative overflow-hidden">
+          <div className="flex justify-center mb-6">
+            <SectionAsset variant="join" label="Langkah Berikutnya" />
+          </div>
           <div className="absolute -top-20 -right-20 w-56 h-56 bg-bdc-yellow/20 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-bdc-blue/10 rounded-full blur-2xl pointer-events-none" />
 
