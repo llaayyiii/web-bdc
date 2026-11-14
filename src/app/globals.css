@@ -36,6 +36,25 @@
 .blur-glow {
   filter: blur(130px);
 }
+
+[data-scroll-reveal] {
+  opacity: 0.35;
+  transform: translateY(18px);
+  transition: opacity 500ms ease, transform 500ms ease;
+}
+
+[data-scroll-active="true"] [data-scroll-reveal] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-scroll-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
 .bg-grid-dark {
   background-size: 24px 24px;
   background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);

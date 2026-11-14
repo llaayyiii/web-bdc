@@ -6,6 +6,7 @@ import { hydrateFromDb } from "@/lib/data/db";
 import { Competition } from "@/lib/types/database";
 import { BdcDots } from "@/components/ui/BdcDots";
 import { SmartNavbar } from "@/components/layout/SmartNavbar";
+import { ScrollVideoSections } from "@/components/landing/ScrollVideoSections";
 import {
   ArrowRight,
   ShieldCheck,
@@ -475,8 +476,9 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <ScrollVideoSections>
       {/* ==================== TENTANG KAMI ==================== */}
-      <section id="tentang" className="scroll-mt-24 max-w-7xl mx-auto px-6 lg:px-16 py-14">
+      <section id="tentang" className="scroll-act scroll-mt-24 max-w-7xl mx-auto px-6 lg:px-16 py-14">
         <div className="flex items-center gap-2 mb-7">
           <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-bdc-blue">
             [ 01 // Tentang Kami ]
@@ -484,7 +486,7 @@ export default async function HomePage() {
           <BdcDots size="sm" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div data-scroll-reveal className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           {/* Kiri: Judul besar & testimoni */}
           <div className="space-y-6">
             <h2 className="font-pixel text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-bdc-midnight leading-[1.1]">
@@ -569,9 +571,9 @@ export default async function HomePage() {
       </section>
 
       {/* ==================== PROGRAM UNGGULAN ==================== */}
-      <section id="pilar" className="scroll-mt-24 border-t border-[#d9dfd7]">
+      <section id="pilar" className="scroll-act scroll-mt-24 border-t border-[#d9dfd7]">
         <div className="max-w-7xl mx-auto px-6 lg:px-16 py-14">
-          <div className="flex justify-between items-start flex-wrap gap-6 mb-10">
+          <div data-scroll-reveal className="flex justify-between items-start flex-wrap gap-6 mb-10">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-bdc-blue">
@@ -601,7 +603,7 @@ export default async function HomePage() {
           </div>
 
           {/* 3 Kartu Program */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div data-scroll-reveal className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Kartu 1 — Inkubasi Bisnis */}
             <div className="bg-[#fffefa] border border-[#d9dfd7] hover:border-bdc-midnight shadow-retro-sm hover:shadow-retro rounded-2xl p-6 transition-all group flex flex-col hover:-translate-y-1">
               <div className="space-y-3.5">
@@ -687,9 +689,9 @@ export default async function HomePage() {
       </section>
 
       {/* ==================== INFO LOMBA & EVENT (TAMPILAN LENGKAP) ==================== */}
-      <section id="lomba" className="scroll-mt-24 border-t border-[#d9dfd7]">
+      <section id="lomba" className="scroll-act scroll-mt-24 border-t border-[#d9dfd7]">
         <div className="max-w-7xl mx-auto px-6 lg:px-16 py-14 space-y-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-5">
+          <div data-scroll-reveal className="flex flex-col md:flex-row md:items-end justify-between gap-5">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-amber-600">
@@ -727,7 +729,7 @@ export default async function HomePage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div data-scroll-reveal className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {activeCompetitions.map((c) => (
                 <CompetitionCard key={c.id} competition={c} />
               ))}
@@ -737,8 +739,8 @@ export default async function HomePage() {
       </section>
 
       {/* ==================== CALL TO ACTION ==================== */}
-      <section id="gabung" className="scroll-mt-24 max-w-7xl mx-auto px-6 lg:px-16 pb-14">
-        <div className="bg-[#fffefa] border border-[#d9dfd7] shadow-[inset_0_4px_0_#EEDD55] rounded-2xl px-6 py-12 md:py-14 text-center relative overflow-hidden">
+      <section id="gabung" className="scroll-act scroll-mt-24 max-w-7xl mx-auto px-6 lg:px-16 pb-14">
+        <div data-scroll-reveal className="bg-[#fffefa] border border-[#d9dfd7] shadow-[inset_0_4px_0_#EEDD55] rounded-2xl px-6 py-12 md:py-14 text-center relative overflow-hidden">
           <div className="absolute -top-20 -right-20 w-56 h-56 bg-bdc-yellow/20 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-bdc-blue/10 rounded-full blur-2xl pointer-events-none" />
 
@@ -771,6 +773,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      </ScrollVideoSections>
 
       {/* ==================== FOOTER ==================== */}
       <footer
