@@ -181,16 +181,27 @@ export default async function AttendancePage() {
 
                 <div className="space-y-2 text-xs text-slate-600 font-mono">
                   <div className="flex items-center justify-between py-1 border-b border-slate-200">
-                    <span className="text-slate-400">Kode Sesi:</span>
-                    <span className="font-bold text-bdc-navy">{liveSession.id}</span>
+                    <span className="text-slate-400">Token QR:</span>
+                    <span className="font-bold text-bdc-navy">{liveSession.qr_token}</span>
                   </div>
                   <div className="flex items-center justify-between py-1 border-b border-slate-200">
                     <span className="text-slate-400">Jadwal:</span>
-                    <span className="font-semibold">08:00 - 11:00 WIB</span>
+                    <span className="font-semibold">
+                      {new Date(liveSession.scheduled_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}{" "}
+                      &ndash;{" "}
+                      {new Date(liveSession.expires_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-1">
                     <span className="text-slate-400">Batas Expired QR:</span>
-                    <span className="font-semibold text-red-600">30 Menit Sejak Dibuka</span>
+                    <span className="font-semibold text-red-600">
+                      {new Date(liveSession.expires_at).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}{" "}
+                      {new Date(liveSession.expires_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                    </span>
                   </div>
                 </div>
 
