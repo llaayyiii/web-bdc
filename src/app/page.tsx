@@ -507,16 +507,6 @@ export default async function HomePage() {
 
           {/* Kanan: Panel penjelasan */}
           <div className="space-y-5">
-            <div className="overflow-hidden rounded-2xl border border-[#d9dfd7] shadow-retro-sm bg-[#f4f3ea]">
-              <Image
-                src="/about-abstract.png"
-                alt="Visual koneksi dan kolaborasi BDC"
-                width={1586}
-                height={992}
-                loading="eager"
-                className="h-56 w-full object-cover object-center"
-              />
-            </div>
             <p className="text-sm text-slate-600 font-medium leading-relaxed">
               Kami memberdayakan mahasiswa dengan seperangkat program intensif untuk merampingkan
               operasional, meningkatkan produktivitas, serta mempercepat pertumbuhan bisnis dan
@@ -607,16 +597,6 @@ export default async function HomePage() {
                 <ArrowRight className="w-3.5 h-3.5 text-bdc-yellow" />
               </Link>
             </div>
-          </div>
-
-          <div className="mb-10 overflow-hidden rounded-2xl border border-[#d9dfd7] shadow-retro-sm">
-            <Image
-              src="/program-abstract.png"
-              alt="Perangkat belajar dan model program BDC"
-              width={1586}
-              height={992}
-              className="h-56 w-full object-cover object-center"
-            />
           </div>
 
           {/* 3 Kartu Program */}
@@ -735,17 +715,6 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-[#d9dfd7] shadow-retro-sm">
-            <Image
-              src="/event-abstract.png"
-              alt="Perlengkapan visual untuk lomba dan event komunitas"
-              width={1586}
-              height={992}
-              loading="eager"
-              className="h-52 w-full object-cover object-center"
-            />
-          </div>
-
           {activeCompetitions.length === 0 ? (
             <div className="p-12 text-center bg-[#fffefa] rounded-2xl border border-dashed border-slate-300">
               <Trophy className="w-10 h-10 text-slate-400 mx-auto mb-3" />
@@ -768,11 +737,11 @@ export default async function HomePage() {
 
       {/* ==================== CALL TO ACTION ==================== */}
       <section id="gabung" className="scroll-mt-24 max-w-7xl mx-auto px-6 lg:px-16 pb-14">
-        <div className="bg-[#fffefa] border border-[#d9dfd7] shadow-[inset_0_4px_0_#EEDD55] rounded-2xl relative overflow-hidden md:grid md:grid-cols-[1.1fr_.9fr]">
+        <div className="bg-[#fffefa] border border-[#d9dfd7] shadow-[inset_0_4px_0_#EEDD55] rounded-2xl px-6 py-12 md:py-14 text-center relative overflow-hidden">
           <div className="absolute -top-20 -right-20 w-56 h-56 bg-bdc-yellow/20 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-bdc-blue/10 rounded-full blur-2xl pointer-events-none" />
 
-          <div className="relative max-w-xl mx-auto px-6 py-12 md:py-14 text-center space-y-5">
+          <div className="relative max-w-xl mx-auto space-y-5">
             <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-bdc-gold">
               [ 04 // Gabung Sekarang ]
             </span>
@@ -798,17 +767,6 @@ export default async function HomePage() {
                 <span>Pangkalan Sertifikat</span>
               </Link>
             </div>
-          </div>
-          <div className="relative min-h-64 md:min-h-full overflow-hidden border-t md:border-t-0 md:border-l border-[#d9dfd7]">
-            <Image
-              src="/campus-abstract.png"
-              alt="Jalur masuk kampus modern menuju ruang belajar"
-              fill
-              sizes="(min-width: 768px) 36vw, 100vw"
-              loading="eager"
-              className="object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-bdc-midnight/15 to-transparent" />
           </div>
         </div>
       </section>
