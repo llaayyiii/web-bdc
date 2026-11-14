@@ -507,6 +507,16 @@ export default async function HomePage() {
 
           {/* Kanan: Panel penjelasan */}
           <div className="space-y-5">
+            <div className="overflow-hidden rounded-2xl border border-[#d9dfd7] shadow-retro-sm bg-[#f4f3ea]">
+              <Image
+                src="/about-abstract.png"
+                alt="Visual koneksi dan kolaborasi BDC"
+                width={1586}
+                height={992}
+                loading="eager"
+                className="h-56 w-full object-cover object-center"
+              />
+            </div>
             <p className="text-sm text-slate-600 font-medium leading-relaxed">
               Kami memberdayakan mahasiswa dengan seperangkat program intensif untuk merampingkan
               operasional, meningkatkan produktivitas, serta mempercepat pertumbuhan bisnis dan
@@ -563,15 +573,6 @@ export default async function HomePage() {
                 ))}
               </ul>
             </div>
-            <div className="overflow-hidden rounded-2xl border border-[#d9dfd7] shadow-retro-sm bg-[#f4f3ea]">
-              <Image
-                src="/about-collaboration.png"
-                alt="Meja kerja kolaboratif dengan perangkat belajar BDC"
-                width={1586}
-                height={992}
-                className="h-48 w-full object-cover object-center"
-              />
-            </div>
           </div>
         </div>
       </section>
@@ -610,7 +611,7 @@ export default async function HomePage() {
 
           <div className="mb-10 overflow-hidden rounded-2xl border border-[#d9dfd7] shadow-retro-sm">
             <Image
-              src="/program-tools.png"
+              src="/program-abstract.png"
               alt="Perangkat belajar dan model program BDC"
               width={1586}
               height={992}
@@ -736,7 +737,7 @@ export default async function HomePage() {
 
           <div className="overflow-hidden rounded-2xl border border-[#d9dfd7] shadow-retro-sm">
             <Image
-              src="/event-kit.png"
+              src="/event-abstract.png"
               alt="Perlengkapan visual untuk lomba dan event komunitas"
               width={1586}
               height={992}
@@ -800,7 +801,7 @@ export default async function HomePage() {
           </div>
           <div className="relative min-h-64 md:min-h-full overflow-hidden border-t md:border-t-0 md:border-l border-[#d9dfd7]">
             <Image
-              src="/campus-entry.png"
+              src="/campus-abstract.png"
               alt="Jalur masuk kampus modern menuju ruang belajar"
               fill
               sizes="(min-width: 768px) 36vw, 100vw"
