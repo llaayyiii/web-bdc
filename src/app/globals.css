@@ -28,6 +28,38 @@
   background-size: 24px 24px;
 }
 
+.bdc-page-gradient {
+  background:
+    radial-gradient(circle at 92% 8%, rgba(91, 164, 255, 0.16), transparent 24rem),
+    radial-gradient(circle at 6% 42%, rgba(247, 181, 0, 0.1), transparent 22rem),
+    linear-gradient(180deg, #eff4f7 0%, #eff0f0 46%, #fffefa 100%);
+}
+
+.bdc-hero-gradient {
+  background:
+    radial-gradient(circle at 78% 30%, rgba(255, 255, 255, 0.82), transparent 21rem),
+    radial-gradient(circle at 58% 92%, rgba(247, 181, 0, 0.2), transparent 20rem),
+    linear-gradient(125deg, #fffefa 0%, #e8f2ff 48%, #dceaff 72%, #fff8dc 100%);
+}
+
+.bdc-orb {
+  border-radius: 999px;
+  filter: blur(1px);
+  opacity: 0.75;
+}
+
+.bdc-orb-blue {
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.95), rgba(54, 126, 224, 0.35) 48%, transparent 72%);
+}
+
+.bdc-orb-yellow {
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9), rgba(247, 181, 0, 0.42) 48%, transparent 72%);
+}
+
+.bdc-mini-bar {
+  min-height: 2rem;
+}
+
 /* Cosmic Dark Glassmorphism Styles (Reference: gemini-code) */
 .hero-gradient {
   background: radial-gradient(circle at 50% -20%, rgba(120, 119, 198, 0.25) 0%, rgba(3, 0, 20, 0) 50%),

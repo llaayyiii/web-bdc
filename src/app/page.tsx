@@ -122,7 +122,7 @@ export default async function HomePage() {
   const portalLabel = user ? "Buka Dasbor Mahasiswa" : "Masuk Portal";
 
   return (
-    <div className="min-h-screen bg-bdc-surface text-bdc-midnight font-sans selection:bg-bdc-yellow selection:text-bdc-midnight overflow-x-hidden">
+    <div className="bdc-page-gradient min-h-screen text-bdc-midnight font-sans selection:bg-bdc-yellow selection:text-bdc-midnight overflow-x-hidden">
       {/* ==================== NAVIGATION BAR ==================== */}
       <SmartNavbar>
       <header className="bg-[#fffefa]/95 backdrop-blur-md border-b border-[#d9dfd7] px-6 py-3 lg:px-16 transition-colors">
@@ -234,15 +234,37 @@ export default async function HomePage() {
       {/* ==================== HERO: DASH INTRO + PANEL PRATINJAU ==================== */}
       <section
         id="hero"
-        className="relative scroll-mt-24 min-h-[calc(100svh-6rem)] flex items-center px-6 lg:px-16 py-8 lg:py-10 bg-voxel-grid overflow-hidden"
+        className="relative scroll-mt-24 min-h-[calc(100svh-6rem)] flex items-center px-6 lg:px-16 py-8 lg:py-10 overflow-hidden"
       >
-        {/* Latar belakang gambar header */}
-        <div
-          className="absolute inset-0 bg-cover bg-center pointer-events-none"
-          style={{ backgroundImage: "url('/hero-bg.png')" }}
-          aria-hidden="true"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-bdc-surface/90 via-bdc-surface/55 to-bdc-surface/25" />
+        {/* Latar gradient + ornamen kecil */}
+        <div className="absolute inset-0 bdc-hero-gradient pointer-events-none" aria-hidden="true">
+          <span className="bdc-orb bdc-orb-blue absolute -right-16 top-16 h-56 w-56" />
+          <span className="bdc-orb bdc-orb-yellow absolute right-[30%] bottom-10 h-28 w-28" />
+          <div className="absolute right-[8%] top-[18%] hidden h-64 w-80 rounded-[2rem] border border-bdc-blue/20 bg-white/20 p-5 backdrop-blur-sm lg:block">
+            <div className="flex items-center justify-between font-mono text-[10px] font-bold uppercase tracking-widest text-bdc-blue">
+              <span>Peluang Pasar</span>
+              <span className="flex gap-1">
+                <i className="h-2 w-2 rounded-full bg-bdc-blue" />
+                <i className="h-2 w-2 rounded-full bg-bdc-yellow" />
+                <i className="h-2 w-2 rounded-full bg-bdc-green" />
+              </span>
+            </div>
+            <div className="mt-8 flex items-end gap-3">
+              {[42, 68, 54, 82, 96].map((height, index) => (
+                <span
+                  key={height}
+                  className={`bdc-mini-bar flex-1 rounded-t-lg ${
+                    index === 4 ? "bg-bdc-blue" : "bg-bdc-blue/25"
+                  }`}
+                  style={{ height: `${height}%` }}
+                />
+              ))}
+            </div>
+            <div className="mt-5 flex items-center justify-between border-t border-bdc-blue/15 pt-3 font-mono text-[10px] text-bdc-muted">
+              <span>Validasi</span>
+              <span className="font-bold text-bdc-green">+32% arah tumbuh</span>
+            </div>
+          </div>
         </div>
         <div className="relative w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           {/* Kolom Kiri — Intro */}
