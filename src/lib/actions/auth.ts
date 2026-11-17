@@ -7,6 +7,7 @@ import { bdcStore } from "../data/store";
 import { hydrateFromDb } from "../data/db";
 import { Profile } from "../types/database";
 import { createAdminClient, createAnonClient } from "../supabase/admin";
+import { signSession, verifySession } from "../auth/session";
 
 const CAMPUS_STUDENT_DOMAIN = "students.utdi.ac.id";
 const CAMPUS_STAFF_DOMAINS = ["utdi.ac.id", "businessdevclub.id"];
@@ -242,7 +243,7 @@ export async function loginAction(formData: FormData): Promise<{ success: boolea
   }
 
   // 2. Fallback ke bdcStore in-memory jika belum/tidak ditemukan di Supabase
-  if (!user) {
+  if (!user && process.env.NODE_ENV !== "production") {
     await hydrateFromDb();
     const localUser = bdcStore.getProfileByNimOrEmail(identifier);
     if (localUser) {
@@ -280,7 +281,7 @@ export async function loginAction(formData: FormData): Promise<{ success: boolea
 
   try {
     const cookieStore = await cookies();
-    cookieStore.set("bdc_session", JSON.stringify(sessionData), {
+    cookieStore.set("bdc_session", await signSession(sessionData), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -288,7 +289,7 @@ export async function loginAction(formData: FormData): Promise<{ success: boolea
       maxAge: 60 * 60 * 24 * 7, // 7 hari
     });
   } catch {
-    // Diamkan jika dipanggil di luar konteks request Next.js (misal runner/test script)
+    return { success: false, error: "Layanan sesi tidak tersedia. Silakan hubungi admin." };
   }
 
   const redirectTo = user.role === "admin" || user.role === "instructor" ? "/admin" : "/dashboard";
@@ -308,7 +309,8 @@ export async function getCurrentUser(): Promise<Profile | null> {
   }
 
   try {
-    const session: SessionData = JSON.parse(sessionCookie.value);
+    const session = await verifySession(sessionCookie.value);
+    if (!session) return null;
     let profile: Profile | null = null;
 
     // Sumber data utama: Supabase (selalu segar dari database)
@@ -330,7 +332,7 @@ export async function getCurrentUser(): Promise<Profile | null> {
     }
 
     // Fallback ke cache lokal jika Supabase tidak terjangkau
-    if (!profile) {
+    if (!profile && process.env.NODE_ENV !== "production") {
       profile = bdcStore.getProfileById(session.userId);
     }
 
@@ -361,6 +363,11 @@ export async function registerAction(
   email?: string;
   redirectTo?: string;
 }> {
+  try {
+    await signSession({ userId: "configuration-check", role: "learner" });
+  } catch {
+    return { success: false, error: "Layanan sesi tidak tersedia. Silakan hubungi admin." };
+  }
   const fullName = (formData.get("full_name") as string || "").trim();
   const nimId = (formData.get("nim_id") as string || "").trim();
   const email = (formData.get("email") as string || "").trim().toLowerCase();
@@ -507,6 +514,11 @@ export async function registerAction(
 export async function verifyRegistrationOtpAction(
   rawCode: string
 ): Promise<{ success: boolean; error?: string; redirectTo?: string }> {
+  try {
+    await signSession({ userId: "configuration-check", role: "learner" });
+  } catch {
+    return { success: false, error: "Layanan sesi tidak tersedia. Silakan hubungi admin." };
+  }
   const code = (rawCode || "").replace(/\D/g, "");
 
   if (code.length < 6) {
@@ -655,7 +667,7 @@ export async function verifyRegistrationOtpAction(
   };
 
   const cookieStore = await cookies();
-  cookieStore.set("bdc_session", JSON.stringify(sessionData), {
+  cookieStore.set("bdc_session", await signSession(sessionData), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",

@@ -20,6 +20,8 @@ async function requireAdmin() {
  * Mengambil sertifikat mahasiswa berdasarkan User ID (dari Supabase / Store)
  */
 export async function getCertificateByUserIdAction(userId: string): Promise<Certificate | null> {
+  const user = await getCurrentUser();
+  if (!user || (user.id !== userId && user.role !== "admin" && user.role !== "instructor")) return null;
   const supabaseAdmin = createAdminClient();
   if (supabaseAdmin) {
     try {
@@ -47,6 +49,7 @@ export async function getCertificateByUserIdAction(userId: string): Promise<Cert
  * Mengambil seluruh sertifikat untuk panel Admin
  */
 export async function getAllCertificatesAction(): Promise<Certificate[]> {
+  await requireAdmin();
   const supabaseAdmin = createAdminClient();
   if (supabaseAdmin) {
     try {
@@ -72,7 +75,8 @@ export async function getAllCertificatesAction(): Promise<Certificate[]> {
  * Verifikasi sertifikat publik via Nomor Sertifikat, Nomor Transkrip, atau NIM
  */
 export async function verifyCertificateAction(searchQuery: string): Promise<Certificate | null> {
-  const clean = searchQuery.trim().toUpperCase();
+  // Buang karakter sintaksis PostgREST agar input tidak mengubah struktur filter or()
+  const clean = searchQuery.trim().toUpperCase().replace(/[(),=]/g, "");
   if (!clean) return null;
 
   const supabaseAdmin = createAdminClient();
@@ -100,6 +104,8 @@ export async function verifyCertificateAction(searchQuery: string): Promise<Cert
  * Mengambil sertifikat berdasarkan ID (untuk halaman pratinjau & cetak)
  */
 export async function getCertificateByIdAction(id: string): Promise<Certificate | null> {
+  const user = await getCurrentUser();
+  if (!user) return null;
   const supabaseAdmin = createAdminClient();
   if (supabaseAdmin) {
     try {
@@ -110,7 +116,8 @@ export async function getCertificateByIdAction(id: string): Promise<Certificate 
         .maybeSingle();
 
       if (data) {
-        return data as Certificate;
+        const cert = data as Certificate;
+        return cert.user_id === user.id || user.role === "admin" || user.role === "instructor" ? cert : null;
       }
     } catch (err) {
       console.warn("Gagal mengambil sertifikat by ID dari Supabase:", err);
@@ -118,7 +125,8 @@ export async function getCertificateByIdAction(id: string): Promise<Certificate 
   }
 
   await hydrateFromDb();
-  return bdcStore.getCertificateById(id);
+  const cert = bdcStore.getCertificateById(id);
+  return cert && (cert.user_id === user.id || user.role === "admin" || user.role === "instructor") ? cert : null;
 }
 
 /**

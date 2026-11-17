@@ -114,6 +114,8 @@ export async function getStudentAttendanceHistory(): Promise<AttendanceRecord[]>
  * Mengambil daftar hadir untuk sesi tertentu (khusus Admin / Presenter)
  */
 export async function getSessionAttendees(sessionId: string): Promise<AttendanceRecord[]> {
+  const currentUser = await getCurrentUser();
+  if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "instructor")) return [];
   await hydrateFromDb();
   return bdcStore.getAttendancesBySession(sessionId);
 }

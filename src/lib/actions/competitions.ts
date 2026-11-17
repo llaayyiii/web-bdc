@@ -6,6 +6,7 @@ import { bdcStore } from "../data/store";
 import { hydrateFromDb } from "../data/db";
 import { createAdminClient } from "../supabase/admin";
 import { Competition } from "../types/database";
+import { fetchPublicHtml } from "../security/public-html";
 
 export interface CompetitionResult {
   success: boolean;
@@ -208,17 +209,9 @@ export async function fetchLinkMetadataAction(url: string): Promise<LinkMetadata
   }
 
   try {
-    const res = await fetch(url.trim(), {
-      headers: {
-        "user-agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
-        accept: "text/html,application/xhtml+xml",
-      },
-      redirect: "follow",
-      signal: AbortSignal.timeout(8000),
-    });
+    const res = await fetchPublicHtml(url.trim());
 
-    if (!res.ok) {
+    if (res.status < 200 || res.status >= 300) {
       return {
         success: false,
         message: `Halaman target merespons HTTP ${res.status}. Isi nama & gambar secara manual.`,
@@ -226,8 +219,8 @@ export async function fetchLinkMetadataAction(url: string): Promise<LinkMetadata
     }
 
     // Baca maksimal 512 KB pertama — cukup untuk <head> berisi tag OG
-    const html = await readHtmlHead(res, 512 * 1024);
-    const base = new URL(url.trim());
+    const html = res.html;
+    const base = new URL(res.url);
 
     const title =
       getMetaContent(html, "og:title") ||
@@ -334,39 +327,6 @@ export async function removeGuidebookFileAction(path: string): Promise<{ success
   } catch {
     return { success: false };
   }
-}
-
-/** Membaca ≤ maxBytes pertama dari respons sebagai teks HTML. */
-async function readHtmlHead(res: Response, maxBytes: number): Promise<string> {
-  const reader = res.body?.getReader();
-  if (!reader) {
-    const text = await res.text();
-    return text.slice(0, maxBytes);
-  }
-
-  const chunks: Uint8Array[] = [];
-  let received = 0;
-  while (received < maxBytes) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    if (value) {
-      chunks.push(value);
-      received += value.length;
-    }
-  }
-  try {
-    await reader.cancel();
-  } catch {
-    /* diabaikan */
-  }
-
-  const merged = new Uint8Array(received);
-  let offset = 0;
-  for (const chunk of chunks) {
-    merged.set(chunk, offset);
-    offset += chunk.length;
-  }
-  return new TextDecoder().decode(merged);
 }
 
 function decodeEntities(value: string): string {

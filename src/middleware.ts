@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { verifySession } from "./lib/auth/session";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Lewati file statis, aset Next.js, dan logo
@@ -16,14 +17,7 @@ export function middleware(request: NextRequest) {
   }
 
   const sessionCookie = request.cookies.get("bdc_session");
-  let session = null;
-  if (sessionCookie && sessionCookie.value) {
-    try {
-      session = JSON.parse(sessionCookie.value);
-    } catch {
-      session = null;
-    }
-  }
+  const session = sessionCookie?.value ? await verifySession(sessionCookie.value) : null;
 
   const isAuthenticated = !!session;
   const isAdmin = session?.role === "admin" || session?.role === "instructor";
