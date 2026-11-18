@@ -136,16 +136,12 @@ export default function LoginPage() {
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="text-xs font-semibold text-bdc-midnight">Kata Sandi</label>
-              <a
-                href="#forgot"
-                onClick={(e) => {
-                  e.preventDefault();
-                  showToast("Tautan reset kata sandi telah dikirim ke email terdaftar.", "info");
-                }}
+              <Link
+                href="/forgot-password"
                 className="text-[11px] font-medium text-bdc-blue hover:text-bdc-navy hover:underline"
               >
                 Lupa sandi?
-              </a>
+              </Link>
             </div>
             <div className="relative flex items-center">
               <div className="absolute left-3 text-bdc-blue pointer-events-none">

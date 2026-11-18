@@ -13,6 +13,7 @@ import {
   Competition,
   CompetitionStatus,
 } from "../types/database";
+import { createAttendanceToken } from "../security/meet-session";
 import { computeAssignmentExp } from "../utils/assignment-exp";
 
 // Registered Accounts (Admin, Anggota & Instruktur Resmi UTDI - Synced with Supabase Auth)
@@ -549,7 +550,7 @@ class BdcDataStore {
     if (this.quizzes.length === 0) {
       return this.ensureDefaultQuiz();
     }
-    return this.quizzes.find((q) => q.id === id) || this.quizzes[0] || null;
+    return this.quizzes.find((q) => q.id === id) || null;
   }
 
   getAllQuizzes(): Quiz[] {
@@ -563,9 +564,6 @@ class BdcDataStore {
 
   getQuizQuestions(quizId: string) {
     const questions = this.questions.filter((q) => q.quiz_id === quizId);
-    if (questions.length === 0 && this.questions.length > 0) {
-      return [...this.questions].sort((a, b) => a.order_index - b.order_index);
-    }
     return questions.sort((a, b) => a.order_index - b.order_index);
   }
 
@@ -687,13 +685,13 @@ class BdcDataStore {
     const computedStatus = deriveMeetSessionStatus({ scheduled_at, expires_at });
 
     const newSession: MeetSession = {
-      id: `session-${Date.now()}`,
+       id: `session-${crypto.randomUUID()}`,
       course_id: payload.course_id || "ACT-01",
       course_title: payload.course_title || "Ngoding Bareng Web App",
       title: payload.title || "Sesi Live Pertemuan BDC",
       instructor: payload.instructor || "Dr. Evelyn Vance",
       meet_url: payload.meet_url || "https://meet.google.com/bdc-utdi-web",
-      qr_token: payload.qr_token || `BDC-${Math.random().toString(36).substring(2, 7).toUpperCase()}`,
+       qr_token: payload.qr_token || createAttendanceToken(),
       scheduled_at,
       expires_at,
       status: payload.status && !payload.scheduled_at ? payload.status : computedStatus,

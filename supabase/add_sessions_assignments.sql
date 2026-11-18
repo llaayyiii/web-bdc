@@ -58,8 +58,23 @@ ALTER TABLE public.attendance_records ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.assignments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.assignment_submissions ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "meet_sessions read policy" ON public.meet_sessions FOR SELECT TO authenticated USING (true);
-CREATE POLICY "attendance_records read policy" ON public.attendance_records FOR SELECT TO authenticated USING (true);
+CREATE POLICY "meet_sessions read policy" ON public.meet_sessions
+  FOR SELECT TO authenticated
+  USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor'));
+CREATE POLICY "attendance_records read policy" ON public.attendance_records
+  FOR SELECT TO authenticated
+  USING (
+    user_id = auth.uid()::text
+    OR (SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor')
+  );
 CREATE POLICY "assignments read policy" ON public.assignments FOR SELECT TO authenticated USING (true);
-CREATE POLICY "assignment_submissions read policy" ON public.assignment_submissions FOR SELECT TO authenticated USING (true);
-CREATE POLICY "assignment_submissions write policy" ON public.assignment_submissions FOR ALL TO authenticated USING (true);
+CREATE POLICY "assignment_submissions read policy" ON public.assignment_submissions
+  FOR SELECT TO authenticated
+  USING (
+    user_id = auth.uid()::text
+    OR (SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor')
+  );
+CREATE POLICY "assignment_submissions write policy" ON public.assignment_submissions
+  FOR ALL TO authenticated
+  USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor'))
+  WITH CHECK ((SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor'));

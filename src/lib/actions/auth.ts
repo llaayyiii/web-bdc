@@ -7,7 +7,7 @@ import { bdcStore } from "../data/store";
 import { hydrateFromDb } from "../data/db";
 import { Profile } from "../types/database";
 import { createAdminClient, createAnonClient } from "../supabase/admin";
-import { signSession, verifySession } from "../auth/session";
+import { signSecurePayload, signSession, verifySecurePayload, verifySession } from "../auth/session";
 
 const CAMPUS_STUDENT_DOMAIN = "students.utdi.ac.id";
 const CAMPUS_STAFF_DOMAINS = ["utdi.ac.id", "businessdevclub.id"];
@@ -22,7 +22,11 @@ const OTP_RESEND_COOLDOWN_MS = 60 * 1000;
 const OTP_SEND_LIMIT_PER_EMAIL = 5;
 const OTP_SEND_LIMIT_PER_IP = 10;
 const OTP_SEND_WINDOW_MS = 60 * 60 * 1000;
-const OTP_LOG_RETENTION_MS = 24 * 60 * 60 * 1000;
+const PASSWORD_RESET_LIMIT_PER_EMAIL = 3;
+const PASSWORD_RESET_LIMIT_PER_IP = 10;
+const PASSWORD_RESET_WINDOW_MS = 60 * 60 * 1000;
+const PASSWORD_RESET_REDIRECT_URL =
+  `${(process.env.NEXT_PUBLIC_SITE_URL || "https://bdcutdi.vercel.app").replace(/\/$/, "")}/reset-password`;
 
 interface PendingRegistration {
   fullName: string;
@@ -38,19 +42,24 @@ async function readPendingReg(): Promise<PendingRegistration | null> {
   const cookieStore = await cookies();
   const raw = cookieStore.get(PENDING_REG_COOKIE)?.value;
   if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw) as PendingRegistration;
-    if (!parsed?.email || typeof parsed.exp !== "number") return null;
-    return parsed;
-  } catch {
-    return null;
-  }
+  const parsed = await verifySecurePayload<PendingRegistration>(raw);
+  if (
+    !parsed ||
+    typeof parsed.fullName !== "string" ||
+    typeof parsed.nimId !== "string" ||
+    typeof parsed.email !== "string" ||
+    typeof parsed.passwordHash !== "string" ||
+    typeof parsed.exp !== "number" ||
+    typeof parsed.attempts !== "number" ||
+    typeof parsed.lastSentAt !== "number"
+  ) return null;
+  return parsed;
 }
 
 async function writePendingReg(pending: PendingRegistration) {
   const cookieStore = await cookies();
   const maxAge = Math.max(1, Math.ceil((pending.exp - Date.now()) / 1000));
-  cookieStore.set(PENDING_REG_COOKIE, JSON.stringify(pending), {
+  cookieStore.set(PENDING_REG_COOKIE, await signSecurePayload(pending), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -64,83 +73,63 @@ async function clearPendingReg() {
   cookieStore.delete(PENDING_REG_COOKIE);
 }
 
-/** IP client dari header reverse proxy (Vercel) untuk limit per jaringan. */
-async function getClientIp(): Promise<string> {
+/** Vercel overwrites this header, jadi IP pengguna tidak dapat dipalsukan oleh klien. */
+async function getClientIp(): Promise<string | null> {
   try {
     const h = await headers();
-    const forwarded = h.get("x-forwarded-for");
-    const ip = forwarded?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
-    return ip.slice(0, 64);
+    const ip = h.get("x-vercel-forwarded-for") || h.get("x-real-ip");
+    return ip ? ip.slice(0, 64) : null;
   } catch {
-    return "unknown";
+    return null;
   }
 }
 
 /**
- * Cek kuota request OTP (server-side di tabel otp_send_log):
+ * Konsumsi kuota request OTP secara atomik di tabel otp_send_log:
  * maksimal 5 request per email dan 10 per IP dalam satu jam.
- *
- * Gagal-terbuka (fail-open): bila database tidak tersedia, request dibiarkan
- * lewat — perlindungan cadangan tetap limit bawaan Supabase — agar pendaftaran
- * tidak pernah terblokir oleh gangguan infrastruktur.
  */
-async function checkOtpSendLimit(
+async function consumeOtpSendQuota(
   email: string,
-  ip: string
+  ip: string | null
 ): Promise<{ allowed: boolean; error?: string }> {
   const admin = createAdminClient();
-  if (!admin) return { allowed: true };
+  if (!admin) {
+    return { allowed: false, error: "Layanan verifikasi sementara tidak tersedia. Silakan coba lagi nanti." };
+  }
 
   try {
-    const since = new Date(Date.now() - OTP_SEND_WINDOW_MS).toISOString();
-    const [byEmail, byIp] = await Promise.all([
-      admin
-        .from("otp_send_log")
-        .select("id", { count: "exact", head: true })
-        .eq("email", email)
-        .gte("created_at", since),
-      admin
-        .from("otp_send_log")
-        .select("id", { count: "exact", head: true })
-        .eq("ip", ip)
-        .gte("created_at", since),
-    ]);
-
-    if ((byEmail.count ?? 0) >= OTP_SEND_LIMIT_PER_EMAIL) {
-      return {
-        allowed: false,
-        error: `Terlalu banyak permintaan kode verifikasi untuk email ini (maksimal ${OTP_SEND_LIMIT_PER_EMAIL} per jam). Silakan coba lagi nanti.`,
-      };
-    }
-    if ((byIp.count ?? 0) >= OTP_SEND_LIMIT_PER_IP) {
-      return {
-        allowed: false,
-        error: `Terlalu banyak permintaan kode verifikasi dari jaringan Anda (maksimal ${OTP_SEND_LIMIT_PER_IP} per jam). Silakan coba lagi nanti.`,
-      };
-    }
-    return { allowed: true };
+    const { data, error } = await admin.rpc("consume_otp_send_quota", {
+      p_email: email,
+      p_ip: ip,
+      p_window_ms: OTP_SEND_WINDOW_MS,
+      p_email_limit: OTP_SEND_LIMIT_PER_EMAIL,
+      p_ip_limit: OTP_SEND_LIMIT_PER_IP,
+    });
+    if (error) throw error;
+    return data === true
+      ? { allowed: true }
+      : { allowed: false, error: "Terlalu banyak permintaan kode verifikasi. Silakan coba lagi nanti." };
   } catch (err) {
     console.warn("Gagal memeriksa kuota request OTP:", err);
-    return { allowed: true };
+    return { allowed: false, error: "Layanan verifikasi sementara tidak tersedia. Silakan coba lagi nanti." };
   }
 }
 
-/**
- * Catat request OTP + bersihkan log tua (>24 jam).
- * Dipanggil SEBELUM email dikirim dan SEBELUM akun auth dibuat,
- * sehingga request yang melewati batas tidak lagi menghasilkan akun baru.
- */
-async function recordOtpSend(email: string, ip: string): Promise<void> {
+async function consumePasswordResetQuota(email: string, ip: string | null): Promise<boolean> {
   const admin = createAdminClient();
-  if (!admin) return;
+  if (!admin) return false;
   try {
-    await admin.from("otp_send_log").insert({ email, ip });
-    await admin
-      .from("otp_send_log")
-      .delete()
-      .lt("created_at", new Date(Date.now() - OTP_LOG_RETENTION_MS).toISOString());
+    const { data, error } = await admin.rpc("consume_password_reset_quota", {
+      p_email: email,
+      p_ip: ip,
+      p_window_ms: PASSWORD_RESET_WINDOW_MS,
+      p_email_limit: PASSWORD_RESET_LIMIT_PER_EMAIL,
+      p_ip_limit: PASSWORD_RESET_LIMIT_PER_IP,
+    });
+    return !error && data === true;
   } catch (err) {
-    console.warn("Gagal mencatat log request OTP:", err);
+    console.warn("Gagal memeriksa kuota reset kata sandi:", err);
+    return false;
   }
 }
 
@@ -155,12 +144,19 @@ function friendlyEmailError(err: { code?: string; message: string }, email: stri
   return `Gagal mengirim kode verifikasi ke ${email}. ${err.message}`;
 }
 
-export interface SessionData {
-  userId: string;
-  nimId: string;
-  name: string;
-  email: string;
-  role: "learner" | "instructor" | "admin";
+async function setSessionCookie(profile: Profile) {
+  const cookieStore = await cookies();
+  cookieStore.set("bdc_session", await signSession({
+    userId: profile.id,
+    role: profile.role,
+    passwordChangedAt: profile.password_changed_at || "",
+  }), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
 }
 
 /**
@@ -233,8 +229,14 @@ export async function loginAction(formData: FormData): Promise<{ success: boolea
         // Auto-upgrade plaintext password ke bcrypt hash
         if (passwordMatched && !user.password_hash) {
           const newHash = await bcrypt.hash(password, 10);
-          await supabaseAdmin.from("profiles").update({ password_hash: newHash }).eq("id", user.id);
+          const passwordChangedAt = new Date().toISOString();
+          const { error: upgradeError } = await supabaseAdmin
+            .from("profiles")
+            .update({ password_hash: newHash, password_changed_at: passwordChangedAt })
+            .eq("id", user.id);
+          if (upgradeError) throw upgradeError;
           user.password_hash = newHash;
+          user.password_changed_at = passwordChangedAt;
         }
       }
     } catch (err) {
@@ -270,24 +272,8 @@ export async function loginAction(formData: FormData): Promise<{ success: boolea
   // Sinkronisasi user ke store lokal
   bdcStore.registerProfile(user);
 
-  // Set secure HTTP-only session cookie
-  const sessionData: SessionData = {
-    userId: user.id,
-    nimId: user.nim_id,
-    name: user.full_name,
-    email: user.email,
-    role: user.role,
-  };
-
   try {
-    const cookieStore = await cookies();
-    cookieStore.set("bdc_session", await signSession(sessionData), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 hari
-    });
+    await setSessionCookie(user);
   } catch {
     return { success: false, error: "Layanan sesi tidak tersedia. Silakan hubungi admin." };
   }
@@ -336,6 +322,10 @@ export async function getCurrentUser(): Promise<Profile | null> {
       profile = bdcStore.getProfileById(session.userId);
     }
 
+    if (profile && (profile.password_changed_at || "") !== (session.passwordChangedAt || "")) {
+      return null;
+    }
+
     return profile;
   } catch {
     return null;
@@ -364,7 +354,7 @@ export async function registerAction(
   redirectTo?: string;
 }> {
   try {
-    await signSession({ userId: "configuration-check", role: "learner" });
+    await signSession({ userId: "configuration-check", role: "learner", passwordChangedAt: "" });
   } catch {
     return { success: false, error: "Layanan sesi tidak tersedia. Silakan hubungi admin." };
   }
@@ -430,11 +420,10 @@ export async function registerAction(
   // Kuota anti-spam server-side: maks 5 request/email/jam & 10/IP/jam.
   // Dicatat sebelum akun auth dibuat — request yang diblokir tidak menghasilkan akun.
   const clientIp = await getClientIp();
-  const otpQuota = await checkOtpSendLimit(email, clientIp);
+  const otpQuota = await consumeOtpSendQuota(email, clientIp);
   if (!otpQuota.allowed) {
     return { success: false, error: otpQuota.error };
   }
-  await recordOtpSend(email, clientIp);
 
   const supabaseAdmin = createAdminClient();
   if (!supabaseAdmin) {
@@ -515,7 +504,7 @@ export async function verifyRegistrationOtpAction(
   rawCode: string
 ): Promise<{ success: boolean; error?: string; redirectTo?: string }> {
   try {
-    await signSession({ userId: "configuration-check", role: "learner" });
+    await signSession({ userId: "configuration-check", role: "learner", passwordChangedAt: "" });
   } catch {
     return { success: false, error: "Layanan sesi tidak tersedia. Silakan hubungi admin." };
   }
@@ -610,6 +599,7 @@ export async function verifyRegistrationOtpAction(
     location: "Yogyakarta",
     avatar_url: null,
     password_hash: pending.passwordHash,
+    password_changed_at: new Date().toISOString(),
     score: 0.0,
     completed_modules: 0,
     total_hours: 0.0,
@@ -639,6 +629,7 @@ export async function verifyRegistrationOtpAction(
         total_attendances: newProfile.total_attendances,
         total_sessions: newProfile.total_sessions,
         password_hash: newProfile.password_hash,
+        password_changed_at: newProfile.password_changed_at,
       },
       { onConflict: "id" }
     );
@@ -658,23 +649,8 @@ export async function verifyRegistrationOtpAction(
   // 5. Sinkronkan ke cache lokal, aktifkan sesi, hapus cookie pendaftaran
   bdcStore.registerProfile(newProfile);
 
-  const sessionData: SessionData = {
-    userId: newProfile.id,
-    nimId: newProfile.nim_id,
-    name: newProfile.full_name,
-    email: newProfile.email,
-    role: newProfile.role,
-  };
-
-  const cookieStore = await cookies();
-  cookieStore.set("bdc_session", await signSession(sessionData), {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
-  cookieStore.delete(PENDING_REG_COOKIE);
+  await setSessionCookie(newProfile);
+  await clearPendingReg();
 
   return { success: true, redirectTo: "/dashboard" };
 }
@@ -699,11 +675,10 @@ export async function resendRegistrationOtpAction(): Promise<{ success: boolean;
 
   // Kuota server yang sama dengan pendaftaran (5/email/jam, 10/IP/jam)
   const resendIp = await getClientIp();
-  const resendQuota = await checkOtpSendLimit(pending.email, resendIp);
+  const resendQuota = await consumeOtpSendQuota(pending.email, resendIp);
   if (!resendQuota.allowed) {
     return { success: false, error: resendQuota.error };
   }
-  await recordOtpSend(pending.email, resendIp);
 
   const anonClient = createAnonClient();
   if (!anonClient) {
@@ -751,19 +726,134 @@ export async function updateSelfPasswordAction(
     return { success: false, error: "Kata sandi lama yang Anda masukkan salah." };
   }
 
-  const passwordHash = await bcrypt.hash(cleanNew, 10);
-  bdcStore.updateUserPassword(user.id, cleanNew);
-  bdcStore.updateProfile(user.id, { password_hash: passwordHash });
-
   const supabaseAdmin = createAdminClient();
+  if (!supabaseAdmin && process.env.NODE_ENV === "production") {
+    return { success: false, error: "Layanan pembaruan kata sandi sementara tidak tersedia." };
+  }
+
+  const passwordHash = await bcrypt.hash(cleanNew, 10);
+  const passwordChangedAt = new Date().toISOString();
+
   if (supabaseAdmin) {
     try {
-      await supabaseAdmin.auth.admin.updateUserById(user.id, { password: cleanNew });
-      await supabaseAdmin.from("profiles").update({ password_hash: passwordHash }).eq("id", user.id);
+      const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(user.id, { password: cleanNew });
+      if (authError) throw authError;
+
+      const { error: profileError } = await supabaseAdmin
+        .from("profiles")
+        .update({ password_hash: passwordHash, password_changed_at: passwordChangedAt })
+        .eq("id", user.id);
+      if (profileError) {
+        await supabaseAdmin.auth.admin.updateUserById(user.id, { password: oldPassword });
+        throw profileError;
+      }
     } catch (err) {
-      console.warn("Gagal update password user di Supabase:", err);
+      console.warn("Gagal memperbarui kata sandi user:", err);
+      return { success: false, error: "Kata sandi belum diperbarui. Silakan coba lagi." };
     }
   }
 
+  const updatedUser = { ...user, password_hash: passwordHash, password_changed_at: passwordChangedAt };
+  bdcStore.updateUserPassword(user.id, cleanNew);
+  bdcStore.updateProfile(user.id, { password_hash: passwordHash, password_changed_at: passwordChangedAt });
+  await setSessionCookie(updatedUser);
+
   return { success: true, message: "Kata sandi berhasil diperbarui dengan aman." };
+}
+
+const PASSWORD_RESET_REQUEST_MESSAGE =
+  "Jika alamat email tersebut terdaftar, kami telah mengirim tautan pemulihan. Periksa inbox dan folder spam Anda.";
+
+/**
+ * Mengirim tautan reset dengan respons generik untuk mencegah enumerasi akun.
+ * Kuota dikonsumsi sebelum email dikirim agar klik berulang tidak mengirim spam.
+ */
+export async function requestPasswordResetAction(
+  rawEmail: string
+): Promise<{ success: boolean; message: string }> {
+  const email = (rawEmail || "").trim().toLowerCase();
+  const domainCheck = email ? await validateCampusEmail(email) : { valid: false };
+
+  if (!domainCheck.valid) {
+    return { success: true, message: PASSWORD_RESET_REQUEST_MESSAGE };
+  }
+
+  const allowed = await consumePasswordResetQuota(email, await getClientIp());
+  if (!allowed) {
+    return { success: true, message: PASSWORD_RESET_REQUEST_MESSAGE };
+  }
+
+  const anonClient = createAnonClient();
+  if (!anonClient) {
+    console.warn("Layanan reset kata sandi tidak terkonfigurasi.");
+    return { success: true, message: PASSWORD_RESET_REQUEST_MESSAGE };
+  }
+
+  try {
+    const { error } = await anonClient.auth.resetPasswordForEmail(email, {
+      redirectTo: PASSWORD_RESET_REDIRECT_URL,
+    });
+    if (error) console.warn("Gagal meminta reset kata sandi:", error.code);
+  } catch (err) {
+    console.warn("Gagal meminta reset kata sandi:", err);
+  }
+
+  return { success: true, message: PASSWORD_RESET_REQUEST_MESSAGE };
+}
+
+/**
+ * Menyelesaikan reset setelah browser menukar kode recovery Supabase menjadi
+ * access token. Token dipverifikasi kembali di server sebelum password profil
+ * dan sesi aplikasi diperbarui.
+ */
+export async function completePasswordResetAction(
+  accessToken: string,
+  newPassword: string
+): Promise<{ success: boolean; error?: string; redirectTo?: string }> {
+  const cleanPassword = (newPassword || "").trim();
+  if (cleanPassword.length < 8) {
+    return { success: false, error: "Kata sandi baru minimal harus 8 karakter." };
+  }
+  if (!accessToken || accessToken.length > 4096) {
+    return { success: false, error: "Tautan pemulihan tidak valid atau sudah kedaluwarsa." };
+  }
+
+  const anonClient = createAnonClient();
+  const supabaseAdmin = createAdminClient();
+  if (!anonClient || !supabaseAdmin) {
+    return { success: false, error: "Layanan pemulihan kata sandi sementara tidak tersedia." };
+  }
+
+  try {
+    const { data: authData, error: authLookupError } = await anonClient.auth.getUser(accessToken);
+    const authUser = authData.user;
+    if (authLookupError || !authUser) {
+      return { success: false, error: "Tautan pemulihan tidak valid atau sudah kedaluwarsa." };
+    }
+
+    const passwordHash = await bcrypt.hash(cleanPassword, 10);
+    const passwordChangedAt = new Date().toISOString();
+    const { error: authUpdateError } = await supabaseAdmin.auth.admin.updateUserById(authUser.id, {
+      password: cleanPassword,
+    });
+    if (authUpdateError) throw authUpdateError;
+
+    const { data: updatedProfile, error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .update({ password_hash: passwordHash, password_changed_at: passwordChangedAt })
+      .eq("id", authUser.id)
+      .select("*")
+      .maybeSingle();
+    if (profileError || !updatedProfile) {
+      throw profileError || new Error("Profil tidak ditemukan.");
+    }
+
+    const profile = updatedProfile as Profile;
+    bdcStore.registerProfile(profile);
+    await setSessionCookie(profile);
+    return { success: true, redirectTo: profile.role === "admin" || profile.role === "instructor" ? "/admin" : "/dashboard" };
+  } catch (err) {
+    console.warn("Gagal menyelesaikan reset kata sandi:", err);
+    return { success: false, error: "Kata sandi belum diperbarui. Silakan minta tautan baru." };
+  }
 }

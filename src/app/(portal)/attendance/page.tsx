@@ -152,7 +152,7 @@ export default async function AttendancePage() {
       {/* 3. Main Grid: Scanner Left + Session Detail Right */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <AttendanceScanner liveSession={liveSession} />
+          <AttendanceScanner />
         </div>
 
         {/* Right Info: Live Session Card */}
@@ -180,10 +180,6 @@ export default async function AttendancePage() {
                 </div>
 
                 <div className="space-y-2 text-xs text-slate-600 font-mono">
-                  <div className="flex items-center justify-between py-1 border-b border-slate-200">
-                    <span className="text-slate-400">Token QR:</span>
-                    <span className="font-bold text-bdc-navy">{liveSession.qr_token}</span>
-                  </div>
                   <div className="flex items-center justify-between py-1 border-b border-slate-200">
                     <span className="text-slate-400">Jadwal:</span>
                     <span className="font-semibold">

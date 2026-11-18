@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   period TEXT NOT NULL DEFAULT '2026/2027',
   location TEXT NOT NULL DEFAULT 'Yogyakarta',
   avatar_url TEXT,
+  password_hash TEXT,
+  password_changed_at TIMESTAMPTZ,
   score NUMERIC(5,2) DEFAULT 0.0,
   completed_modules INT DEFAULT 0,
   total_hours NUMERIC(5,1) DEFAULT 0.0,
@@ -166,7 +168,9 @@ CREATE POLICY "Profiles read policy" ON public.profiles
   FOR SELECT USING (auth.uid() = id OR (SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor'));
 
 CREATE POLICY "Profiles update policy" ON public.profiles
-  FOR UPDATE USING (auth.uid() = id OR (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
+  FOR UPDATE TO authenticated
+  USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin')
+  WITH CHECK ((SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
 
 -- Courses: Semua orang bisa baca kursus terbit
 CREATE POLICY "Courses are readable by authenticated users" ON public.courses
@@ -185,14 +189,17 @@ CREATE POLICY "Quizzes readable by authenticated" ON public.quizzes
 
 -- Questions: Opsi dibaca user login (correct_option tidak bocor jika diatur view/action)
 CREATE POLICY "Questions readable by authenticated" ON public.quiz_questions
-  FOR SELECT TO authenticated USING (true);
+  FOR SELECT TO authenticated
+  USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor'));
 
 -- Attempts: Siswa baca attempt sendiri
 CREATE POLICY "Attempts read self" ON public.quiz_attempts
   FOR SELECT TO authenticated USING (auth.uid() = user_id OR (SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor'));
 
-CREATE POLICY "Attempts insert self" ON public.quiz_attempts
-  FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Attempts manage policy" ON public.quiz_attempts
+  FOR ALL TO authenticated
+  USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor'))
+  WITH CHECK ((SELECT role FROM public.profiles WHERE id = auth.uid()) IN ('admin', 'instructor'));
 
 -- Certificates: Siswa baca miliknya, publik bisa verifikasi via cert_number/NIM
 CREATE POLICY "Public verify certificates" ON public.certificates

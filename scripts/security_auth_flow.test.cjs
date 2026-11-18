@@ -49,7 +49,7 @@ function setup(secret = "dummy-test-secret-01234567890123456789") {
     "../supabase/admin": { createAdminClient: () => ({ from: () => query }) },
     "../auth/session": session,
   };
-  return { actions: load("src/lib/actions/auth.ts", mocks, secret), jar, queries: () => queries };
+  return { actions: load("src/lib/actions/auth.ts", mocks, secret), jar, user, queries: () => queries };
 }
 
 test("login issues a session that verifies against the real auth action", async () => {
@@ -70,4 +70,12 @@ test("missing session secret fails login and registration verification before wr
   assert.equal(env.jar.has("bdc_session"), false);
   assert.equal((await env.actions.verifyRegistrationOtpAction("123456")).success, false);
   assert.equal((await env.actions.registerAction(new Map())).success, false);
+});
+
+test("password changes invalidate existing application sessions", async () => {
+  const env = setup();
+  const form = new Map([["identifier", "dummy@students.utdi.ac.id"], ["password", "dummy-password"]]);
+  assert.equal((await env.actions.loginAction(form)).success, true);
+  env.user.password_changed_at = new Date().toISOString();
+  assert.equal(await env.actions.getCurrentUser(), null);
 });

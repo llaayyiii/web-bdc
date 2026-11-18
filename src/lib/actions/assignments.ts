@@ -6,6 +6,7 @@ import { bdcStore } from "../data/store";
 import { hydrateFromDb } from "../data/db";
 import { Assignment, AssignmentSubmission } from "../types/database";
 import { createAdminClient } from "../supabase/admin";
+import { normalizeHttpUrl } from "../security/urls";
 
 export interface SubmissionResult {
   success: boolean;
@@ -29,21 +30,11 @@ export async function submitAssignmentAction(
     };
   }
 
-  const cleanUrl = (submissionUrl || "").trim();
+  const cleanUrl = normalizeHttpUrl(submissionUrl);
   if (!cleanUrl) {
     return {
       success: false,
-      message: "Tautan pengumpulan tugas (GitHub / Google Drive / URL) wajib diisi.",
-    };
-  }
-
-  // URL basic validation
-  try {
-    new URL(cleanUrl);
-  } catch {
-    return {
-      success: false,
-      message: "Format tautan tidak valid. Gunakan format URL lengkap (https://...).",
+      message: "Tautan pengumpulan tugas harus berupa URL http atau https yang valid.",
     };
   }
 
@@ -200,16 +191,13 @@ export async function adminCreateAssignmentAction(
   await hydrateFromDb();
 
   // Validasi tautan materi/soal (opsional, bila diisi harus URL valid)
-  const cleanMaterial = (assignmentData.material_url || "").trim();
-  if (cleanMaterial) {
-    try {
-      new URL(cleanMaterial);
-    } catch {
-      return {
-        success: false,
-        message: "Format tautan materi/soal tidak valid. Gunakan URL lengkap (https://...).",
-      };
-    }
+  const rawMaterial = (assignmentData.material_url || "").trim();
+  const cleanMaterial = rawMaterial ? normalizeHttpUrl(rawMaterial) : "";
+  if (rawMaterial && !cleanMaterial) {
+    return {
+      success: false,
+      message: "Tautan materi/soal harus berupa URL http atau https yang valid.",
+    };
   }
 
   const newAssignment = bdcStore.createAssignment({

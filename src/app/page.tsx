@@ -201,9 +201,7 @@ export default async function HomePage() {
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="font-bold text-white">STATUS SESI:</span>
                 <span className="text-emerald-300">
-                  {liveSession
-                    ? `Presensi Barcode Aktif (${liveSession.qr_token})`
-                    : "Presensi Siap Terbuka"}
+                  {liveSession ? "Presensi Barcode Aktif" : "Presensi Siap Terbuka"}
                 </span>
               </span>
               <span className="text-white/20">&bull;</span>
@@ -347,7 +345,7 @@ export default async function HomePage() {
                   Sesi Presensi Aktif
                 </span>
                 <p className="font-space font-bold text-sm text-bdc-midnight mt-0.5 truncate">
-                  Presensi barcode dibuka — token {liveSession.qr_token}
+                  Presensi barcode dibuka — scan QR di ruang kelas untuk mengisi kehadiran.
                 </p>
               </div>
             </div>

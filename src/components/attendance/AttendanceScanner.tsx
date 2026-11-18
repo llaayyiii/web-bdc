@@ -7,7 +7,6 @@ import {
   CameraOff,
   CheckCircle2,
   AlertCircle,
-  Sparkles,
   Zap,
   RefreshCw,
   KeyRound,
@@ -15,15 +14,9 @@ import {
   Upload,
 } from "lucide-react";
 import { scanAttendanceAction } from "@/lib/actions/attendance";
-import { MeetSession } from "@/lib/types/database";
 import { BdcDots } from "@/components/ui/BdcDots";
 
-interface AttendanceScannerProps {
-  liveSession: MeetSession | null;
-  onSuccess?: () => void;
-}
-
-export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
+export function AttendanceScanner() {
   const [tokenInput, setTokenInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<{
@@ -84,17 +77,6 @@ export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
     if (e) e.preventDefault();
     if (!tokenInput.trim()) return;
     await processToken(tokenInput.trim(), "token_code");
-  };
-
-  const handleSimulateQuickScan = async () => {
-    if (!liveSession) {
-      setResult({
-        success: false,
-        message: "Tidak ada sesi kuliah/workshop BDC yang sedang aktif (live) saat ini.",
-      });
-      return;
-    }
-    await processToken(liveSession.qr_token, "qr_scanner");
   };
 
   // Start HTML5 QR Code Scanner
@@ -306,25 +288,6 @@ export function AttendanceScanner({ liveSession }: AttendanceScannerProps) {
           </div>
         )}
 
-        {/* Quick simulation button if live session is present */}
-        {liveSession && (
-          <div className="mt-5 text-center space-y-1.5">
-            <button
-              type="button"
-              onClick={handleSimulateQuickScan}
-              disabled={isSubmitting}
-              className="retro-btn inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-bdc-navy border border-slate-300 text-xs font-bold transition-all shadow-retro-sm"
-            >
-              <Sparkles className="w-4 h-4 text-bdc-gold" />
-              <span>
-                {isSubmitting ? "Memproses Verifikasi..." : "Pindai Langsung QR Sesi Aktif"}
-              </span>
-            </button>
-            <p className="text-[11px] text-slate-500 font-mono">
-              Token Aktif Ruangan: <span className="text-bdc-navy font-bold">{liveSession.qr_token}</span>
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Manual Input Form */}

@@ -18,13 +18,14 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { SyllabusChecklist } from "./SyllabusChecklist";
-import { Course, MeetSession, Assignment, AssignmentSubmission } from "@/lib/types/database";
+import { Course, Assignment, AssignmentSubmission } from "@/lib/types/database";
+import { PublicMeetSession } from "@/lib/security/meet-session";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 interface CourseTabsProps {
   course: Course;
   initialCompletedTopics: number[];
-  courseSessions: MeetSession[];
+  courseSessions: PublicMeetSession[];
   courseAssignments: Assignment[];
   userSubmissions: AssignmentSubmission[];
 }
@@ -171,9 +172,6 @@ export function CourseTabs({
                             Terjadwal
                           </span>
                         )}
-                        <span className="text-[11px] font-mono text-slate-500">
-                          Token: <strong className="text-bdc-navy font-bold">{sess.qr_token}</strong>
-                        </span>
                       </div>
                       <h4 className="font-space text-sm font-bold text-bdc-midnight">{sess.title}</h4>
                       <p className="text-xs text-slate-500 font-sans">

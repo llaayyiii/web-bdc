@@ -5,6 +5,7 @@ import { bdcStore } from "@/lib/data/store";
 import { hydrateFromDb } from "@/lib/data/db";
 import { CourseTabs } from "@/components/courses/CourseTabs";
 import { BdcDots } from "@/components/ui/BdcDots";
+import { toPublicMeetSession } from "@/lib/security/meet-session";
 import {
   ArrowLeft,
   Clock,
@@ -148,7 +149,7 @@ export default async function CourseDetailPage({
       <CourseTabs
         course={course}
         initialCompletedTopics={initialCompletedTopics}
-        courseSessions={courseSessions}
+        courseSessions={courseSessions.map(toPublicMeetSession)}
         courseAssignments={courseAssignments}
         userSubmissions={userSubmissions}
       />

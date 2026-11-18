@@ -156,7 +156,7 @@ export async function adminUpdateUserPasswordAction(
   userId: string,
   newPassword: string
 ): Promise<{ success: boolean; message?: string; error?: string }> {
-  await requireAdmin();
+  const currentUser = await requireAdmin();
 
   const cleanPassword = (newPassword || "").trim();
   if (!cleanPassword || cleanPassword.length < 8) {
@@ -166,29 +166,39 @@ export async function adminUpdateUserPasswordAction(
     };
   }
 
-  const passwordHash = await bcrypt.hash(cleanPassword, 10);
-
-  // Update di store lokal
-  const success = bdcStore.updateUserPassword(userId, cleanPassword);
-  bdcStore.updateProfile(userId, { password_hash: passwordHash });
-  if (!success) {
+  const targetUser = bdcStore.getProfileById(userId);
+  if (!targetUser) {
     return { success: false, error: "Pengguna tidak ditemukan." };
   }
+  if (currentUser.role !== "admin" && targetUser.role !== "learner") {
+    return { success: false, error: "Instruktur hanya dapat mereset kata sandi mahasiswa." };
+  }
 
-  // Sinkronisasi live ke Supabase Auth & Profiles (jika terhubung)
+  const passwordHash = await bcrypt.hash(cleanPassword, 10);
+  const passwordChangedAt = new Date().toISOString();
   const supabaseAdmin = createAdminClient();
+  if (!supabaseAdmin && process.env.NODE_ENV === "production") {
+    return { success: false, error: "Layanan pembaruan kata sandi sementara tidak tersedia." };
+  }
   if (supabaseAdmin) {
     try {
-      await supabaseAdmin.auth.admin.updateUserById(userId, {
+      const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
         password: cleanPassword,
       });
-      await supabaseAdmin.from("profiles").update({
+      if (authError) throw authError;
+      const { error: profileError } = await supabaseAdmin.from("profiles").update({
         password_hash: passwordHash,
+        password_changed_at: passwordChangedAt,
       }).eq("id", userId);
+      if (profileError) throw profileError;
     } catch (err: unknown) {
       console.warn("Sinkronisasi kata sandi ke Supabase Auth:", err);
+      return { success: false, error: "Kata sandi belum diperbarui. Silakan coba lagi." };
     }
   }
+
+  bdcStore.updateUserPassword(userId, cleanPassword);
+  bdcStore.updateProfile(userId, { password_hash: passwordHash, password_changed_at: passwordChangedAt });
 
   revalidatePath("/admin/users");
   revalidatePath("/admin/students");
@@ -208,6 +218,9 @@ export async function adminUpdateUserRoleAction(
   if (!["admin", "instructor", "learner"].includes(newRole)) {
     return { success: false, error: "Peran hak akses (role) tidak valid." };
   }
+  if (currentAdmin.role !== "admin") {
+    return { success: false, error: "Hanya admin yang dapat mengubah peran pengguna." };
+  }
 
   // Proteksi Anti Self-Lockout
   if (currentAdmin.id === userId && newRole !== "admin") {
@@ -217,7 +230,11 @@ export async function adminUpdateUserRoleAction(
     };
   }
 
-  // Update di store lokal
+  const originalProfile = bdcStore.getProfileById(userId);
+  if (!originalProfile) {
+    return { success: false, error: "Pengguna tidak ditemukan." };
+  }
+
   const updatedProfile = bdcStore.updateUserRole(userId, newRole);
   if (!updatedProfile) {
     return { success: false, error: "Pengguna tidak ditemukan." };
@@ -225,9 +242,16 @@ export async function adminUpdateUserRoleAction(
 
   // Sinkronisasi live ke Supabase Database Profiles
   const supabaseAdmin = createAdminClient();
+  if (!supabaseAdmin && process.env.NODE_ENV === "production") {
+    bdcStore.updateProfile(userId, {
+      role: originalProfile.role,
+      role_title: originalProfile.role_title,
+    });
+    return { success: false, error: "Penyimpanan pengguna tidak tersedia. Silakan coba lagi." };
+  }
   if (supabaseAdmin) {
     try {
-      await supabaseAdmin
+      const { error } = await supabaseAdmin
         .from("profiles")
         .update({
           role: updatedProfile.role,
@@ -235,8 +259,14 @@ export async function adminUpdateUserRoleAction(
           updated_at: new Date().toISOString(),
         })
         .eq("id", userId);
+      if (error) throw error;
     } catch (err: unknown) {
       console.warn("Sinkronisasi role ke Supabase Profiles:", err);
+      bdcStore.updateProfile(userId, {
+        role: originalProfile.role,
+        role_title: originalProfile.role_title,
+      });
+      return { success: false, error: "Peran pengguna belum diperbarui. Silakan coba lagi." };
     }
   }
 
@@ -269,17 +299,23 @@ export async function adminDeleteUserAction(
   if (!targetUser) {
     return { success: false, error: "Pengguna tidak ditemukan." };
   }
+  if (currentAdmin.role !== "admin" && targetUser.role !== "learner") {
+    return { success: false, error: "Instruktur hanya dapat menghapus akun mahasiswa." };
+  }
 
-  // Sinkronisasi hapus ke Supabase Auth & Supabase DB (jika terhubung)
+  // Hapus akun Auth dahulu; foreign key pada profiles akan menghapus data
+  // turunan secara konsisten. Cache lokal baru diubah setelah operasi sukses.
   const supabaseAdmin = createAdminClient();
+  if (!supabaseAdmin && process.env.NODE_ENV === "production") {
+    return { success: false, error: "Penyimpanan pengguna tidak tersedia. Silakan coba lagi." };
+  }
   if (supabaseAdmin) {
     try {
-      // Hapus profil di database remote (akan meng-cascade enrollments, certs, dll)
-      await supabaseAdmin.from("profiles").delete().eq("id", userId);
-      // Hapus akun dari Supabase Auth
-      await supabaseAdmin.auth.admin.deleteUser(userId);
+      const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+      if (error) throw error;
     } catch (err: unknown) {
       console.warn("Sinkronisasi hapus akun ke Supabase Auth/DB:", err);
+      return { success: false, error: "Akun belum dihapus. Silakan coba lagi." };
     }
   }
 

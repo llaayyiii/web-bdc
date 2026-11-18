@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/actions/auth";
 import { bdcStore } from "@/lib/data/store";
 import { hydrateFromDb } from "@/lib/data/db";
 import { LiveMeetBanner } from "@/components/layout/LiveMeetBanner";
+import { toPublicMeetSession } from "@/lib/security/meet-session";
 import { BdcDots } from "@/components/ui/BdcDots";
 import {
   Clock,
@@ -94,7 +95,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* 2. LIVE MEET BANNER */}
-      <LiveMeetBanner session={liveSession} />
+      <LiveMeetBanner session={liveSession ? toPublicMeetSession(liveSession) : null} />
 
       {/* 2B. LINK GRUP WHATSAPP */}
       <a

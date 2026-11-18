@@ -6,19 +6,33 @@ import { bdcStore, deriveMeetSessionStatus } from "../data/store";
 import { hydrateFromDb } from "../data/db";
 import { MeetSession } from "../types/database";
 import { createAdminClient } from "../supabase/admin";
+import { createAttendanceToken, PublicMeetSession, toPublicMeetSession } from "../security/meet-session";
+import { normalizeHttpUrl } from "../security/urls";
 
 /**
  * Mengambil sesi Google Meet / Zoom yang sedang aktif (live)
  */
-export async function getLiveMeetSessionAction(): Promise<MeetSession | null> {
+export async function getLiveMeetSessionAction(): Promise<PublicMeetSession | null> {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) return null;
   await hydrateFromDb();
-  return bdcStore.getLiveSession();
+  const session = bdcStore.getLiveSession();
+  return session ? toPublicMeetSession(session) : null;
 }
 
 /**
  * Mengambil seluruh sesi pertemuan (untuk kalender / tab course)
  */
-export async function getAllMeetSessionsAction(): Promise<MeetSession[]> {
+export async function getAllMeetSessionsAction(): Promise<PublicMeetSession[]> {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) return [];
+  await hydrateFromDb();
+  return bdcStore.getSessions().map(toPublicMeetSession);
+}
+
+export async function adminGetAllMeetSessionsAction(): Promise<MeetSession[]> {
+  const currentUser = await getCurrentUser();
+  if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "instructor")) return [];
   await hydrateFromDb();
   return bdcStore.getSessions();
 }
@@ -45,10 +59,17 @@ export async function adminUpdateMeetSessionAction(
     return { success: false, message: "Sesi pertemuan tidak ditemukan." };
   }
 
+  const { qr_token: _ignoredToken, ...safeUpdates } = updates;
+  if (safeUpdates.meet_url) {
+    const meetUrl = normalizeHttpUrl(safeUpdates.meet_url);
+    if (!meetUrl) return { success: false, message: "Tautan pertemuan harus berupa URL http atau https yang valid." };
+    safeUpdates.meet_url = meetUrl;
+  }
+
   // Gabungkan dan hitung status terbaru berdasarkan jadwal
-  const merged = { ...session, ...updates };
+  const merged = { ...session, ...safeUpdates };
   merged.status = deriveMeetSessionStatus(merged);
-  const finalUpdates: Partial<MeetSession> = { ...updates, status: merged.status };
+  const finalUpdates: Partial<MeetSession> = { ...safeUpdates, status: merged.status };
 
   // Pastikan perubahan tersimpan sebelum memperbarui cache atau melaporkan sukses.
   const supabaseAdmin = createAdminClient();
@@ -139,7 +160,7 @@ export async function adminEndSessionNowAction(
  * Admin membuat sesi meet / presensi baru
  */
 export async function adminCreateMeetSessionAction(
-  sessionData: Omit<MeetSession, "id">
+  sessionData: Omit<MeetSession, "id" | "qr_token">
 ): Promise<{ success: boolean; message: string; session?: MeetSession }> {
   const currentUser = await getCurrentUser();
   if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "instructor")) {
@@ -151,15 +172,41 @@ export async function adminCreateMeetSessionAction(
 
   await hydrateFromDb();
 
-  const newSession = bdcStore.setMeetSession(sessionData);
+  const meetUrl = normalizeHttpUrl(sessionData.meet_url);
+  if (!meetUrl) {
+    return { success: false, message: "Tautan pertemuan harus berupa URL http atau https yang valid." };
+  }
+  if (
+    !Number.isFinite(Date.parse(sessionData.scheduled_at)) ||
+    !Number.isFinite(Date.parse(sessionData.expires_at)) ||
+    Date.parse(sessionData.expires_at) <= Date.parse(sessionData.scheduled_at)
+  ) {
+    return { success: false, message: "Jadwal sesi tidak valid." };
+  }
 
-  // Sinkronisasi ke Supabase
+  const newSession = bdcStore.setMeetSession({
+    ...sessionData,
+    meet_url: meetUrl,
+    qr_token: createAttendanceToken(),
+  });
+
+  // Sinkronisasi ke Supabase sebelum menganggap pembuatan berhasil.
   const supabaseAdmin = createAdminClient();
+  if (!supabaseAdmin && process.env.NODE_ENV === "production") {
+    bdcStore.deleteMeetSession(newSession.id);
+    return { success: false, message: "Penyimpanan sesi tidak tersedia. Silakan coba lagi." };
+  }
   if (supabaseAdmin) {
     try {
-      await supabaseAdmin.from("meet_sessions").upsert(newSession);
+      const { error } = await supabaseAdmin.from("meet_sessions").upsert(newSession);
+      if (error) {
+        bdcStore.deleteMeetSession(newSession.id);
+        return { success: false, message: "Sesi belum tersimpan. Silakan coba lagi." };
+      }
     } catch (err) {
       console.warn("Sinkronisasi insert sesi ke Supabase:", err);
+      bdcStore.deleteMeetSession(newSession.id);
+      return { success: false, message: "Sesi belum tersimpan. Silakan coba lagi." };
     }
   }
 
@@ -245,23 +292,26 @@ export async function adminRotateSessionTokenAction(
     return { success: false, message: "Sesi tidak ditemukan." };
   }
 
-  // Generate a fresh dynamic token
-  const randomSuffix = Math.floor(100 + Math.random() * 900);
-  const freshToken = `BDC-${randomSuffix}`;
-  bdcStore.setMeetSession({ id: sessionId, qr_token: freshToken });
+  const freshToken = createAttendanceToken();
 
-  // Sinkronisasi ke Supabase
+  // Sinkronisasi ke Supabase sebelum cache lokal diperbarui.
   const supabaseAdmin = createAdminClient();
+  if (!supabaseAdmin && process.env.NODE_ENV === "production") {
+    return { success: false, message: "Penyimpanan sesi tidak tersedia. Silakan coba lagi." };
+  }
   if (supabaseAdmin) {
     try {
-      await supabaseAdmin
+      const { error } = await supabaseAdmin
         .from("meet_sessions")
         .update({ qr_token: freshToken })
         .eq("id", sessionId);
+      if (error) return { success: false, message: "Token QR belum diperbarui. Silakan coba lagi." };
     } catch (err) {
       console.warn("Sinkronisasi rotasi token ke Supabase:", err);
+      return { success: false, message: "Token QR belum diperbarui. Silakan coba lagi." };
     }
   }
+  bdcStore.setMeetSession({ id: sessionId, qr_token: freshToken });
 
   revalidatePath("/attendance");
   revalidatePath(`/admin/sessions/${sessionId}/presenter`);

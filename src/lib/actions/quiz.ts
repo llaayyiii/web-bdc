@@ -131,7 +131,11 @@ export async function adminGetQuizQuestionsAction(): Promise<QuizQuestion[]> {
  * (kunci jawaban tidak ikut dikirim ke klien)
  */
 export async function getQuizQuestionsAction(quizId: string): Promise<QuizQuestion[]> {
+  const user = await getCurrentUser();
+  if (!user) return [];
   await hydrateFromDb();
+  const quiz = bdcStore.getQuiz(quizId);
+  if (!quiz || (!quiz.is_published && user.role !== "admin" && user.role !== "instructor")) return [];
   return bdcStore.getQuizQuestions(quizId).map((q) => ({
     ...q,
     correct_option: undefined,

@@ -6,6 +6,7 @@ const path = require("node:path");
 const { test } = require("node:test");
 const vm = require("node:vm");
 const ts = require("typescript");
+const { webcrypto } = require("node:crypto");
 
 function loadTs(filename, mocks = {}) {
   const exports = {};
@@ -20,6 +21,7 @@ function loadTs(filename, mocks = {}) {
       throw new Error(`Unexpected dependency: ${name}`);
     },
     Date,
+    crypto: webcrypto,
     process: { env: { NODE_ENV: "production" } },
     console: { ...console, warn() {} },
   }, { filename });
@@ -72,7 +74,7 @@ function setup(mode = "success", role = "admin") {
   };
   const actions = loadTs(path.resolve("src/lib/actions/sessions.ts"), {
     "next/cache": { revalidatePath: (route) => revalidated.push(route) },
-    "./auth": { getCurrentUser: async () => ({ role }) },
+    "./auth": { getCurrentUser: async () => role ? { role } : null },
     "../data/store": store,
     "../data/db": { hydrateFromDb },
     "../supabase/admin": { createAdminClient: () => mode === "unconfigured" ? null : client },
@@ -133,4 +135,27 @@ test("learner cannot change a session", async () => {
   assert.equal(result.success, false);
   assert.equal(env.row().status, "live");
   assert.equal(env.revalidated.length, 0);
+});
+
+test("learner session discovery strips the attendance bearer token", async () => {
+  const env = setup("success", "learner");
+  const sessions = await env.actions.getAllMeetSessionsAction();
+  assert.equal(sessions.length, 1);
+  assert.equal(Object.hasOwn(sessions[0], "qr_token"), false);
+  assert.equal(Object.hasOwn(await env.actions.getLiveMeetSessionAction(), "qr_token"), false);
+});
+
+test("unauthenticated callers cannot discover meeting sessions", async () => {
+  const env = setup("success", null);
+  assert.equal((await env.actions.getAllMeetSessionsAction()).length, 0);
+  assert.equal(await env.actions.getLiveMeetSessionAction(), null);
+});
+
+test("token rotation uses a long cryptographic token", async () => {
+  const env = setup();
+  const result = await env.actions.adminRotateSessionTokenAction(env.row().id);
+  assert.equal(result.success, true);
+  assert.match(result.token, /^BDC-[A-F0-9]{36}$/);
+  assert.notEqual(result.token, "BDC-TEST");
+  assert.equal(env.row().qr_token, result.token);
 });

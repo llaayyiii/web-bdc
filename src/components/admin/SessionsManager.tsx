@@ -27,7 +27,7 @@ import {
   adminDeleteMeetSessionAction,
   adminStartSessionNowAction,
   adminEndSessionNowAction,
-  getAllMeetSessionsAction,
+  adminGetAllMeetSessionsAction,
 } from "@/lib/actions/sessions";
 import { BdcDots } from "@/components/ui/BdcDots";
 
@@ -75,7 +75,7 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
     let active = true;
     const timer = setInterval(async () => {
       try {
-        const fresh = await getAllMeetSessionsAction();
+        const fresh = await adminGetAllMeetSessionsAction();
         if (active && fresh && Array.isArray(fresh)) {
           setSessions(fresh);
         }
@@ -147,14 +147,12 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
         return;
       }
 
-      const randomSuffix = Math.floor(100 + Math.random() * 900);
       const res = await adminCreateMeetSessionAction({
         course_id: "ACT-01",
         course_title: courseTitle,
         title: title.trim(),
         instructor: instructor.trim(),
         meet_url: meetUrl.trim(),
-        qr_token: `BDC-${randomSuffix}`,
         scheduled_at: startDate.toISOString(),
         expires_at: endDate.toISOString(),
         status: "scheduled", // status sesungguhnya akan dihitung otomatis oleh store

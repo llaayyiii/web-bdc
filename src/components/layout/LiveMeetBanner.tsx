@@ -2,11 +2,11 @@
 
 import React, { useState } from "react";
 import { Video, ExternalLink, Clock, Copy, Check, Radio } from "lucide-react";
-import { MeetSession } from "@/lib/types/database";
+import { PublicMeetSession } from "@/lib/security/meet-session";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 interface LiveMeetBannerProps {
-  session: MeetSession | null;
+  session: PublicMeetSession | null;
 }
 
 export function LiveMeetBanner({ session }: LiveMeetBannerProps) {
