@@ -1,0 +1,13 @@
+name: Uptime
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check
+        run: curl -fsS --max-time 20 https://bdcutdi.vercel.app/api/health

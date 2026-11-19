@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      # Placeholder aman untuk build CI; bukan kredensial produksi.
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder-project.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+      NEXT_PUBLIC_CAMPUS_DOMAIN: students.utdi.ac.id
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      SESSION_SECRET: ci-only-placeholder-secret-min-32-bytes-long
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Type check
+        run: npx tsc --noEmit
+      - name: Regression tests
+        run: node --test scripts/*.test.cjs
+      - name: Build
+        run: npm run build
+      - name: Audit (production deps)
+        run: npm audit --omit=dev --audit-level=high

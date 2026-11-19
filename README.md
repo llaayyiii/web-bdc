@@ -22,7 +22,7 @@ Universitas Teknologi Digital Indonesia (UTDI) — Yogyakarta
 
 ### 🔐 Autentikasi & Keamanan
 - Login dengan **NIM** (`245720024`) atau **email kampus** — validasi ketat domain **`@students.utdi.ac.id`**.
-- Sesi berbasis *HTTP-only cookie* via `@supabase/ssr` + proteksi rute di **Next.js Middleware**.
+- Sesi berbasis *HTTP-only cookie* via `@supabase/ssr` + proteksi rute di **Next.js Proxy**.
 - Pendaftaran mandiri dengan pemilihan peminatan — seluruh learner otomatis berlabel **`Corporate Learner (Student Chapter)`**.
 
 ### 📚 Modul, Silabus & Tugas
@@ -71,9 +71,9 @@ web-bdc/
 │   ├── app/                  # App Router: (auth), (portal), /admin, /verify
 │   ├── components/           # UI bersama, sertifikat, scanner, panel admin
 │   ├── lib/                  # Server Actions, store in-memory + hydrate DB, supabase client
-│   └── middleware.ts         # Proteksi rute & sesi
+│   └── proxy.ts              # Proteksi rute & sesi
 ├── public/                   # Logo, ilustrasi landing, aset lingkungan
-├── supabase/                 # schema.sql · seed.sql · skrip patch migrasi
+├── supabase/                 # config.toml · migrations/ (terlacak) · seed.sql
 ├── legacy/                   # ⚠ Arsip versi HTML statis (sebelum migrasi Next.js)
 ├── docs/                     # Spesifikasi & rencana migrasi
 └── scripts/                  # Skrip verifikasi fitur & seed Supabase
@@ -103,7 +103,7 @@ Buka [http://localhost:3000](http://localhost:3000).
 ## 🗄️ Menghubungkan ke Supabase (Free Tier)
 
 1. Buat proyek baru di [supabase.com](https://supabase.com) (region terdekat: *Singapore*).
-2. Buka **SQL Editor**, jalankan [`supabase/schema.sql`](supabase/schema.sql) lalu [`supabase/seed.sql`](supabase/seed.sql).
+2. Terapkan skema: `npx supabase db push` (proyek tertaut + `SUPABASE_DB_PASSWORD`), atau jalankan file di [`supabase/migrations/`](supabase/migrations/) secara berurutan lewat **SQL Editor**, lalu [`supabase/seed.sql`](supabase/seed.sql).
 3. Salin **URL** & **Kunci API** dari *Project Settings → API*.
 4. Buat file `.env.local` di root:
 

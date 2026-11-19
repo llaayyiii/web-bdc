@@ -27,6 +27,14 @@ try {
   console.warn("Could not read .env.local", e);
 }
 
+// Skrip ini MENIMPA kata sandi semua profil seed di database target —
+// termasuk admin live. Wajib flag eksplisit; jangan arahkan ke data produksi.
+if (!process.argv.includes("--confirm-live-seed")) {
+  console.error("DITOLAK: seed ini menimpa kata sandi pengguna di database target (bisa produksi).");
+  console.error("Hanya untuk setup awal database kosong. Jalankan dengan flag: --confirm-live-seed");
+  process.exit(1);
+}
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
