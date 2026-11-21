@@ -267,7 +267,12 @@ export function AdminGradingManager({ initialSubmissions, students }: AdminGradi
       {/* Grading Modal */}
       {selectedSub && (
         <div className="fixed inset-0 bg-[#000741]/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#fffefa] rounded-3xl border-2 border-bdc-midnight shadow-retro-lg w-full max-w-lg p-6 sm:p-7 space-y-4">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Penilaian ${selectedSub.user_name}`}
+            className="bg-[#fffefa] rounded-3xl border-2 border-bdc-midnight shadow-retro-lg w-full max-w-lg max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain p-6 sm:p-7 space-y-4"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-[#d9dfd7]">
               <div>
                 <span className="font-mono text-[10px] uppercase font-bold text-bdc-blue tracking-wider block">
@@ -428,7 +433,7 @@ export function AdminGradingManager({ initialSubmissions, students }: AdminGradi
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-[#d9dfd7]">
+              <div className="flex justify-end gap-2 pt-3 border-t border-[#d9dfd7] sticky bottom-0 z-10 bg-[#fffefa]">
                 <button
                   type="button"
                   onClick={() => setSelectedSub(null)}
