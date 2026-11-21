@@ -172,9 +172,15 @@ export async function adminCreateMeetSessionAction(
 
   await hydrateFromDb();
 
-  const meetUrl = normalizeHttpUrl(sessionData.meet_url);
-  if (!meetUrl) {
-    return { success: false, message: "Tautan pertemuan harus berupa URL http atau https yang valid." };
+  // Link meet opsional: pertemuan bisa tatap muka/offline tanpa Google Meet.
+  const rawMeetUrl = (sessionData.meet_url || "").trim();
+  let meetUrl = "";
+  if (rawMeetUrl) {
+    const normalized = normalizeHttpUrl(rawMeetUrl);
+    if (!normalized) {
+      return { success: false, message: "Tautan pertemuan harus berupa URL http atau https yang valid." };
+    }
+    meetUrl = normalized;
   }
   if (
     !Number.isFinite(Date.parse(sessionData.scheduled_at)) ||

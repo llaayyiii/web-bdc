@@ -31,7 +31,6 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [attendees, setAttendees] = useState<AttendanceRecord[]>(initialAttendees);
   const [isRotating, setIsRotating] = useState(false);
-  const [countdown, setCountdown] = useState(30);
 
   // Generate QR code when token changes
   useEffect(() => {
@@ -46,21 +45,6 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
       .then((url) => setQrDataUrl(url))
       .catch((err) => console.error("Error generating QR:", err));
   }, [currentSession.qr_token]);
-
-  // Rotate token countdown
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          handleRotateToken();
-          return 30;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [currentSession.id]);
 
   // Poll attendees every 5 seconds
   useEffect(() => {
@@ -82,7 +66,6 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
       const res = await adminRotateSessionTokenAction(currentSession.id);
       if (res.success && res.token) {
         setCurrentSession((prev) => ({ ...prev, qr_token: res.token! }));
-        setCountdown(30);
       }
     } catch (err) {
       console.error("Failed to rotate token:", err);
@@ -150,16 +133,18 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
         </div>
 
         <div className="flex items-center gap-3">
-          <a
-            href={currentSession.meet_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="retro-btn flex items-center gap-2 px-4 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-blue text-white text-xs font-bold transition-all border border-bdc-blue/40 shadow-retro-sm"
-          >
-            <Video className="w-4 h-4 text-bdc-yellow" />
-            <span>Buka Google Meet</span>
-            <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-          </a>
+          {currentSession.meet_url && (
+            <a
+              href={currentSession.meet_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="retro-btn flex items-center gap-2 px-4 py-2 rounded-xl bg-bdc-navy hover:bg-bdc-blue text-white text-xs font-bold transition-all border border-bdc-blue/40 shadow-retro-sm"
+            >
+              <Video className="w-4 h-4 text-bdc-yellow" />
+              <span>Buka Google Meet</span>
+              <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+            </a>
+          )}
 
           <button
             onClick={handleToggleFullscreen}
@@ -203,7 +188,7 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
             )}
           </div>
 
-          {/* Dynamic Token Display & Rotation Countdown */}
+          {/* Dynamic Token Display & Manual Rotation */}
           <div className="mt-8 space-y-3 w-full max-w-md">
             <div className="flex items-center justify-between px-5 py-3.5 rounded-2xl bg-black/50 border border-white/15 backdrop-blur-md shadow-retro-sm">
               <div className="text-left">
@@ -215,23 +200,15 @@ export function SessionPresenter({ session, initialAttendees }: SessionPresenter
                 </span>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <span className="font-mono text-[10px] text-slate-400 block">Rotasi Kode</span>
-                  <span className="font-pixel text-xl text-emerald-400">
-                    {countdown}s
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleRotateToken}
-                  disabled={isRotating}
-                  className="retro-btn p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 transition-all border border-white/20 shadow-retro-sm"
-                  title="Putar Token Sekarang"
-                >
-                  <RefreshCw className={`w-4 h-4 ${isRotating ? "animate-spin" : ""}`} />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleRotateToken}
+                disabled={isRotating}
+                className="retro-btn p-2 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 transition-all border border-white/20 shadow-retro-sm"
+                title="Putar Token Sekarang (manual)"
+              >
+                <RefreshCw className={`w-4 h-4 ${isRotating ? "animate-spin" : ""}`} />
+              </button>
             </div>
 
             <p className="text-xs text-slate-300 font-sans">

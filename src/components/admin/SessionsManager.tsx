@@ -134,7 +134,7 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
 
   const handleCreateSession = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !meetUrl.trim()) return;
+    if (!title.trim()) return;
 
     setIsSubmitting(true);
     try {
@@ -167,6 +167,7 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
         const freshEnd = new Date(freshNow.getTime() + 3 * 3600 * 1000);
         setScheduledAtStr(toDatetimeLocalString(freshNow));
         setExpiresAtStr(toDatetimeLocalString(freshEnd));
+        setMeetUrl("");
       }
     } catch (err) {
       console.error(err);
@@ -335,30 +336,34 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
                   )}
 
                   {/* Copy Meet Link */}
-                  <button
-                    type="button"
-                    onClick={() => handleCopyLink(sess.meet_url, sess.id)}
-                    className="retro-btn p-2.5 rounded-xl border border-slate-300 text-slate-700 hover:text-bdc-midnight hover:bg-slate-100 transition-all text-xs font-medium flex items-center gap-1.5 shadow-retro-sm bg-white"
-                    title="Salin Link Google Meet"
-                  >
-                    {copiedId === sess.id ? (
-                      <Check className="w-4 h-4 text-emerald-600" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
+                  {sess.meet_url && (
+                    <button
+                      type="button"
+                      onClick={() => handleCopyLink(sess.meet_url, sess.id)}
+                      className="retro-btn p-2.5 rounded-xl border border-slate-300 text-slate-700 hover:text-bdc-midnight hover:bg-slate-100 transition-all text-xs font-medium flex items-center gap-1.5 shadow-retro-sm bg-white"
+                      title="Salin Link Google Meet"
+                    >
+                      {copiedId === sess.id ? (
+                        <Check className="w-4 h-4 text-emerald-600" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </button>
+                  )}
 
                   {/* Open Meet */}
-                  <a
-                    href={sess.meet_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="retro-btn px-3.5 py-2 rounded-xl bg-[#EFF0F0] hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all flex items-center gap-1.5 border border-slate-300 shadow-retro-sm"
-                  >
-                    <Video className="w-4 h-4 text-bdc-blue" />
-                    <span>Meet</span>
-                    <ExternalLink className="w-3 h-3 text-slate-500" />
-                  </a>
+                  {sess.meet_url && (
+                    <a
+                      href={sess.meet_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="retro-btn px-3.5 py-2 rounded-xl bg-[#EFF0F0] hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all flex items-center gap-1.5 border border-slate-300 shadow-retro-sm"
+                    >
+                      <Video className="w-4 h-4 text-bdc-blue" />
+                      <span>Meet</span>
+                      <ExternalLink className="w-3 h-3 text-slate-500" />
+                    </a>
+                  )}
 
                   {/* Open Presenter Screen */}
                   <Link
@@ -491,14 +496,13 @@ export function SessionsManager({ initialSessions }: SessionsManagerProps) {
 
               <div>
                 <label className="block font-space font-bold text-slate-800 mb-1">
-                  Tautan Google Meet Kampus Resmi
+                  Tautan Google Meet <span className="font-normal text-slate-400">(opsional &mdash; kosongkan untuk pertemuan tatap muka)</span>
                 </label>
                 <input
                   type="url"
-                  required
                   value={meetUrl}
                   onChange={(e) => setMeetUrl(e.target.value)}
-                  placeholder="https://meet.google.com/..."
+                  placeholder="https://meet.google.com/... (boleh dikosongkan)"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm font-mono text-xs bg-white"
                 />
               </div>

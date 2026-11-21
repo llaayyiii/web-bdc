@@ -187,15 +187,17 @@ export function CourseTabs({
                         <QrCode className="w-3.5 h-3.5 text-bdc-yellow" />
                         <span>Presensi Sekarang</span>
                       </Link>
-                      <a
-                        href={sess.meet_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="retro-btn p-2 rounded-xl bg-[#EFF0F0] hover:bg-slate-200 text-slate-700 transition-all border border-slate-300 shadow-retro-sm"
-                        title="Buka Google Meet"
-                      >
-                        <Video className="w-4 h-4 text-bdc-blue" />
-                      </a>
+                      {sess.meet_url && (
+                        <a
+                          href={sess.meet_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="retro-btn p-2 rounded-xl bg-[#EFF0F0] hover:bg-slate-200 text-slate-700 transition-all border border-slate-300 shadow-retro-sm"
+                          title="Buka Google Meet"
+                        >
+                          <Video className="w-4 h-4 text-bdc-blue" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 );
@@ -334,30 +336,37 @@ export function CourseTabs({
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-                <div className="flex-1 px-4 py-2.5 rounded-xl bg-black/40 border border-white/10 font-mono text-xs text-slate-200 truncate flex items-center justify-between">
-                  <span className="truncate">{activeSession.meet_url}</span>
-                  <button
-                    type="button"
-                    onClick={handleCopyMeet}
-                    className="p-1 hover:text-bdc-yellow ml-2"
-                    title="Salin Tautan"
-                  >
-                    {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
+              {activeSession.meet_url ? (
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                  <div className="flex-1 px-4 py-2.5 rounded-xl bg-black/40 border border-white/10 font-mono text-xs text-slate-200 truncate flex items-center justify-between">
+                    <span className="truncate">{activeSession.meet_url}</span>
+                    <button
+                      type="button"
+                      onClick={handleCopyMeet}
+                      className="p-1 hover:text-bdc-yellow ml-2"
+                      title="Salin Tautan"
+                    >
+                      {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </div>
 
-                <a
-                  href={activeSession.meet_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="retro-btn px-6 py-2.5 rounded-xl bg-bdc-yellow hover:bg-amber-400 text-bdc-midnight text-xs font-black transition-all flex items-center justify-center gap-2 shadow-retro-sm"
-                >
-                  <Video className="w-4 h-4 text-bdc-midnight" />
-                  <span>Masuk Google Meet</span>
-                  <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-                </a>
-              </div>
+                  <a
+                    href={activeSession.meet_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="retro-btn px-6 py-2.5 rounded-xl bg-bdc-yellow hover:bg-amber-400 text-bdc-midnight text-xs font-black transition-all flex items-center justify-center gap-2 shadow-retro-sm"
+                  >
+                    <Video className="w-4 h-4 text-bdc-midnight" />
+                    <span>Masuk Google Meet</span>
+                    <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+                  </a>
+                </div>
+              ) : (
+                <div className="px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-slate-200 text-xs font-sans flex items-center gap-2">
+                  <Video className="w-4 h-4 text-bdc-yellow" />
+                  Pertemuan ini dilaksanakan tatap muka (offline) &mdash; tanpa tautan Google Meet.
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-10 text-slate-400 font-mono">

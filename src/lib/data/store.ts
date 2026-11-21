@@ -690,7 +690,7 @@ class BdcDataStore {
       course_title: payload.course_title || "Ngoding Bareng Web App",
       title: payload.title || "Sesi Live Pertemuan BDC",
       instructor: payload.instructor || "Dr. Evelyn Vance",
-      meet_url: payload.meet_url || "https://meet.google.com/bdc-utdi-web",
+      meet_url: payload.meet_url || "",
        qr_token: payload.qr_token || createAttendanceToken(),
       scheduled_at,
       expires_at,

@@ -39,11 +39,16 @@ function setup(mode = "success", role = "admin") {
     expires_at: new Date(Date.now() + 3600000).toISOString(),
   };
   const revalidated = [];
+  const created = [];
   const hydrateFromDb = async () => store.bdcStore.hydrate({ sessions: [{ ...row }] });
   const client = {
     from(table) {
       assert.equal(table, "meet_sessions");
       return {
+        upsert(newRow) {
+          created.push({ ...newRow });
+          return Promise.resolve({ error: null });
+        },
         update(updates) {
           const query = {
             eq(column, value) {
@@ -79,7 +84,7 @@ function setup(mode = "success", role = "admin") {
     "../data/db": { hydrateFromDb },
     "../supabase/admin": { createAdminClient: () => mode === "unconfigured" ? null : client },
   });
-  return { actions, store: store.bdcStore, revalidated, row: () => row };
+  return { actions, store: store.bdcStore, revalidated, created, row: () => row };
 }
 
 test("failed end-session write never reports completed then returns to live after refresh", async () => {
@@ -151,11 +156,39 @@ test("unauthenticated callers cannot discover meeting sessions", async () => {
   assert.equal(await env.actions.getLiveMeetSessionAction(), null);
 });
 
-test("token rotation uses a long cryptographic token", async () => {
+test("token rotation uses a short unambiguous token", async () => {
   const env = setup();
   const result = await env.actions.adminRotateSessionTokenAction(env.row().id);
   assert.equal(result.success, true);
-  assert.match(result.token, /^BDC-[A-F0-9]{36}$/);
+  assert.match(result.token, /^BDC-[2-9A-HJ-NP-Z]{6}$/);
   assert.notEqual(result.token, "BDC-TEST");
   assert.equal(env.row().qr_token, result.token);
+});
+
+test("create session accepts empty meet_url for offline meetings", async () => {
+  const env = setup();
+  const result = await env.actions.adminCreateMeetSessionAction({
+    course_id: "ACT-01", course_title: "Bisnis", title: "Pertemuan Offline",
+    instructor: "Mentor", meet_url: "",
+    scheduled_at: new Date(Date.now() - 3600000).toISOString(),
+    expires_at: new Date(Date.now() + 3600000).toISOString(),
+    status: "scheduled",
+  });
+  assert.equal(result.success, true);
+  assert.equal(result.session.meet_url, "");
+  assert.equal(env.created.length, 1);
+  assert.equal(env.created[0].meet_url, "");
+});
+
+test("create session still rejects an invalid non-empty meet_url", async () => {
+  const env = setup();
+  const result = await env.actions.adminCreateMeetSessionAction({
+    course_id: "ACT-01", course_title: "Bisnis", title: "Pertemuan",
+    instructor: "Mentor", meet_url: "not-a-url",
+    scheduled_at: new Date(Date.now() - 3600000).toISOString(),
+    expires_at: new Date(Date.now() + 3600000).toISOString(),
+    status: "scheduled",
+  });
+  assert.equal(result.success, false);
+  assert.equal(env.created.length, 0);
 });

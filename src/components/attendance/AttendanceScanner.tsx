@@ -29,12 +29,15 @@ export function AttendanceScanner() {
   const [cameraError, setCameraError] = useState<string | null>(null);
 
   const scannerRef = useRef<any>(null);
+  // Kamera membaca QR tiap frame; cegah submit ganda sebelum respons server tiba.
+  const scanInFlightRef = useRef(false);
   const readerElementId = "bdc-qr-reader-container";
 
   // Process a scanned / inputted token
   const processToken = async (rawToken: string, method: "qr_scanner" | "token_code" = "qr_scanner") => {
     let clean = (rawToken || "").trim();
-    if (!clean) return;
+    if (!clean || scanInFlightRef.current) return;
+    scanInFlightRef.current = true;
 
     // Handle full URL QR code (mis. https://.../attendance?token=BDC-994)
     if (clean.includes("token=")) {
@@ -70,6 +73,7 @@ export function AttendanceScanner() {
       });
     } finally {
       setIsSubmitting(false);
+      scanInFlightRef.current = false;
     }
   };
 
