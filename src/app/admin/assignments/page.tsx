@@ -47,7 +47,10 @@ export default async function AdminAssignmentsPage() {
         initialSubmissions={submissions}
       />
 
-      <AdminGradingManager initialSubmissions={submissions} />
+      <AdminGradingManager
+        initialSubmissions={submissions}
+        students={bdcStore.getProfiles().filter((p) => p.role === "learner")}
+      />
     </div>
   );
 }

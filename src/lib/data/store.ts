@@ -951,6 +951,64 @@ class BdcDataStore {
     return { success: true, submission: sub };
   }
 
+  /**
+   * Bagikan nilai tugas kelompok ke anggota yang tidak mengumpulkan.
+   * Tidak memberi EXP (EXP = usaha submit) dan tidak menurunkan nilai
+   * milik anggota yang sudah lebih tinggi.
+   */
+  shareGradeToMember(
+    sourceSubmissionId: string,
+    memberUserId: string,
+    score: number,
+    feedback: string
+  ): {
+    success: boolean;
+    error?: string;
+    skipped?: boolean;
+    submission?: AssignmentSubmission;
+  } {
+    const source = this.submissions.find((s) => s.id === sourceSubmissionId);
+    if (!source) return { success: false, error: "Pengumpulan sumber tidak ditemukan." };
+
+    const member = this.getProfileById(memberUserId);
+    if (!member) return { success: false, error: "Anggota tidak ditemukan." };
+    if (member.role !== "learner") return { success: false, error: "Hanya mahasiswa yang bisa menerima nilai." };
+    if (memberUserId === source.user_id) return { success: false, error: "Pengumpul sudah dinilai terpisah." };
+
+    const existingIndex = this.submissions.findIndex(
+      (s) => s.assignment_id === source.assignment_id && s.user_id === memberUserId
+    );
+    const existing = existingIndex !== -1 ? this.submissions[existingIndex] : null;
+    if (existing && existing.status === "graded" && (existing.score ?? 0) >= score) {
+      return { success: true, skipped: true, submission: existing };
+    }
+
+    const shared: AssignmentSubmission = {
+      id: existing?.id ?? `sub-${crypto.randomUUID()}`,
+      assignment_id: source.assignment_id,
+      user_id: memberUserId,
+      user_name: member.full_name,
+      nim_id: member.nim_id,
+      submission_url: source.submission_url,
+      notes: existing?.notes || `Nilai kelompok — dikumpulkan oleh ${source.user_name}.`,
+      submitted_at: existing?.submitted_at ?? source.submitted_at,
+      score,
+      feedback,
+      status: "graded",
+    };
+
+    if (existingIndex !== -1) this.submissions[existingIndex] = shared;
+    else this.submissions.unshift(shared);
+
+    // Sama seperti gradeSubmission: skor profil = nilai tugas tertinggi.
+    const best = this.submissions
+      .filter((s) => s.user_id === memberUserId && s.status === "graded")
+      .reduce((max, s) => Math.max(max, s.score || 0), 0);
+    this.updateProfile(memberUserId, { score: best });
+
+    return { success: true, submission: shared };
+  }
+
   // 5. LEADERBOARD (Rank Berdasarkan Kehadiran & XP)
   getLeaderboard() {
     const learners = this.profiles.filter((p) => p.role === "learner");

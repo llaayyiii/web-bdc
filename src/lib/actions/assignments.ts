@@ -14,6 +14,12 @@ export interface SubmissionResult {
   submission?: AssignmentSubmission;
 }
 
+/** Anggota tim yang ikut menerima nilai (nilai bisa berbeda per anggota). */
+export interface SharedGradeInput {
+  userId: string;
+  score: number;
+}
+
 /**
  * Server action untuk mengumpulkan tugas mahasiswa
  */
@@ -110,13 +116,21 @@ export async function submitAssignmentAction(
 export async function adminGradeAssignmentAction(
   submissionId: string,
   score: number,
-  feedback: string
-): Promise<{ success: boolean; message: string }> {
+  feedback: string,
+  members: SharedGradeInput[] = []
+): Promise<{
+  success: boolean;
+  message: string;
+  sharedCount: number;
+  sharedSubmissions: AssignmentSubmission[];
+}> {
   const currentUser = await getCurrentUser();
   if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "instructor")) {
     return {
       success: false,
       message: "Akses ditolak: Hanya kurator atau instruktur yang memiliki hak menilai tugas.",
+      sharedCount: 0,
+      sharedSubmissions: [],
     };
   }
 
@@ -124,8 +138,21 @@ export async function adminGradeAssignmentAction(
     return {
       success: false,
       message: "Rentang nilai evaluasi harus berada antara 0 hingga 100.",
+      sharedCount: 0,
+      sharedSubmissions: [],
     };
   }
+
+  const validMembers = members
+    .filter(
+      (m) =>
+        m &&
+        typeof m.userId === "string" &&
+        Number.isInteger(m.score) &&
+        m.score >= 0 &&
+        m.score <= 100
+    )
+    .filter((m, i, arr) => arr.findIndex((x) => x.userId === m.userId) === i);
 
   await hydrateFromDb();
   const result = bdcStore.gradeSubmission(submissionId, score, feedback.trim());
@@ -133,6 +160,8 @@ export async function adminGradeAssignmentAction(
     return {
       success: false,
       message: result.error || "Gagal memperbarui nilai penugasan.",
+      sharedCount: 0,
+      sharedSubmissions: [],
     };
   }
 
@@ -163,14 +192,76 @@ export async function adminGradeAssignmentAction(
     }
   }
 
+  // Bagikan nilai ke anggota tim yang dipilih admin (boleh beda nilai).
+  // Anggota yang sudah punya nilai lebih tinggi tidak diturunkan.
+  const sharedSubmissions: AssignmentSubmission[] = [];
+  let skippedMembers = 0;
+  for (const member of validMembers) {
+    const shared = bdcStore.shareGradeToMember(
+      submissionId,
+      member.userId,
+      member.score,
+      feedback.trim()
+    );
+    if (!shared.success) continue;
+    if (shared.skipped) {
+      skippedMembers += 1;
+      continue;
+    }
+    if (shared.submission) sharedSubmissions.push(shared.submission);
+  }
+
+  if (supabaseAdmin && sharedSubmissions.length) {
+    try {
+      await supabaseAdmin.from("assignment_submissions").upsert(
+        sharedSubmissions.map((s) => ({
+          id: s.id,
+          assignment_id: s.assignment_id,
+          user_id: s.user_id,
+          user_name: s.user_name,
+          nim_id: s.nim_id,
+          submission_url: s.submission_url,
+          notes: s.notes,
+          submitted_at: s.submitted_at,
+          score: s.score,
+          feedback: s.feedback,
+          status: s.status,
+        }))
+      );
+      await Promise.all(
+        sharedSubmissions.map((s) => {
+          const profile = bdcStore.getProfileById(s.user_id);
+          return profile
+            ? supabaseAdmin
+                .from("profiles")
+                .update({ score: profile.score, updated_at: new Date().toISOString() })
+                .eq("id", s.user_id)
+            : Promise.resolve();
+        })
+      );
+    } catch (err) {
+      console.warn("Sinkronisasi nilai kelompok ke Supabase:", err);
+    }
+  }
+
   revalidatePath("/admin/assignments");
   revalidatePath("/assignments");
+  revalidatePath("/dashboard");
   revalidatePath("/certificates");
   revalidatePath("/leaderboard");
 
+  const extra = [
+    sharedSubmissions.length ? `Nilai dibagikan ke ${sharedSubmissions.length} anggota tim.` : "",
+    skippedMembers ? `${skippedMembers} anggota sudah punya nilai lebih tinggi, tidak diubah.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return {
     success: true,
-    message: `Evaluasi tugas berhasil disimpan. Nilai: ${score}/100.`,
+    message: `Evaluasi tugas berhasil disimpan. Nilai: ${score}/100.${extra ? ` ${extra}` : ""}`,
+    sharedCount: sharedSubmissions.length,
+    sharedSubmissions,
   };
 }
 

@@ -10,16 +10,18 @@ import {
   Award,
   RefreshCw,
   Search,
+  Users,
 } from "lucide-react";
-import { AssignmentSubmission } from "@/lib/types/database";
+import { AssignmentSubmission, Profile } from "@/lib/types/database";
 import { adminGradeAssignmentAction } from "@/lib/actions/assignments";
 import { BdcDots } from "@/components/ui/BdcDots";
 
 interface AdminGradingManagerProps {
   initialSubmissions: AssignmentSubmission[];
+  students: Profile[];
 }
 
-export function AdminGradingManager({ initialSubmissions }: AdminGradingManagerProps) {
+export function AdminGradingManager({ initialSubmissions, students }: AdminGradingManagerProps) {
   const [submissions, setSubmissions] = useState<AssignmentSubmission[]>(initialSubmissions);
   const [selectedSub, setSelectedSub] = useState<AssignmentSubmission | null>(null);
   const [score, setScore] = useState<number>(85);
@@ -27,6 +29,11 @@ export function AdminGradingManager({ initialSubmissions }: AdminGradingManagerP
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "pending" | "graded">("all");
+  const [gradeResult, setGradeResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  // Anggota tim yang ikut menerima nilai (nilai bisa beda per orang)
+  const [memberScores, setMemberScores] = useState<Record<string, number>>({});
+  const [memberSearch, setMemberSearch] = useState("");
 
   const filtered = submissions.filter((s) => {
     const matchesSearch =
@@ -46,6 +53,18 @@ export function AdminGradingManager({ initialSubmissions }: AdminGradingManagerP
       sub.feedback ||
         "Implementasi arsitektur rapi, validasi input berjalan baik, dan dokumentasi lengkap."
     );
+    setMemberScores({});
+    setMemberSearch("");
+    setGradeResult(null);
+  };
+
+  const toggleMember = (userId: string) => {
+    setMemberScores((prev) => {
+      const next = { ...prev };
+      if (Object.hasOwn(next, userId)) delete next[userId];
+      else next[userId] = score;
+      return next;
+    });
   };
 
   const handleSaveGrade = async (e: React.FormEvent) => {
@@ -53,24 +72,43 @@ export function AdminGradingManager({ initialSubmissions }: AdminGradingManagerP
     if (!selectedSub) return;
 
     setIsSubmitting(true);
+    setGradeResult(null);
     try {
-      const res = await adminGradeAssignmentAction(selectedSub.id, score, feedback);
+      const res = await adminGradeAssignmentAction(
+        selectedSub.id,
+        score,
+        feedback,
+        Object.entries(memberScores).map(([userId, s]) => ({ userId, score: s }))
+      );
+      setGradeResult({ success: res.success, message: res.message });
       if (res.success) {
-        setSubmissions((prev) =>
-          prev.map((s) =>
-            s.id === selectedSub.id
-              ? { ...s, score, feedback, status: "graded" }
-              : s
-          )
-        );
+        setSubmissions((prev) => {
+          const next = prev.map((s) =>
+            s.id === selectedSub.id ? { ...s, score, feedback, status: "graded" as const } : s
+          );
+          for (const shared of res.sharedSubmissions) {
+            const i = next.findIndex((s) => s.id === shared.id);
+            if (i === -1) next.unshift(shared);
+            else next[i] = shared;
+          }
+          return next;
+        });
         setSelectedSub(null);
       }
     } catch (err) {
       console.error(err);
+      setGradeResult({ success: false, message: "Terjadi kesalahan jaringan saat menyimpan nilai." });
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const eligibleStudents = students
+    .filter((s) => s.id !== selectedSub?.user_id)
+    .filter((s) => {
+      const q = memberSearch.trim().toLowerCase();
+      return !q || s.full_name.toLowerCase().includes(q) || s.nim_id.toLowerCase().includes(q);
+    });
 
   return (
     <div className="space-y-6 font-sans">
@@ -248,6 +286,18 @@ export function AdminGradingManager({ initialSubmissions }: AdminGradingManagerP
               </button>
             </div>
 
+            {gradeResult && (
+              <div
+                className={`p-3 rounded-2xl border-2 text-xs font-bold shadow-retro-sm ${
+                  gradeResult.success
+                    ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+                    : "bg-red-50 border-red-300 text-red-800"
+                }`}
+              >
+                {gradeResult.message}
+              </div>
+            )}
+
             <form onSubmit={handleSaveGrade} className="space-y-4 text-xs font-sans">
               <div className="p-3.5 rounded-2xl bg-[#EFF0F0] border border-slate-300 shadow-retro-sm">
                 <span className="font-mono text-[10px] font-bold uppercase text-slate-500 block mb-1">
@@ -295,6 +345,87 @@ export function AdminGradingManager({ initialSubmissions }: AdminGradingManagerP
                   onChange={(e) => setFeedback(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-bdc-midnight focus:shadow-retro-sm text-xs bg-white"
                 />
+              </div>
+
+              {/* Anggota tim yang ikut menerima nilai */}
+              <div className="rounded-2xl border border-[#d9dfd7] bg-[#f4f3ea] p-3.5 space-y-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-bdc-blue" />
+                    <span className="font-space font-bold text-slate-800">
+                      Bagikan ke anggota tim (opsional)
+                    </span>
+                  </div>
+                  <span className="font-mono text-[10px] text-slate-500">
+                    {Object.keys(memberScores).length} dipilih
+                  </span>
+                </div>
+                <p className="font-mono text-[10px] text-slate-500 leading-relaxed">
+                  Centang anggota yang ikut mengerjakan. Nilai bisa diubah per orang. EXP tidak
+                  diberikan ke anggota yang tidak submit.
+                </p>
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={memberSearch}
+                    onChange={(e) => setMemberSearch(e.target.value)}
+                    placeholder="Cari nama / NIM anggota..."
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:border-bdc-midnight bg-white"
+                  />
+                </div>
+                <div className="max-h-40 overflow-y-auto rounded-xl border border-slate-300 bg-white divide-y divide-slate-100">
+                  {eligibleStudents.length === 0 ? (
+                    <p className="py-3 text-center text-slate-400 font-mono text-[11px]">
+                      Tidak ada mahasiswa yang cocok.
+                    </p>
+                  ) : (
+                    eligibleStudents.map((student) => {
+                      const checked = Object.hasOwn(memberScores, student.id);
+                      return (
+                        <div
+                          key={student.id}
+                          className="flex items-center gap-2.5 px-3 py-2 hover:bg-[#fff8e6]"
+                        >
+                          <input
+                            id={`member-${student.id}`}
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => toggleMember(student.id)}
+                            className="w-3.5 h-3.5 accent-bdc-midnight"
+                          />
+                          <label
+                            htmlFor={`member-${student.id}`}
+                            className="flex-1 min-w-0 cursor-pointer"
+                          >
+                            <span className="block font-space font-bold text-slate-800 truncate">
+                              {student.full_name}
+                            </span>
+                            <span className="block font-mono text-[10px] text-slate-500">
+                              NIM: {student.nim_id}
+                            </span>
+                          </label>
+                          {checked && (
+                            <input
+                              type="number"
+                              min={0}
+                              max={100}
+                              value={memberScores[student.id]}
+                              onChange={(e) =>
+                                setMemberScores((prev) => ({
+                                  ...prev,
+                                  [student.id]: Number(e.target.value),
+                                }))
+                              }
+                              aria-label={`Nilai untuk ${student.full_name}`}
+                              className="w-16 px-2 py-1 rounded-lg border border-slate-300 font-pixel text-sm text-center bg-white"
+                            />
+                          )}
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
               </div>
 
               <div className="flex justify-end gap-2 pt-3 border-t border-[#d9dfd7]">
