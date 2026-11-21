@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alur data nilai tugas kelompok</title>
+<style>
+  body { margin: 0; background: #f4f3ea; color: #0b1a3a; font-family: ui-sans-serif, system-ui, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 20px 48px; }
+  h1 { font-family: ui-monospace, monospace; font-size: 20px; margin: 0 0 6px; }
+  p.meta { font: 12px ui-monospace, monospace; color: #475569; margin: 0 0 20px; }
+  svg { width: 100%; height: auto; background: #fffefa; border: 2px solid #0b1a3a; border-radius: 16px; box-shadow: 6px 6px 0 #d9dfd7; }
+</style>
+</head>
+<body>
+<main>
+  <h1>[ DATA FLOW ] Nilai tugas kelompok</h1>
+  <p class="meta">Sumber: <code>docs/diagrams/group-grading-data-flow.json</code> · status: implemented · buka langsung dari disk, tanpa server</p>
+  <svg id="diagram" viewBox="0 0 1040 700" role="img" aria-label="Diagram alur data penilaian tugas kelompok"></svg>
+</main>
+<script>
+const data = {
+  nodes: [
+    { id: "ui", label: "AdminGradingManager", kind: "ui" },
+    { id: "action", label: "adminGradeAssignmentAction", kind: "boundary" },
+    { id: "store", label: "bdcStore (in-memory)", kind: "domain" },
+    { id: "subs", label: "assignment_submissions", kind: "data" },
+    { id: "profile", label: "profiles.score / points", kind: "data" },
+    { id: "supabase", label: "Supabase (service role)", kind: "external" },
+    { id: "student", label: "StudentAssignmentList", kind: "ui" }
+  ],
+  edges: [
+    ["ui", "action", "nilai + daftar anggota terpilih"],
+    ["action", "store", "gradeSubmission + shareGradeToMember"],
+    ["store", "subs", "baris submitter & anggota"],
+    ["store", "profile", "score = max graded; points anggota tetap"],
+    ["action", "supabase", "UPDATE / UPSERT / UPDATE profil"],
+    ["supabase", "store", "hydrateFromDb (request berikutnya)"],
+    ["store", "student", "baca submission & skor sendiri"]
+  ]
+};
+const SVG = "http://www.w3.org/2000/svg";
+const svg = document.getElementById("diagram");
+const fill = { ui: "#dbeafe", boundary: "#fef3c7", domain: "#dcfce7", data: "#e0e7ff", external: "#f3e8ff" };
+const stroke = { ui: "#1d4ed8", boundary: "#b45309", domain: "#15803d", data: "#4338ca", external: "#7e22ce" };
+const pos = {
+  ui: [130, 90], action: [400, 90], store: [400, 250], subs: [130, 410],
+  profile: [400, 410], supabase: [760, 250], student: [760, 500]
+};
+const el = (tag, attrs, text) => {
+  const n = document.createElementNS(SVG, tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (text != null) n.textContent = text;
+  svg.appendChild(n);
+  return n;
+};
+const defs = el("defs", {});
+const marker = document.createElementNS(SVG, "marker");
+marker.setAttribute("id", "head"); marker.setAttribute("markerWidth", "8");
+marker.setAttribute("markerHeight", "8"); marker.setAttribute("refX", "7"); marker.setAttribute("refY", "4");
+marker.setAttribute("orient", "auto"); defs.appendChild(marker);
+const p = document.createElementNS(SVG, "path");
+p.setAttribute("d", "M0,0 L8,4 L0,8 z"); p.setAttribute("fill", "#475569"); marker.appendChild(p);
+
+data.nodes.forEach(n => {
+  const [x, y] = pos[n.id];
+  el("rect", { x: x - 118, y: y - 26, width: 236, height: 52, rx: 12, fill: fill[n.kind], stroke: stroke[n.kind], "stroke-width": 2 });
+  el("text", { x, y: y + 5, "text-anchor": "middle", "font-size": 12, "font-weight": 700, "font-family": "ui-monospace, monospace", fill: "#0b1a3a" }, n.label);
+});
+data.edges.forEach(([from, to, label]) => {
+  const [x1, y1] = pos[from], [x2, y2] = pos[to];
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+  el("line", { x1, y1, x2: x2 - (x2 > x1 ? 8 : -8), y2, stroke: "#64748b", "stroke-width": 2, "marker-end": "url(#head)" });
+  el("rect", { x: mx - 118, y: my - 12, width: 236, height: 24, rx: 6, fill: "#fffefa", opacity: 0.95 });
+  el("text", { x: mx, y: my + 4, "text-anchor": "middle", "font-size": 10, "font-family": "ui-monospace, monospace", fill: "#334155" }, label);
+});
+</script>
+</body>
+</html>

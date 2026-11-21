@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Penilaian tugas kelompok — sequence</title>
+<style>
+  body { margin: 0; background: #f4f3ea; color: #0b1a3a; font-family: ui-sans-serif, system-ui, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 20px 48px; }
+  h1 { font-family: ui-monospace, monospace; font-size: 20px; margin: 0 0 6px; }
+  p.meta { font: 12px ui-monospace, monospace; color: #475569; margin: 0 0 20px; }
+  svg { width: 100%; height: auto; background: #fffefa; border: 2px solid #0b1a3a; border-radius: 16px; box-shadow: 6px 6px 0 #d9dfd7; }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 14px; font: 11px ui-monospace, monospace; color: #334155; }
+  .legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; background: var(--c); }
+</style>
+</head>
+<body>
+<main>
+  <h1>[ SEQUENCE ] Penilaian tugas kelompok</h1>
+  <p class="meta">Sumber: <code>docs/diagrams/group-grading-sequence.json</code> · status: implemented · buka langsung dari disk, tanpa server</p>
+  <svg id="diagram" viewBox="0 0 1040 820" role="img" aria-label="Diagram urutan penilaian dan pembagian nilai tugas kelompok"></svg>
+  <div class="legend">
+    <span style="--c:#2563eb">panggil</span>
+    <span style="--c:#059669">tulis data</span>
+    <span style="--c:#d97706">keputusan / guard</span>
+    <span style="--c:#7c3aed">kembalian</span>
+  </div>
+</main>
+<script>
+const data = {
+  actors: [
+    { id: "ui", label: "AdminGradingManager" },
+    { id: "action", label: "adminGradeAssignmentAction" },
+    { id: "store", label: "bdcStore" },
+    { id: "db", label: "Supabase" }
+  ],
+  steps: [
+    ["ui", "action", "submit(score, feedback, members[{userId, score}])", "call"],
+    ["action", "action", "validasi role admin/instructor, skor 0–100, dedup userId", "decision"],
+    ["action", "store", "gradeSubmission(sourceId, score, feedback)", "call"],
+    ["store", "store", "profil submitter: score = nilai tugas graded tertinggi", "write"],
+    ["action", "db", "UPDATE submission sumber + profil submitter", "write"],
+    ["action", "store", "loop anggota: shareGradeToMember(sourceId, userId, score, feedback)", "call"],
+    ["store", "store", "skip bila graded lama >= nilai baru; else buat/isi baris submission", "decision"],
+    ["store", "store", "profil anggota: score = max graded (TANPA EXP)", "write"],
+    ["action", "db", "UPSERT baris anggota + UPDATE profil anggota", "write"],
+    ["action", "ui", "sharedSubmissions + pesan ringkasan; revalidate rute", "return"]
+  ]
+};
+const SVG = "http://www.w3.org/2000/svg";
+const colors = { call: "#2563eb", write: "#059669", decision: "#d97706", "return": "#7c3aed" };
+const svg = document.getElementById("diagram");
+const xs = data.actors.map((_, i) => 130 + i * 260);
+const el = (tag, attrs, text) => {
+  const n = document.createElementNS(SVG, tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (text != null) n.textContent = text;
+  svg.appendChild(n);
+  return n;
+};
+const defs = el("defs", {});
+const marker = document.createElementNS(SVG, "marker");
+marker.setAttribute("id", "head"); marker.setAttribute("markerWidth", "8");
+marker.setAttribute("markerHeight", "8"); marker.setAttribute("refX", "7"); marker.setAttribute("refY", "4");
+marker.setAttribute("orient", "auto"); defs.appendChild(marker);
+const mp = document.createElementNS(SVG, "path");
+mp.setAttribute("d", "M0,0 L8,4 L0,8 z"); mp.setAttribute("fill", "#0b1a3a"); marker.appendChild(mp);
+
+data.actors.forEach((a, i) => {
+  el("rect", { x: xs[i] - 108, y: 16, width: 216, height: 42, rx: 10, fill: "#0b1a3a" });
+  el("text", { x: xs[i], y: 42, "text-anchor": "middle", fill: "#fff", "font-size": 13, "font-family": "ui-monospace, monospace", "font-weight": 700 }, a.label);
+  el("line", { x1: xs[i], y1: 58, x2: xs[i], y2: 790, stroke: "#cbd5e1", "stroke-dasharray": "5 5" });
+});
+
+const wrap = (s, n) => { const out = []; for (let i = 0; i < s.length; i += n) out.push(s.slice(i, i + n)); return out; };
+
+data.steps.forEach(([from, to, label, kind], i) => {
+  const y = 96 + i * 68;
+  const fi = data.actors.findIndex(a => a.id === from);
+  const ti = data.actors.findIndex(a => a.id === to);
+  const c = colors[kind] || "#334155";
+  const lines = wrap(label, 46);
+  lines.forEach((ln, j) => el("text", {
+    x: 520, y: y - 26 + j * 12, "text-anchor": "middle", fill: c,
+    "font-size": 11, "font-family": "ui-monospace, monospace", "font-weight": 600
+  }, ln));
+  if (fi === ti) {
+    el("rect", { x: xs[fi] - 78, y: y - 8, width: 156, height: 24, rx: 8, fill: "none", stroke: c, "stroke-width": 2 });
+    el("text", { x: xs[fi], y: y + 8, "text-anchor": "middle", fill: c, "font-size": 10, "font-family": "ui-monospace, monospace" }, "self");
+  } else {
+    const x1 = xs[fi], x2 = xs[ti], dir = x2 > x1 ? 1 : -1;
+    el("line", { x1, y1: y, x2: x2 - dir * 8, y2: y, stroke: c, "stroke-width": 2.5, "marker-end": "url(#head)" });
+  }
+  el("circle", { cx: xs[fi], cy: y, r: 4, fill: c });
+});
+</script>
+</body>
+</html>

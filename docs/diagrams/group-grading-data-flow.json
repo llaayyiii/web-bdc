@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "type": "data-flow",
+  "title": "Alur data nilai tugas kelompok",
+  "status": "implemented",
+  "nodes": [
+    { "id": "ui", "label": "AdminGradingManager", "kind": "ui", "source": "src/components/admin/AdminGradingManager.tsx" },
+    { "id": "action", "label": "adminGradeAssignmentAction", "kind": "boundary", "source": "src/lib/actions/assignments.ts" },
+    { "id": "store", "label": "bdcStore (in-memory)", "kind": "domain", "source": "src/lib/data/store.ts" },
+    { "id": "subs", "label": "assignment_submissions", "kind": "data", "source": "supabase/migrations" },
+    { "id": "profile", "label": "profiles.score / points", "kind": "data", "source": "src/lib/types/database.ts:Profile" },
+    { "id": "supabase", "label": "Supabase (service role)", "kind": "external", "source": "src/lib/supabase/admin.ts" },
+    { "id": "student", "label": "StudentAssignmentList", "kind": "ui", "source": "src/components/assignments/StudentAssignmentList.tsx" }
+  ],
+  "edges": [
+    { "from": "ui", "to": "action", "label": "nilai + daftar anggota terpilih", "kind": "user-input", "source": "src/components/admin/AdminGradingManager.tsx:handleSaveGrade" },
+    { "from": "action", "to": "store", "label": "gradeSubmission + shareGradeToMember", "kind": "domain-call", "source": "src/lib/actions/assignments.ts" },
+    { "from": "store", "to": "subs", "label": "baris submitter & anggota (score, feedback, status)", "kind": "write", "source": "src/lib/data/store.ts:gradeSubmission,shareGradeToMember" },
+    { "from": "store", "to": "profile", "label": "score = nilai graded tertinggi; points tidak berubah untuk anggota", "kind": "write", "source": "src/lib/data/store.ts:shareGradeToMember" },
+    { "from": "action", "to": "supabase", "label": "UPDATE sumber, UPSERT anggota, UPDATE profil", "kind": "sync", "source": "src/lib/actions/assignments.ts" },
+    { "from": "supabase", "to": "store", "label": "hydrateFromDb pada request berikutnya", "kind": "hydrate", "source": "src/lib/data/db.ts" },
+    { "from": "store", "to": "student", "label": "baca submission & skor milik sendiri", "kind": "read", "source": "src/components/assignments/StudentAssignmentList.tsx" }
+  ]
+}

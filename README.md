@@ -31,7 +31,7 @@ Universitas Teknologi Digital Indonesia (UTDI) — Yogyakarta
 
 ### 📡 Presensi Barcode Realtime
 - Pemindai QR lewat **kamera perangkat** (`html5-qrcode`) atau **input token manual** — contoh: `BDC-494`.
-- Token pendek berputar otomatis tiap 30 detik, +100 XP per kehadiran, riwayat scan tervalidasi.
+- Token pendek `BDC-XXXXXX` (10 karakter, rotasi manual oleh admin), +100 XP per kehadiran, riwayat scan tervalidasi.
 
 ### 🎥 Mode Proyektor (Live Presentation)
 - Satu klik **"Layar Proyektor QR"** → layar **fullscreen otomatis** & **sidebar sembunyi otomatis**.

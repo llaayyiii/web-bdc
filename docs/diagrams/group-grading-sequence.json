@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "type": "sequence",
+  "title": "Penilaian tugas kelompok — urutan penilaian & pembagian nilai",
+  "status": "implemented",
+  "actors": [
+    { "id": "ui", "label": "AdminGradingManager", "source": "src/components/admin/AdminGradingManager.tsx" },
+    { "id": "action", "label": "adminGradeAssignmentAction", "source": "src/lib/actions/assignments.ts" },
+    { "id": "store", "label": "bdcStore", "source": "src/lib/data/store.ts" },
+    { "id": "db", "label": "Supabase", "source": "src/lib/actions/assignments.ts" }
+  ],
+  "steps": [
+    {
+      "from": "ui",
+      "to": "action",
+      "label": "submit(score, feedback, members[{userId, score}])",
+      "kind": "call",
+      "source": "src/components/admin/AdminGradingManager.tsx:handleSaveGrade"
+    },
+    {
+      "from": "action",
+      "to": "action",
+      "label": "validasi role admin/instructor, skor 0–100, dedup userId",
+      "kind": "decision",
+      "source": "src/lib/actions/assignments.ts:adminGradeAssignmentAction"
+    },
+    {
+      "from": "action",
+      "to": "store",
+      "label": "gradeSubmission(sourceId, score, feedback)",
+      "kind": "call",
+      "source": "src/lib/data/store.ts:gradeSubmission"
+    },
+    {
+      "from": "store",
+      "to": "store",
+      "label": "profil submitter: score = nilai tugas graded tertinggi",
+      "kind": "write",
+      "source": "src/lib/data/store.ts:gradeSubmission"
+    },
+    {
+      "from": "action",
+      "to": "db",
+      "label": "UPDATE submission sumber + profil submitter",
+      "kind": "write",
+      "source": "src/lib/actions/assignments.ts:adminGradeAssignmentAction"
+    },
+    {
+      "from": "action",
+      "to": "store",
+      "label": "loop anggota: shareGradeToMember(sourceId, userId, score, feedback)",
+      "kind": "call",
+      "source": "src/lib/actions/assignments.ts:adminGradeAssignmentAction"
+    },
+    {
+      "from": "store",
+      "to": "store",
+      "label": "skip bila graded lama >= nilai baru; else buat/isi baris submission",
+      "kind": "decision",
+      "source": "src/lib/data/store.ts:shareGradeToMember"
+    },
+    {
+      "from": "store",
+      "to": "store",
+      "label": "profil anggota: score = max graded (TANPA EXP)",
+      "kind": "write",
+      "source": "src/lib/data/store.ts:shareGradeToMember"
+    },
+    {
+      "from": "action",
+      "to": "db",
+      "label": "UPSERT baris anggota + UPDATE profil anggota",
+      "kind": "write",
+      "source": "src/lib/actions/assignments.ts:adminGradeAssignmentAction"
+    },
+    {
+      "from": "action",
+      "to": "ui",
+      "label": "sharedSubmissions + pesan ringkasan; revalidate rute",
+      "kind": "return",
+      "source": "src/lib/actions/assignments.ts:adminGradeAssignmentAction"
+    }
+  ]
+}
